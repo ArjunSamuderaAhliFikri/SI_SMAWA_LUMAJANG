@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Sistem Informasi SMA Wahidiyah Lumajang</title>
+    <link rel="stylesheet" href="/frontend/styles/output.css" />
+    <link rel="stylesheet" href="/frontend/assets/css/all.css" />
+  </head>
+  <body>
+    <div class="min-h-screen">
+      <div class="container mx-auto bg-slate-50">
+        <!-- header -->
+        <div class="flex justify-between items-center py-3 px-4">
+          <!-- logo -->
+          <div class="flex gap-2 items-center justify-center">
+            <div class="size-16 overflow-hidden">
+              <img
+                class="block object-cover size-full"
+                src="/frontend/public/img/smawa-logo-transparent.png"
+                alt="smawa_logo"
+              />
+            </div>
+
+            <span class="font-semibold text-slate-700 text-md capitalize"
+              >sma wahidiyah lumajang</span
+            >
+          </div>
+          <!-- logo end -->
+
+          <!-- nav -->
+          <nav>
+            <ul class="flex gap-4">
+              <li class="cursor-pointer">
+                <div
+                  class="size-10 rounded-full bg-slate-900 p-2 text-slate-100 flex justify-center items-center"
+                >
+                  <i class="fa-regular fa-bell text-lg"></i>
+                </div>
+              </li>
+              <li class="cursor-pointer">
+                <div
+                  class="size-10 rounded-full bg-slate-900 p-2 text-slate-100 flex justify-center items-center"
+                >
+                  <i class="fa-solid fa-user text-lg"></i>
+                </div>
+              </li>
+            </ul>
+          </nav>
+          <!-- nav end -->
+        </div>
+        <!-- header end -->
+
+        <div class="mx-12 my-6">
+          <h1 class="capitalize font-semibold text-slate-600 text-xl">
+            dashboard admin
+          </h1>
+        </div>
+
+        <div
+          class="max-w-8/12 h-[300px] bg-slate-100 grid justify-stretch grid-cols-2 grid-rows-2 gap-4 mx-auto my-8"
+        >
+          <a
+            href="/frontend/pages/admin/tambah_siswa.html"
+            class="flex justify-center items-center bg-[#16C47F] rounded-md shadow-md cursor-pointer transition-all duration-150 hover:bg-slate-400 hover:scale-[98.5%]"
+          >
+            <div class="max-w-3/4 flex items-center gap-4">
+              <div class="text-center text-slate-100 size-fit">
+                <i class="fa-solid fa-user-plus text-[65px]"></i>
+              </div>
+
+              <div
+                class="flex flex-col justify-center items-start gap-1 max-w-3/4"
+              >
+                <h1 class="font-semibold text-slate-100 text-lg">
+                  Tambah Siswa
+                </h1>
+                <p class="font-normal text-slate-200 text-xs capitalize">
+                  ada siswa yang belum terdaftar di kelas ? ayo segera tambahkan
+                  siswa itu lewat sini!
+                </p>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="/frontend/pages/admin/buat_tagihan.html"
+            class="flex justify-center items-center bg-[#16C47F] rounded-md shadow-md cursor-pointer transition-all duration-150 hover:bg-slate-400 hover:scale-[98.5%]"
+          >
+            <div class="max-w-3/4 flex items-center gap-4">
+              <div class="text-center text-slate-100 size-fit">
+                <i class="fa-solid fa-money-bill text-[65px]"></i>
+              </div>
+
+              <div
+                class="flex flex-col justify-center items-start gap-1 max-w-3/4"
+              >
+                <h1 class="font-semibold text-slate-100 text-lg">
+                  Buat Tagihan
+                </h1>
+                <p class="font-normal text-slate-100 text-xs capitalize">
+                  ingin membuat tagihan pembayaran ke semua siswa dengan sekali
+                  tekan ? anda bisa melakukan itu lewat sini!
+                </p>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="/frontend/pages/admin/pantau_siswa.html"
+            class="flex justify-center items-center bg-[#16C47F] rounded-md shadow-md cursor-pointer transition-all duration-150 hover:bg-slate-400 hover:scale-[98.5%]"
+          >
+            <div class="max-w-3/4 flex items-center gap-4">
+              <div class="text-center text-slate-100 size-fit">
+                <i class="fa-solid fa-users text-[65px]"></i>
+              </div>
+
+              <div
+                class="flex flex-col justify-center items-start gap-1 max-w-3/4"
+              >
+                <h1 class="font-semibold text-slate-100 text-lg">
+                  Pantau Siswa
+                </h1>
+                <p class="font-normal text-slate-100 text-xs capitalize">
+                  ayo pantau siswa dari kelas 10 sampai kelas 12, dan lihat
+                  riwayat pembayaran disini!
+                </p>
+              </div>
+            </div>
+          </a>
+          <div
+            class="flex justify-center items-center bg-[#16C47F] rounded-md shadow-md cursor-pointer transition-all duration-150 hover:bg-slate-400 hover:scale-[98.5%]"
+          >
+            <div class="max-w-3/4 flex items-center gap-4">
+              <div class="text-center text-slate-100 size-fit">
+                <i class="fa-solid fa-plus text-[65px]"></i>
+              </div>
+
+              <div
+                class="flex flex-col justify-center items-start gap-1 max-w-3/4"
+              >
+                <h1 class="font-semibold text-slate-100 text-lg"></h1>
+                <p class="font-normal text-slate-100 text-xs capitalize"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="overflow-x-auto max-w-11/12 mx-auto my-10 rounded-l-lg rounded-r-lg shadow-md"
+        >
+          <table class="table-auto min-w-full bg-white">
+            <thead>
+              <tr class="bg-[#16C47F] text-slate-100">
+                <th class="py-4 px-4 border-b text-left">Nama</th>
+                <th class="py-4 px-4 border-b text-left">Kelas</th>
+                <th class="py-4 px-4 border-b text-left">Email</th>
+                <th class="py-4 px-4 border-b text-left">Nomor HP</th>
+                <th class="py-4 px-4 border-b text-center">
+                  Status Pembayaran
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="cursor-pointer hover:bg-gray-100">
+                <td class="flex items-center gap-4 py-4 px-4 border-b">
+                  <div class="size-8 rounded-full overflow-hidden">
+                    <img
+                      class="block size-full object-cover"
+                      src="/frontend/public/img/Profile-IG.jpg"
+                      alt="user"
+                    />
+                  </div>
+                  <span class="text-[14px] font-semibold text-slate-600"
+                    >John Doe</span
+                  >
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  XII IPA 1
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  john.doe@example.com
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  081234567890
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-center text-md font-semibold text-slate-500"
+                >
+                  Lunas
+                </td>
+              </tr>
+              <tr class="cursor-pointer hover:bg-gray-100">
+                <td class="flex items-center gap-4 py-4 px-4 border-b">
+                  <div class="size-8 rounded-full overflow-hidden">
+                    <img
+                      class="block size-full object-cover"
+                      src="/frontend/public/img/Profile-IG.jpg"
+                      alt="user"
+                    />
+                  </div>
+                  <span class="text-[14px] font-semibold text-slate-600"
+                    >John Doe</span
+                  >
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  XII IPA 1
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  john.doe@example.com
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  081234567890
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-center text-md font-semibold text-slate-500"
+                >
+                  Lunas
+                </td>
+              </tr>
+              <tr class="cursor-pointer hover:bg-gray-100">
+                <td class="flex items-center gap-4 py-4 px-4 border-b">
+                  <div class="size-8 rounded-full overflow-hidden">
+                    <img
+                      class="block size-full object-cover"
+                      src="/frontend/public/img/Profile-IG.jpg"
+                      alt="user"
+                    />
+                  </div>
+                  <span class="text-[14px] font-semibold text-slate-600"
+                    >John Doe</span
+                  >
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  XII IPA 1
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  john.doe@example.com
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
+                >
+                  081234567890
+                </td>
+                <td
+                  class="py-4 px-4 border-b text-center text-md font-semibold text-slate-500"
+                >
+                  Lunas
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

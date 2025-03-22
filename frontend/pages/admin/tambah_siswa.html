@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tambah Siswa Sistem Informasi SMA Wahidiyah Lumajang</title>
+    <link rel="stylesheet" href="/frontend/styles/output.css" />
+  </head>
+  <body>
+    <div class="min-h-screen bg-slate-200">
+      <div class="bg-slate-700 relative h-[275px]">
+        <a
+          class="absolute top-8 left-14 bg-slate-100 px-4 py-2 rounded-lg font-semibold text-sm text-slate-700 cursor-pointer transition-all duration-150 hover:bg-slate-200"
+          href="/frontend//pages/admin/dashboard.html"
+          >Kembali</a
+        >
+
+        <div
+          class="container max-w-6xl absolute left-1/2 -bottom-28 -translate-x-1/2 translate-y-1/2 bg-slate-200 rounded-lg shadow-lg px-10 py-6"
+        >
+          <div>
+            <h1 class="text-slate-700 font-semibold capitalize text-xl">
+              tambah siswa
+            </h1>
+            <p class="text-slate-500 font-normal capitalize text-xs">
+              tambahkan siswa yang belum terdaftar disini!
+            </p>
+          </div>
+
+          <form class="flex justify-start items-start gap-4 my-3">
+            <div
+              class="my-10 w-1/4 flex flex-col justify-center items-center gap-4"
+            >
+              <div class="size-36 rounded-full overflow-hidden">
+                <img
+                  class="block size-full object-cover"
+                  src="/frontend/public/img/Profile-IG.jpg"
+                  alt="image_user"
+                  id="profile_user"
+                />
+              </div>
+              <label
+                class="text-sm text-slate-600 font-semibold cursor-pointer"
+                for="image"
+                >Pilih Foto</label
+              >
+              <input
+                class="w-28 block bg-slate-700 px-3 py-2 rounded-lg font-normal text-sm text-slate-100 cursor-pointer transition-all duration-150 hover:bg-slate-500"
+                type="file"
+                accept="image/*"
+              />
+            </div>
+
+            <div class="w-3/4">
+              <div action="">
+                <div>
+                  <label class="text-sm text-slate-600 font-semibold" for="name"
+                    >Username</label
+                  >
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    placeholder="Sebaiknya menggunakan Nama Lengkap Siswa"
+                    class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="text-sm text-slate-600 font-semibold"
+                    for="email"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="siswa717@gmail.com"
+                    class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="text-sm text-slate-600 font-semibold"
+                    for="no_hp"
+                    >Nomor HP</label
+                  >
+                  <input
+                    type="number"
+                    name="no_hp"
+                    id="no_hp"
+                    placeholder="081234567890"
+                    class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
+                  />
+                </div>
+
+                <div class="flex flex-col w-fit">
+                  <label
+                    class="text-sm text-slate-600 font-semibold"
+                    for="kelas"
+                    >Kelas</label
+                  >
+                  <select
+                    name="kelas"
+                    id="kelas"
+                    class="w-fit bg-slate-600 py-3 px-4 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-100 text-sm"
+                  >
+                    <option value="X">X</option>
+                    <option value="XI">XI</option>
+                    <option value="XII">XII</option>
+                  </select>
+                </div>
+
+                <button
+                  class="w-full bg-slate-700 rounded-lg font-semibold text-sm py-3 px-2 capitalize text-slate-100 mt-2 cursor-pointer transition-all duration-150 hover:bg-slate-500"
+                  type="button"
+                >
+                  tambah siswa
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="/frontend/features/imageProfile/changeProfileUser.js"></script>
+  </body>
+</html>
