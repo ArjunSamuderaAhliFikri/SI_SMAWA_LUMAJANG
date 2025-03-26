@@ -4,6 +4,7 @@ const img = document.getElementById("profile_user");
 input.addEventListener("change", () => {
   // ambil file gambar
   const file = input.files[0];
+  console.log(file);
 
   // cek apakah file yang diupload adalah gambar
   if (file && file.type.startsWith("image/")) {

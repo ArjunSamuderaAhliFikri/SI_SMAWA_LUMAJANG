@@ -27,14 +27,18 @@
             </p>
           </div>
 
-          <form class="flex justify-start items-start gap-4 my-3">
+          <form
+            method="POST"
+            action="http://localhost:3000/tambah_siswa"
+            class="flex justify-start items-start gap-4 my-3"
+          >
             <div
               class="my-10 w-1/4 flex flex-col justify-center items-center gap-4"
             >
               <div class="size-36 rounded-full overflow-hidden">
                 <img
                   class="block size-full object-cover"
-                  src="/frontend/public/img/Profile-IG.jpg"
+                  src="/frontend/public/img/default-profile.jpeg"
                   alt="image_user"
                   id="profile_user"
                 />
@@ -82,6 +86,20 @@
                 <div>
                   <label
                     class="text-sm text-slate-600 font-semibold"
+                    for="password"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="****"
+                    class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="text-sm text-slate-600 font-semibold"
                     for="no_hp"
                     >Nomor HP</label
                   >
@@ -113,7 +131,7 @@
 
                 <button
                   class="w-full bg-slate-700 rounded-lg font-semibold text-sm py-3 px-2 capitalize text-slate-100 mt-2 cursor-pointer transition-all duration-150 hover:bg-slate-500"
-                  type="button"
+                  type="submit"
                 >
                   tambah siswa
                 </button>
@@ -125,5 +143,6 @@
     </div>
 
     <script src="/frontend/features/imageProfile/changeProfileUser.js"></script>
+    <script src="/frontend/logic/tambahSiswa.js"></script>
   </body>
 </html>

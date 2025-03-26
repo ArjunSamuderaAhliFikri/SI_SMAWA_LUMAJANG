@@ -8,6 +8,112 @@
     <link rel="stylesheet" href="/frontend/assets//css/all.css" />
   </head>
   <body>
-    <div class="h-[100%] overflow-x-hidden bg-slate-800">testing</div>
+    <div class="min-h-screen overflow-x-hidden bg-slate-100">
+      <div
+        class="relative flex justify-around items-center max-w-full h-16 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:w-full after:h-6 after:bg-gradient-to-b after:from-slate-100 after:from-40% after:to-transparent z-10"
+      >
+        <div class="flex items-center gap-2">
+          <div class="size-12 rounded-full overflow-hidden">
+            <img
+              src="/frontend/public/img/smawa-logo-transparent.png"
+              alt="SMA Logo"
+              class="block size-full object-cover"
+            />
+          </div>
+
+          <h1 class="font-medium text-lg text-slate-700">
+            SMA Wahidiyah Lumajang
+          </h1>
+        </div>
+
+        <nav>
+          <ul class="flex gap-12 items-center">
+            <li
+              class="bg-slate-700 text-slate-100 px-4 py-2 rounded-full font-normal"
+            >
+              <a href="#">Home</a>
+            </li>
+            <li><a href="#">History</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="relative w-full h-[475px] bg-slate-500 after:content-['']">
+        <img
+          src="/frontend/public/img/Smawa.jpg"
+          alt="SMAWA"
+          class="block size-full object-cover"
+        />
+
+        <div
+          class="flex justify-center items-center gap-6 absolute -bottom-20 left-1/2 -translate-x-1/2"
+        >
+          <a
+            href="/frontend/pages/user/konfirmasi_pembayaran.html"
+            class="w-[300px] flex flex-col items-center justify-start px-8 py-6 bg-slate-100 rounded-md shadow-lg cursor-pointer transition-all duration-150 ease-in-out hover:shadow-xl hover:scale-105"
+          >
+            <div
+              class="size-14 rounded-full bg-slate-800 grid place-content-center"
+            >
+              <i
+                class="fa-solid fa-money-check-dollar text-2xl text-slate-100"
+              ></i>
+            </div>
+
+            <div class="flex flex-col items-center gap-4">
+              <h1 class="mt-3 font-medium text-slate-800 text-lg">
+                Konfirmasi Pembayaran SPP
+              </h1>
+
+              <p class="text-center text-xs text-slate-600">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sit
+                nulla voluptatem possimus beatae facilis ullam magni voluptatum
+                nihil aliquid sint.
+              </p>
+
+              <button
+                type="button"
+                class="block w-full py-2 px-4 rounded-lg text-slate-100 bg-slate-900 font-medium cursor-pointer text-sm transition-all duration-150 hover:bg-slate-700 capitalize"
+              >
+                kirim bukti pembayaran disini
+              </button>
+            </div>
+          </a>
+          <a
+            href="/frontend/pages/user/cek_tagihan.html"
+            class="w-[300px] flex flex-col items-center justify-start px-8 py-6 bg-slate-100 rounded-md shadow-lg cursor-pointer transition-all duration-150 ease-in-out hover:shadow-xl hover:scale-105"
+          >
+            <div
+              class="size-14 rounded-full bg-slate-800 grid place-content-center"
+            >
+              <i
+                class="fa-solid fa-clock-rotate-left text-2xl text-slate-100"
+              ></i>
+            </div>
+
+            <div class="flex flex-col items-center gap-4">
+              <h1 class="mt-3 font-medium text-slate-800 text-lg">
+                Cek Tagihan SPP
+              </h1>
+
+              <p class="text-center text-xs text-slate-600">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sit
+                nulla voluptatem possimus beatae facilis ullam magni voluptatum
+                nihil aliquid sint.
+              </p>
+
+              <button
+                type="button"
+                class="block w-full py-2 px-4 rounded-lg text-slate-100 bg-slate-900 font-medium cursor-pointer text-sm transition-all duration-150 hover:bg-slate-700 capitalize"
+              >
+                cek tagihan SPP disini
+              </button>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
+
+<!-- after:absolute after:-bottom-8 after:left-0 after:w-full after:h-24 after:bg-gradient-to-b after:from-transparent after:to-80% after:to-slate-100 -->

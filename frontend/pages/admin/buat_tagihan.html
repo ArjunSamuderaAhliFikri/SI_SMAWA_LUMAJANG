@@ -49,13 +49,13 @@
             <hr />
           </div>
           <div>
-            <form action="">
+            <form id="form-buat-tagihan">
               <div class="flex flex-col space-y-4">
                 <div class="flex flex-col space-y-2 w-1/2">
                   <label for="nama">Nama</label>
                   <select
                     name="nama"
-                    id="nama"
+                    id="nama-siswa"
                     class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
                   >
                     <option value="Nama Siswa" selected disabled hidden>
@@ -68,13 +68,32 @@
                   <label for="kelas">Kelas</label>
                   <select
                     name="kelas"
-                    id="kelas"
+                    id="kelas-siswa"
                     class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
                   >
-                    <option value="Kelas" selected disabled hidden>
-                      XII-1
-                    </option>
+                    <option value="XII-1">XII-1</option>
+                    <option value="XII-2">XII-2</option>
+                    <option value="XII-3">XII-3</option>
+                    <option value="XII-4">XII-4</option>
+                    <option value="XI-1">XI-1</option>
+                    <option value="XI-2">XI-2</option>
+                    <option value="XI-3">XI-3</option>
+                    <option value="XI-4">XI-4</option>
+                    <option value="X-1">X-1</option>
+                    <option value="X-2">X-2</option>
+                    <option value="X-3">X-3</option>
+                    <option value="X-4">X-4</option>
                   </select>
+                </div>
+
+                <div class="flex flex-col space-y-2 w-1/2">
+                  <label for="jumlah-tagihan">Jumlah Tagihan</label>
+                  <input
+                    type="text"
+                    name="jumlah-tagihan"
+                    id="jumlah-tagihan-siswa"
+                    class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
+                  />
                 </div>
 
                 <div class="flex flex-col space-y-2 w-full">
@@ -96,7 +115,7 @@
                     >
                       <img
                         class="block size-full object-cover"
-                        src="/frontend/public/img/Profile-IG.jpg"
+                        src="/frontend/public/img/images.png"
                         alt="qrcode"
                       />
                     </div>
@@ -127,5 +146,6 @@
         </div>
       </div>
     </div>
+    <script src="/frontend/logic/buatTagihan.js"></script>
   </body>
 </html>

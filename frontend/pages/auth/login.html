@@ -50,12 +50,15 @@
 
                 <div class="flex gap-3">
                   <button
-                    class="bg-slate-600 text-slate-100 text-sm rounded-md px-3 w-16 py-1 border-none cursor-pointer transition-all duration-150 ease-in-out hover:bg-slate-900 hover:font-semibold"
+                    disabled="true"
+                    id="opsi-login"
+                    class="disabled:bg-slate-400 bg-slate-600 text-slate-100 text-sm rounded-md px-3 w-16 py-1 border-none cursor-pointer transition-all duration-150 ease-in-out hover:bg-slate-900 hover:font-semibold"
                     type="button"
                   >
                     Admin
                   </button>
                   <button
+                    id="opsi-login"
                     class="bg-slate-600 text-slate-100 text-sm rounded-md px-3 w-16 py-1 border-none cursor-pointer transition-all duration-150 ease-in-out hover:bg-slate-900 hover:font-semibold"
                     type="button"
                   >
@@ -65,7 +68,12 @@
               </div>
             </div>
 
-            <form action="" class="mt-6">
+            <form
+              action="http://localhost:3000/login"
+              method="POST"
+              id="login-form"
+              class="mt-6"
+            >
               <div class="flex flex-col gap-2">
                 <label
                   for="username"
@@ -75,7 +83,6 @@
                 <input
                   type="text"
                   name="username"
-                  id="username"
                   placeholder="Username..."
                   class="px-3 py-2 border-none rounded-md outline-none bg-slate-300"
                 />
@@ -104,12 +111,12 @@
               </div>
 
               <div class="mx-auto mt-7 w-fit">
-                <a
-                  href="/frontend/pages/admin/dashboard.html"
+                <button
+                  type="submit"
                   class="bg-[#16C47F] rounded-full px-7 py-2 border-none text-slate-100 font-semibold cursor-pointer hover:bg-[#13A86D] transition-all duration-300 ease-in-out"
                 >
                   Login
-                </a>
+                </button>
               </div>
             </form>
           </div>
@@ -148,5 +155,6 @@
       <div class="h-screen bg-emerald-500 grow"></div>
       <div class="h-screen bg-slate-100 grow-[2.5]"></div>
     </div>
+    <script src="/frontend/logic/loginForm.js"></script>
   </body>
 </html>
