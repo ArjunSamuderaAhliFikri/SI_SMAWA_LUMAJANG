@@ -10,6 +10,7 @@ const login = require("./logic/login.js");
 const getTagihanSiswa = require("./logic/getTagihanSiswa.js");
 const tagihanSiswa = require("./logic/tagihanSiswa.js");
 const getAllStudents = require("./logic/getAllStudents.js");
+const getTapel = require("./logic/getTapel.js");
 const tambahSiswa = require("./logic/tambahSiswa.js");
 const buatTagihanSiswa = require("./logic/buatTagihanSiswa.js");
 const buatTagihanSemuaSiswa = require("./logic/buatTagihanSemuaSiswa.js");
@@ -46,6 +47,8 @@ app.get("/tagihan/:username/:infoBilling", (req, res) => {
 
   return res.json({ namaSiswa, infoBilling });
 });
+
+app.get("/tapel", getTapel);
 
 app.post("/login", login);
 

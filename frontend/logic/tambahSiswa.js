@@ -1,9 +1,38 @@
 const form = document.querySelector("form");
-const opsiKelas = document.querySelector('select[id="kelas"]');
-let infoKelas = "X-1";
+const tahunPelajaran = document.querySelector('select[id="tahun-pelajaran"]');
+let setTapel = "";
 
-opsiKelas.addEventListener("change", (event) => {
-  infoKelas = event.target.value;
+document.addEventListener("DOMContentLoaded", () => {
+  async function getTapel() {
+    try {
+      const response = await fetch("http://localhost:3000/tapel");
+
+      if (response.ok) {
+        const { tapel } = await response.json();
+
+        for (const kelas in tapel) {
+          const optionElement = document.createElement("option");
+          optionElement.setAttribute("data-kelas", kelas);
+          optionElement.innerHTML = tapel[kelas];
+
+          tahunPelajaran.appendChild(optionElement);
+        }
+
+        setTapel = tahunPelajaran.firstChild.innerHTML;
+      }
+    } catch (error) {
+      alert(`Gagal untuk melakukan pengambilan data tapel, ${error.message}`);
+    }
+  }
+
+  getTapel();
+});
+
+tahunPelajaran.addEventListener("change", (event) => {
+  // setTapel = '[tahun pelajaran yang dipilih]-[kelas yang dipilih]
+  setTapel = `${
+    event.target.options[event.target.selectedIndex].dataset.kelas
+  }-${event.target.value}`;
 });
 
 form.addEventListener("submit", async function (event) {
@@ -11,35 +40,39 @@ form.addEventListener("submit", async function (event) {
 
   const fileImage = document.querySelector('input[type="file"]');
   const username = document.querySelector('input[type="text"]').value;
-  const email = document.querySelector('input[type="email"]').value;
   const password = document.querySelector('input[type="password"]').value;
   const nomorHP = document.querySelector('input[type="number"]').value;
 
   try {
+    if (!username || !password || !nomorHP || setTapel == "") {
+      return alert("harus di isi!");
+    }
+
+    const getClassNTapel = setTapel.split("-");
+
     const response = await fetch("http://localhost:3000/tambah_siswa", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        role: "Siswa",
+        role: "siswa",
         username,
-        email,
         password,
         nomorHP,
-        infoKelas,
+        kelas: getClassNTapel[0],
+        tapel: getClassNTapel[1],
       }),
     });
 
     if (response.ok) {
-      const data = await response.json();
-
       //   message
-      alert(data.msg);
-      username = "";
-      email = "";
-      password = "";
-      nomorHP = "";
+      const { err } = await response.json();
+      if (err) {
+        return alert("Siswa sudah terdaftar!");
+      }
+
+      alert("berhasil didaftarkan!");
     } else {
       alert("error!");
     }

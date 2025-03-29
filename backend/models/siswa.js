@@ -5,9 +5,10 @@ const siswaSchema = new mongoose.Schema({
   username: String,
   password: String,
   nomorHP: String,
-  tahunPembelajaran: String,
+  kelas: String,
+  tapel: String,
 });
 
-const Siswa = mongoose.model("Siswa", siswaSchema);
+const Siswa = mongoose.model("siswas", siswaSchema);
 
 module.exports = Siswa;
