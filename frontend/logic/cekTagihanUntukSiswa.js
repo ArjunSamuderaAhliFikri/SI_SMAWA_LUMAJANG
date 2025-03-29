@@ -2,7 +2,42 @@ const tBody = document.querySelector("tbody");
 
 tBody.addEventListener("click", (event) => {
   if (event.srcElement.localName == "td") {
-    window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
+    const parent = event.target.parentNode;
+
+    // todo!
+
+    const namaSiswa = localStorage.getItem("username");
+
+    const infoBilling =
+      parent.getElementsByTagName("td")[0].lastElementChild.innerHTML;
+    const nominal =
+      parent.getElementsByTagName("td")[1].lastElementChild.innerHTML;
+    console.log(nominal);
+
+    // TODOOOOO
+    async function sendDataBilling() {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/tagihan/${namaSiswa}/${infoBilling}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ namaSiswa, infoBilling }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+        }
+      } catch (error) {
+        alert(`Error Message : ${error.message}`);
+      }
+    }
+
+    // window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
   } else {
     window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
   }
