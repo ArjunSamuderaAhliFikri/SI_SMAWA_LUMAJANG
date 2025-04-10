@@ -1,6 +1,5 @@
 const form = document.querySelector("form");
 const tahunPelajaran = document.querySelector('select[id="tahun-pelajaran"]');
-let setTapel = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   async function getTapel() {
@@ -17,8 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           tahunPelajaran.appendChild(optionElement);
         }
-
-        setTapel = tahunPelajaran.firstChild.innerHTML;
       }
     } catch (error) {
       alert(`Gagal untuk melakukan pengambilan data tapel, ${error.message}`);
@@ -28,11 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
   getTapel();
 });
 
+let setTapel = ["XII", "2024/2025"]; //by default
+
 tahunPelajaran.addEventListener("change", (event) => {
   // setTapel = '[tahun pelajaran yang dipilih]-[kelas yang dipilih]
-  setTapel = `${
-    event.target.options[event.target.selectedIndex].dataset.kelas
-  }-${event.target.value}`;
+  setTapel = [
+    event.target.options[event.target.selectedIndex].dataset.kelas,
+    event.target.value,
+  ];
 });
 
 form.addEventListener("submit", async function (event) {
@@ -48,8 +48,6 @@ form.addEventListener("submit", async function (event) {
       return alert("harus di isi!");
     }
 
-    const getClassNTapel = setTapel.split("-");
-
     const response = await fetch("http://localhost:3000/tambah_siswa", {
       method: "POST",
       headers: {
@@ -60,14 +58,17 @@ form.addEventListener("submit", async function (event) {
         username,
         password,
         nomorHP,
-        kelas: getClassNTapel[0],
-        tapel: getClassNTapel[1],
+        kelas: setTapel[0],
+        tapel: setTapel[1],
       }),
     });
 
     if (response.ok) {
       //   message
+
       const { err } = await response.json();
+
+      console.log(setTapel);
       if (err) {
         return alert("Siswa sudah terdaftar!");
       }

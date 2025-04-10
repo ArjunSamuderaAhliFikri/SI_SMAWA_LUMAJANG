@@ -12,32 +12,15 @@ tBody.addEventListener("click", (event) => {
       parent.getElementsByTagName("td")[0].lastElementChild.innerHTML;
     const nominal =
       parent.getElementsByTagName("td")[1].lastElementChild.innerHTML;
-    console.log(nominal);
 
-    // TODOOOOO
-    async function sendDataBilling() {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/tagihan/${namaSiswa}/${infoBilling}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ namaSiswa, infoBilling }),
-          }
-        );
+    localStorage.setItem("deskripsi_pembayaran", infoBilling);
+    localStorage.setItem("nominal", nominal);
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-        }
-      } catch (error) {
-        alert(`Error Message : ${error.message}`);
-      }
-    }
+    const informasiPembayaran = { namaSiswa, catatanSiswa: infoBilling };
 
-    // window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
+    localStorage.setItem("informasi-pembayaran", informasiPembayaran);
+
+    window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
   } else {
     window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
   }
@@ -64,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
           generateTrElement.innerHTML = generateTdElement(
             data.catatanSiswa,
             data.jumlahTagihanSiswa,
-            "Belum Lunas"
+            data.isPaidOff ? "Lunas" : "Belum Lunas"
           );
 
           tBody.appendChild(generateTrElement);
@@ -84,30 +67,9 @@ function generateTdElement(
   statusPembayaran
 ) {
   return `
-  <td
-                      class="flex items-center gap-4 py-4 px-4 border-b font-medium text-slate-500" id="${deskripsiPembayaran}"
-                    >
-                      <i
-                        class="fa-solid fa-money-check-dollar text-slate-800 text-xl"
-                      ></i>
-                      <span> ${deskripsiPembayaran} </span>
-                    </td>
-                    <td
-                      class="py-4 px-4 border-b text-sm font-semibold text-slate-500"
-                    >
-                      <i class="fa-solid fa-clock text-slate-800 text-xl"></i>
-                      <span>${tanggalPembayaran}</span>
-                    </td>
-                    <td
-                      class="py-4 px-4 border-b text-md font-semibold ${
-                        statusPembayaran == "Lunas"
-                          ? "text-emerald-500"
-                          : "text-pink-600"
-                      } text-center"
-                    >
-                      <i
-                        class="fa-solid fa-circle-check text-2xl"
-                      ></i>
-                      <span>${statusPembayaran}</span>
-                    </td>`;
+  <td class="flex items-center gap-4 py-4 px-4 border-b font-medium text-slate-500" id="${deskripsiPembayaran}"><i class="fa-solid fa-money-check-dollar text-slate-800 text-xl"></i><span>${deskripsiPembayaran}</span></td>
+<td class="py-4 px-4 border-b text-sm font-semibold text-slate-500"><i class="fa-solid fa-clock text-slate-800 text-xl"></i><span>${tanggalPembayaran}</span></td>
+<td class="py-4 px-4 border-b text-md font-semibold ${
+    statusPembayaran == "Lunas" ? "text-emerald-500" : "text-pink-600"
+  } text-center"><i class="fa-solid fa-circle-check text-2xl"></i><span>${statusPembayaran}</span></td>`;
 }

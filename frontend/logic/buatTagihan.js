@@ -2,7 +2,30 @@ const selectElementName = document.getElementById("nama-siswa");
 const selectElementClass = document.getElementById("kelas-siswa");
 const form = document.getElementById("form-buat-tagihan");
 let namaSiswa;
-let kelasSiswa;
+let kelasSiswa = "XII-1"; // by default
+let tapelSiswa = "2024/2025"; // by default
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const response = await fetch("http://localhost:3000/kelasNTapel");
+  try {
+    if (response.ok) {
+      const { kelas, tapel } = await response.json();
+      const getTapel = tapel.tapel;
+
+      kelas.forEach((item) => {
+        const option = document.createElement("option");
+
+        option.setAttribute("data-tapel", getTapel[item.split("-")[0]]);
+        option.setAttribute("value", item);
+        option.innerHTML = item;
+
+        selectElementClass.appendChild(option);
+      });
+    }
+  } catch (error) {
+    alert(`Error Message : ${error.message}`);
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   async function handleGetStudents() {
@@ -11,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         const data = await response.json();
+
         const { getAllStudents } = data;
 
         getAllStudents.forEach((element) => {
@@ -38,6 +62,7 @@ selectElementName.addEventListener("change", (event) => {
 
 selectElementClass.addEventListener("change", (event) => {
   kelasSiswa = event.target.value;
+  tapelSiswa = event.target.options[event.target.selectedIndex].dataset.tapel;
 });
 
 form.addEventListener("submit", (event) => {
@@ -58,6 +83,7 @@ form.addEventListener("submit", (event) => {
         body: JSON.stringify({
           namaSiswa,
           kelasSiswa,
+          tapelSiswa,
           catatanSiswa,
           jumlahTagihanSiswa,
         }),
@@ -65,7 +91,11 @@ form.addEventListener("submit", (event) => {
 
       if (response.ok) {
         const data = await response.json();
-        const { msg } = data;
+        const { msg, err } = data;
+
+        if (err) {
+          return alert(err);
+        }
 
         alert(msg);
       }
