@@ -3,11 +3,15 @@ const mongoose = require("mongoose");
 const accountNumberSchema = new mongoose.Schema({
   accountNumber: {
     type: String,
-    required: true,
+    required: false,
+  },
+  atasNama: {
+    type: String,
+    required: false,
   },
   status: {
-    type: String,
-    required: true,
+    type: Boolean,
+    required: false,
     default: true,
   },
 });

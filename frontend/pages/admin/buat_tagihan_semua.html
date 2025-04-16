@@ -6,6 +6,12 @@
     <title>Buat Tagihan Siswa</title>
     <link rel="stylesheet" href="/frontend/styles/output.css" />
     <link rel="stylesheet" href="/frontend/assets/css/all.css" />
+
+    <link
+      rel="stylesheet"
+      href="/frontend/node_modules/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="/frontend/node_modules/flatpickr/dist/flatpickr.min.js"></script>
   </head>
   <body>
     <div class="min-h-screen bg-slate-100">
@@ -31,15 +37,27 @@
                     name="kelas"
                     id="kelas"
                     class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
-                  >
-                    <option value="XII">XII</option>
-                    <option value="XI">XI</option>
-                    <option value="X">X</option>
-                  </select>
+                  ></select>
+                </div>
+
+                <div class="flex flex-col space-y-2 w-1/2">
+                  <label for="opsi-rekening">Opsi Rekening</label>
+                  <select
+                    name="opsi-rekening"
+                    id="opsi-rekening"
+                    class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
+                  ></select>
                 </div>
 
                 <div class="flex flex-col space-y-2 w-full">
-                  <label for="jumlah-tagihan">Masukkan Nominal</label>
+                  <div class="flex gap-4 items-center justify-start">
+                    <label for="jumlah-tagihan">Masukkan Nominal</label>
+                    <span
+                      id="rupiah"
+                      class="block px-3 py-2 bg-slate-600 rounded-md text-slate-200"
+                      >Rp.0</span
+                    >
+                  </div>
                   <input
                     type="text"
                     class="p-3 outline-none bg-slate-300 text-slate-700 rounded-md"
@@ -48,6 +66,19 @@
                     placeholder="Sertakan Nominal..."
                   />
                 </div>
+
+                <div class="flex flex-col space-y-2 w-1/4">
+                  <label for="deadline-tagihan">Deadline Tagihan</label>
+
+                  <input
+                    type="text"
+                    name="deadline-tagihan"
+                    id="deadline-tagihan-siswa"
+                    class="border-none outline-none py-2 bg-slate-100 text-slate-700 rounded-md px-3 shadow-md placeholder:text-sm"
+                    placeholder="Masukkan Deadline"
+                  />
+                </div>
+
                 <div class="flex flex-col space-y-2 w-full">
                   <label for="catatan">Masukkan Dekripsi</label>
                   <textarea
@@ -72,6 +103,6 @@
         </div>
       </div>
     </div>
-    <script src="/frontend/logic/buatSemuaTagihan.js"></script>
+    <script type="module" src="/frontend/logic/buatSemuaTagihan.js"></script>
   </body>
 </html>

@@ -7,10 +7,17 @@ const BillStudentSchema = new mongoose.Schema({
   tapelSiswa: String,
   catatanSiswa: String,
   jumlahTagihanSiswa: String,
+  deadline: String,
+  uniqAccessImage: String,
+  verifiedBy: {
+    type: String,
+    default: "",
+  },
+  rekeningTujuan: String,
   createdAt: String,
   isPaidOff: {
-    type: Boolean,
-    default: false,
+    type: String,
+    default: "Belum Tuntas",
   },
 });
 
@@ -18,5 +25,4 @@ const BillStudent = mongoose.model(
   "riwayat_pembayaran_siswa",
   BillStudentSchema
 );
-
 module.exports = BillStudent;

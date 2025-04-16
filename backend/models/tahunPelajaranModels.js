@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 
 const TapelSchema = new mongoose.Schema({
-  XII: String,
-  XI: String,
-  XI: String,
+  _id: mongoose.Schema.Types.ObjectId,
+  tapel: [String],
 });
 
 const TahunPelajaran = mongoose.model("tapel", TapelSchema);

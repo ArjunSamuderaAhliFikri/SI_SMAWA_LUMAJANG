@@ -38,6 +38,16 @@
               <input type="hidden" id="account-number-popup-hidden" />
 
               <div class="flex flex-col space-y-2 w-full">
+                <label for="nama-pemilik-rekening">Nama Pemilik Rekening</label>
+                <input
+                  name="nama-pemilik-rekening"
+                  id="nama-pemilik-rekening"
+                  class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
+                  placeholder="Nama Pemilik Rekening"
+                />
+              </div>
+
+              <div class="flex flex-col space-y-2 w-full">
                 <label for="nama">Nomor Rekening</label>
                 <input
                   name="input-nomor-rekening"
@@ -108,15 +118,43 @@
           >
             <form id="form-nomor-rekening">
               <div
-                class="flex items-center justify-between gap-2 w-3/4 bg-slate-100 py-1 px-2 rounded-tl-lg rounded-tr-lg shadow-md"
+                class="flex items-center justify-between gap-2 w-full bg-slate-100 py-1 px-2 rounded-tl-lg rounded-tr-lg shadow-md"
               >
-                <div class="w-3/4">
-                  <input
-                    id="input-nomor-rekening"
-                    type="text"
-                    placeholder="Tambahkan Nomor Rekening"
-                    class="block bg-slate-300 w-full rounded-md shadow px-3 py-2"
-                  />
+                <div class="w-full flex gap-4 items-center justify-start">
+                  <div class="flex gap-3 items-center justify-start w-full">
+                    <label
+                      for="atas-nama"
+                      class="w-14 h-10 p-2 rounded-full bg-slate-700 grid place-content-center scale-110"
+                    >
+                      <i
+                        class="fa-solid fa-user-tie text-3xl text-slate-100"
+                      ></i>
+                    </label>
+                    <input
+                      id="atas-nama"
+                      type="text"
+                      placeholder="Atas Nama"
+                      class="block bg-slate-300 w-full rounded-md shadow px-3 py-2"
+                    />
+                  </div>
+
+                  <div class="flex gap-3 items-center justify-start w-full">
+                    <label
+                      for="add-nomor-rekening"
+                      class="w-14 h-10 p-2 rounded-full bg-slate-700 grid place-content-center scale-110"
+                    >
+                      <i
+                        class="fa-solid fa-credit-card text-2xl text-slate-100"
+                      ></i>
+                    </label>
+                    <input
+                      type="text"
+                      name="add-nomor-rekening"
+                      id="add-nomor-rekening"
+                      class="block bg-slate-300 w-full rounded-md shadow px-3 py-2"
+                      placeholder="Nomor Rekening"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -133,6 +171,7 @@
             <table class="table-auto min-w-full bg-white">
               <thead>
                 <tr class="bg-slate-500 text-slate-100">
+                  <th class="py-4 border-b text-center">Atas Nama</th>
                   <th class="py-4 border-b text-center">Nomor Rekening</th>
                   <th class="py-4 border-b text-center">Status</th>
                 </tr>
@@ -144,6 +183,6 @@
       </div>
     </div>
 
-    <script src="/frontend/logic/nomorRekening.js"></script>
+    <script type="module" src="/frontend/logic/nomorRekening.js"></script>
   </body>
 </html>

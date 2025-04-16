@@ -1,5 +1,40 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 const form = document.querySelector("form");
 const tahunPelajaran = document.querySelector('select[id="tahun-pelajaran"]');
+const kelasSiswa = document.querySelector('select[id="kelas-siswa"]');
+
+document.addEventListener("DOMContentLoaded", () => {
+  async function handleRetrieveClassStudent() {
+    try {
+      const response = await fetch("http://localhost:3000/kelas_siswa");
+
+      if (response.ok) {
+        const { kelasSiswaData, err } = await response.json();
+
+        const { kelas } = kelasSiswaData[0];
+
+        if (err) {
+          return alert(err);
+        }
+
+        kelas.forEach((kelas) => {
+          const optionElement = document.createElement("option");
+          optionElement.setAttribute("value", kelas);
+          optionElement.innerHTML = kelas;
+
+          kelasSiswa.appendChild(optionElement);
+        });
+      }
+    } catch (error) {
+      alert(`Gagal untuk melakukan pengambilan data kelas, ${error.message}`);
+    }
+  }
+
+  handleRetrieveClassStudent();
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   async function getTapel() {
@@ -9,13 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         const { tapel } = await response.json();
 
-        for (const kelas in tapel) {
+        tapel.forEach((tapel) => {
           const optionElement = document.createElement("option");
-          optionElement.setAttribute("data-kelas", kelas);
-          optionElement.innerHTML = tapel[kelas];
+          optionElement.setAttribute("value", tapel);
+          optionElement.innerHTML = tapel;
 
           tahunPelajaran.appendChild(optionElement);
-        }
+        });
       }
     } catch (error) {
       alert(`Gagal untuk melakukan pengambilan data tapel, ${error.message}`);
@@ -23,16 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   getTapel();
-});
-
-let setTapel = ["XII", "2024/2025"]; //by default
-
-tahunPelajaran.addEventListener("change", (event) => {
-  // setTapel = '[tahun pelajaran yang dipilih]-[kelas yang dipilih]
-  setTapel = [
-    event.target.options[event.target.selectedIndex].dataset.kelas,
-    event.target.value,
-  ];
 });
 
 form.addEventListener("submit", async function (event) {
@@ -44,7 +69,7 @@ form.addEventListener("submit", async function (event) {
   const nomorHP = document.querySelector('input[type="number"]').value;
 
   try {
-    if (!username || !password || !nomorHP || setTapel == "") {
+    if (!username || !password || !nomorHP) {
       return alert("harus di isi!");
     }
 
@@ -58,26 +83,24 @@ form.addEventListener("submit", async function (event) {
         username,
         password,
         nomorHP,
-        kelas: setTapel[0],
-        tapel: setTapel[1],
+        kelas: kelasSiswa.value,
+        tapel: tahunPelajaran.value,
       }),
     });
 
     if (response.ok) {
       //   message
-
       const { err } = await response.json();
 
-      console.log(setTapel);
       if (err) {
         return alert("Siswa sudah terdaftar!");
       }
 
-      alert("berhasil didaftarkan!");
+      return alert("berhasil didaftarkan!");
     } else {
-      alert("error!");
+      return alert("error!");
     }
   } catch (error) {
-    console.error(`Error Message : ${error.message}`);
+    return console.error(`Error Message : ${error.message}`);
   }
 });

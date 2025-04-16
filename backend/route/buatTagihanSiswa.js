@@ -2,21 +2,21 @@ const moment = require("moment");
 const BillStudent = require("../models/billStudent");
 const Siswa = require("../models/siswa");
 const formatDateINA = require("../logic/formatDateINA");
-const convertRupiah = require("../logic/convertRupiah");
 
 module.exports = async (req, res) => {
   const getDateTime = moment().format("LLLL");
   const {
     namaSiswa,
     kelasSiswa,
-    tapelSiswa,
     catatanSiswa,
+    deadline,
     jumlahTagihanSiswa,
+    rekeningTujuan,
   } = req.body;
 
   const findStudent = await Siswa.findOne({ username: namaSiswa });
 
-  const checkClassStudent = kelasSiswa.split("-")[0] == `${findStudent.kelas}`;
+  const checkClassStudent = kelasSiswa === findStudent.kelas;
 
   if (!checkClassStudent) {
     return res.json({
@@ -24,16 +24,16 @@ module.exports = async (req, res) => {
     });
   }
 
-  const toRupiah = convertRupiah(jumlahTagihanSiswa);
-
   const date = formatDateINA(getDateTime);
 
   const buatTagihanBaru = new BillStudent({
     namaSiswa,
     kelasSiswa,
-    tapelSiswa,
+    tapelSiswa: findStudent.tapel,
     catatanSiswa,
-    jumlahTagihanSiswa: toRupiah,
+    deadline,
+    jumlahTagihanSiswa,
+    rekeningTujuan,
     createdAt: date,
   });
 

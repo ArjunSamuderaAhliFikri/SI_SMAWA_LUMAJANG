@@ -18,15 +18,19 @@ module.exports = async (req, res) => {
       return res.json({ msg: "Password anda sebagai siswa salah!" });
     }
 
-    const token = jwt.sign({ username }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { username: siswa.username, role: siswa.role },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     res.cookie("token", token, {
       httpOnly: true,
     });
 
-    return res.json({ token: token, user: siswa });
+    return res.json({ user: siswa, token });
   }
 
   if (user.password != password) {
@@ -34,13 +38,15 @@ module.exports = async (req, res) => {
     return res.status(404).json({ msg: "password anda salah!" });
   }
 
-  const token = jwt.sign({ username }, process.env.SECRET_KEY, {
-    expiresIn: "10s",
+  const { role, status } = user;
+
+  const token = jwt.sign({ role, status }, process.env.SECRET_KEY, {
+    expiresIn: "1h",
   });
 
   res.cookie("token", token, {
     httpOnly: true,
   });
 
-  return res.json({ token: token, user });
+  return res.json({ token, user });
 };

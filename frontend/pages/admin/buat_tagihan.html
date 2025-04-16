@@ -6,6 +6,11 @@
     <title>Buat Tagihan Siswa</title>
     <link rel="stylesheet" href="/frontend/styles/output.css" />
     <link rel="stylesheet" href="/frontend/assets/css/all.css" />
+    <link
+      rel="stylesheet"
+      href="/frontend/node_modules/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="/frontend/node_modules/flatpickr/dist/flatpickr.min.js"></script>
   </head>
   <body>
     <div class="min-h-screen bg-slate-100">
@@ -74,12 +79,44 @@
                 </div>
 
                 <div class="flex flex-col space-y-2 w-1/2">
-                  <label for="jumlah-tagihan">Jumlah Tagihan</label>
+                  <div class="flex gap-4 items-center justify-start">
+                    <label for="jumlah-tagihan">Jumlah Tagihan :</label>
+                    <span
+                      id="rupiah"
+                      class="block px-3 py-2 bg-slate-600 rounded-md text-slate-200"
+                      >Rp.0</span
+                    >
+                  </div>
                   <input
                     type="text"
                     name="jumlah-tagihan"
                     id="jumlah-tagihan-siswa"
                     class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
+                  />
+                </div>
+
+                <div class="flex flex-col space-y-2 w-1/2">
+                  <label for="opsi-rekening">Rekening Tujuan</label>
+                  <select
+                    name="opsi-rekening"
+                    id="opsi-rekening"
+                    class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
+                  >
+                    <option value="" selected disabled hidden>
+                      Pilih Nomor Rekening Tujuan
+                    </option>
+                  </select>
+                </div>
+
+                <div class="flex flex-col space-y-2 w-1/4">
+                  <label for="deadline-tagihan">Deadline Tagihan</label>
+
+                  <input
+                    type="text"
+                    name="deadline-tagihan"
+                    id="deadline-tagihan-siswa"
+                    class="border-none outline-none py-2 bg-slate-100 text-slate-700 rounded-md px-3 shadow-md placeholder:text-sm"
+                    placeholder="Masukkan Deadline"
                   />
                 </div>
 
@@ -107,6 +144,6 @@
         </div>
       </div>
     </div>
-    <script src="/frontend/logic/buatTagihan.js"></script>
+    <script type="module" src="/frontend/logic/buatTagihan.js"></script>
   </body>
 </html>

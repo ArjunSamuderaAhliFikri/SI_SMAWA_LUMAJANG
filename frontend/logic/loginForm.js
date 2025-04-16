@@ -22,6 +22,7 @@ form.addEventListener("submit", async function (event) {
   try {
     const response = await fetch("http://localhost:3000/login", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -30,7 +31,7 @@ form.addEventListener("submit", async function (event) {
 
     if (response.ok) {
       const data = await response.json();
-      const { status, role, username, infoKelas } = data.user;
+      const { status, role, username, infoKelas, token } = data.user;
       localStorage.setItem("token", data.token);
 
       if (role == "admin") {
@@ -49,6 +50,6 @@ form.addEventListener("submit", async function (event) {
       window.location.href = "#";
     }
   } catch (error) {
-    console.log(`Password is incorrect!`);
+    console.error(error);
   }
 });

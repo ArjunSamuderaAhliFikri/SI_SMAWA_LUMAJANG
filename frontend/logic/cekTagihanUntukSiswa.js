@@ -1,3 +1,6 @@
+import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+
+const toRupiah = convertRupiah;
 const tBody = document.querySelector("tbody");
 
 tBody.addEventListener("click", (event) => {
@@ -46,8 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           generateTrElement.innerHTML = generateTdElement(
             data.catatanSiswa,
-            data.jumlahTagihanSiswa,
-            data.isPaidOff ? "Lunas" : "Belum Lunas"
+            toRupiah(data.jumlahTagihanSiswa),
+            data.isPaidOff
           );
 
           tBody.appendChild(generateTrElement);
@@ -68,8 +71,18 @@ function generateTdElement(
 ) {
   return `
   <td class="flex items-center gap-4 py-4 px-4 border-b font-medium text-slate-500" id="${deskripsiPembayaran}"><i class="fa-solid fa-money-check-dollar text-slate-800 text-xl"></i><span>${deskripsiPembayaran}</span></td>
-<td class="py-4 px-4 border-b text-sm font-semibold text-slate-500"><i class="fa-solid fa-clock text-slate-800 text-xl"></i><span>${tanggalPembayaran}</span></td>
-<td class="py-4 px-4 border-b text-md font-semibold ${
-    statusPembayaran == "Lunas" ? "text-emerald-500" : "text-pink-600"
-  } text-center"><i class="fa-solid fa-circle-check text-2xl"></i><span>${statusPembayaran}</span></td>`;
+<td class="px-4 border-b text-sm font-semibold text-slate-500 text-left"><div></div><span class="inline-block">${tanggalPembayaran}</span></td>
+<td class="flex items-center gap-2 justify-center py-4 px-4 border-b text-md font-semibold ${
+    statusPembayaran == "Tuntas"
+      ? "text-emerald-500"
+      : statusPembayaran == "Belum Tuntas"
+      ? "text-red-500"
+      : "text-yellow-500"
+  } text-center">${
+    statusPembayaran == "Tuntas"
+      ? '<i class="fa-solid fa-circle-check text-xl"></i>'
+      : statusPembayaran == "Belum Tuntas"
+      ? '<i class="fa-solid fa-circle-xmark text-xl"></i>'
+      : '<i class="fa-solid fa-hourglass-start text-xl"></i>'
+  }<span>${statusPembayaran}</span></td>`;
 }

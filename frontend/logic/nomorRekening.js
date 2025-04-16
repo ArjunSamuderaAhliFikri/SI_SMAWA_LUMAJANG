@@ -1,4 +1,13 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 let inputAccountNumber = document.getElementById("input-nomor-rekening");
+const inputOwnerAccountNumber = document.getElementById(
+  "nama-pemilik-rekening"
+);
+const addAccountNumber = document.getElementById("add-nomor-rekening");
+const inputAtasNama = document.getElementById("atas-nama");
 let hidden = document.getElementById("account-number-popup-hidden");
 
 const formUpdateAccountNumber = document.getElementById(
@@ -20,6 +29,7 @@ formUpdateAccountNumber.addEventListener("submit", (event) => {
           },
           body: JSON.stringify({
             newAccountNumber: inputAccountNumber.value,
+            atasNama: inputOwnerAccountNumber.value,
           }),
         }
       );
@@ -86,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
           createTrElement.innerHTML = generateTdElement(
+            data.atasNama,
             data.accountNumber,
             data.status
           );
@@ -99,10 +110,13 @@ document.addEventListener("DOMContentLoaded", () => {
         td.addEventListener("click", () => {
           const popup = document.getElementById("popup-update-nomor-rekening");
 
-          const getAccountNumber = td.parentElement.firstChild.textContent;
+          const getNameAccountNumber = td.parentElement.firstChild.textContent;
+          const getAccountNumber =
+            td.parentElement.querySelectorAll("td")[1].textContent;
           console.log(getAccountNumber);
 
           hidden.value = getAccountNumber;
+          inputOwnerAccountNumber.value = getNameAccountNumber;
           inputAccountNumber.value = getAccountNumber;
 
           popup.classList.replace("hidden", "flex");
@@ -128,11 +142,6 @@ const addAccountNumberForm = document.querySelector(
 
 addAccountNumberForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  console.log(addAccountNumberForm);
-
-  const inputAccountNumber = document.getElementById(
-    "input-nomor-rekening"
-  ).value;
 
   async function handleAddAccountNumber() {
     try {
@@ -143,7 +152,10 @@ addAccountNumberForm.addEventListener("submit", (event) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ nomorRekening: inputAccountNumber }),
+          body: JSON.stringify({
+            nomorRekening: addAccountNumber.value,
+            atasNama: inputAtasNama.value,
+          }),
         }
       );
 
@@ -165,8 +177,8 @@ addAccountNumberForm.addEventListener("submit", (event) => {
   handleAddAccountNumber();
 });
 
-function generateTdElement(nomorRekening, status) {
-  return `<td class="py-4 px-4 border-b text-sm font-semibold text-slate-500 text-center">${nomorRekening}</td><td class="py-4 px-4 border-b text-sm font-semibold text-slate-500 text-center">${
-    status ? "Aktif" : "Tidak Aktif"
-  }</td>`;
+function generateTdElement(atasNama, nomorRekening, status) {
+  return `<td class="py-4 px-4 border-b text-sm font-semibold text-slate-500 text-center">${atasNama}</td><td class="py-4 px-4 border-b text-sm font-semibold text-slate-500 text-center">${nomorRekening}</td><td class="py-4 px-4 border-b text-sm font-semibold ${
+    status ? "text-emerald-600" : "text-red-600"
+  }  text-center">${status ? "Aktif" : "Tidak Aktif"}</td>`;
 }

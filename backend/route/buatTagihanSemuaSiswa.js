@@ -6,9 +6,13 @@ const BillStudent = require("../models/billStudent");
 const convertRupiah = require("../logic/convertRupiah");
 
 module.exports = async (req, res) => {
-  //  kelasTagihan, catatanTagihan, jumlahTagihanSiswa,
-  const { catatanSiswa, kelasTagihan, tapelTagihan, jumlahTagihanSiswa } =
-    req.body;
+  const {
+    catatanTagihan,
+    kelasTagihan,
+    jumlahTagihanSiswa,
+    deadline,
+    rekeningTujuan,
+  } = req.body;
 
   const getDateTime = moment().format("LLLL");
   const date = formatDateINA(getDateTime);
@@ -19,15 +23,15 @@ module.exports = async (req, res) => {
     return res.json({ err: "Tidak ada siswa pada kelas tersebut!" });
   }
 
-  const toRupiah = convertRupiah(jumlahTagihanSiswa);
-
   getAllStudents.forEach(async (data) => {
     const buatTagihanBaru = new BillStudent({
       namaSiswa: data.username,
       kelasSiswa: data.kelas,
       tapelSiswa: data.tapel,
-      catatanSiswa: catatanSiswa,
-      jumlahTagihanSiswa: toRupiah,
+      catatanSiswa: catatanTagihan,
+      jumlahTagihanSiswa: jumlahTagihanSiswa,
+      deadline,
+      rekeningTujuan,
       createdAt: date,
     });
 

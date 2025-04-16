@@ -1,21 +1,80 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
+import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+
 const selectElementName = document.getElementById("nama-siswa");
 const selectElementClass = document.getElementById("kelas-siswa");
 const form = document.getElementById("form-buat-tagihan");
+const calendarDeadline = document.getElementById("deadline-tagihan-siswa");
+flatpickr(calendarDeadline, {
+  altInput: true,
+  altFormat: "j F, Y",
+  dateFormat: "d-m-Y",
+});
+
+calendarDeadline.addEventListener("change", (event) => {
+  console.log(event.target.value);
+});
+
 let namaSiswa;
 let kelasSiswa = "XII-1"; // by default
 let tapelSiswa = "2024/2025"; // by default
 
+const inputTagihanSiswa = document.getElementById("jumlah-tagihan-siswa");
+const toRupiah = convertRupiah;
+inputTagihanSiswa.addEventListener("change", (event) => {
+  const rupiahDisplay = document.querySelector("span#rupiah");
+
+  if (!event.target.value) {
+    return (rupiahDisplay.innerHTML = "Rp.0");
+  }
+
+  const convertRupiah = toRupiah(event.target.value);
+
+  rupiahDisplay.innerHTML = convertRupiah;
+});
+
+const accountNumberOptionElement = document.querySelector(
+  "select[id=opsi-rekening]"
+);
+
+document.addEventListener("DOMContentLoaded", () => {
+  async function retrieveDataAccountNumber() {
+    try {
+      const response = await fetch("http://localhost:3000/nomor-rekening");
+
+      if (response.ok) {
+        const { accounts } = await response.json();
+
+        accounts.forEach((item) => {
+          const option = document.createElement("option");
+
+          option.setAttribute("value", item.accountNumber);
+          option.innerHTML = item.accountNumber;
+
+          accountNumberOptionElement.appendChild(option);
+        });
+      }
+    } catch (error) {
+      return alert(error);
+    }
+  }
+
+  retrieveDataAccountNumber();
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
-  const response = await fetch("http://localhost:3000/kelasNTapel");
+  const response = await fetch("http://localhost:3000/kelas_siswa");
   try {
     if (response.ok) {
-      const { kelas, tapel } = await response.json();
-      const getTapel = tapel.tapel;
+      const { kelasSiswaData } = await response.json();
+      const { kelas } = kelasSiswaData[0];
 
       kelas.forEach((item) => {
         const option = document.createElement("option");
 
-        option.setAttribute("data-tapel", getTapel[item.split("-")[0]]);
         option.setAttribute("value", item);
         option.innerHTML = item;
 
@@ -82,10 +141,11 @@ form.addEventListener("submit", (event) => {
         },
         body: JSON.stringify({
           namaSiswa,
-          kelasSiswa,
-          tapelSiswa,
+          kelasSiswa: selectElementClass.value,
           catatanSiswa,
+          deadline: calendarDeadline.value,
           jumlahTagihanSiswa,
+          rekeningTujuan: accountNumberOptionElement.value,
         }),
       });
 

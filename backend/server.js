@@ -1,12 +1,35 @@
+// core module
 const express = require("express");
+var bodyParser = require("body-parser");
 const app = express();
+const jwt = require("jsonwebtoken");
 const port = 3000;
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const TahunPelajaran = require("./models/tahunPelajaranModels");
+const multer = require("multer");
+const path = require("path");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../frontend/public/img/buktiPembayaran");
+  },
 
+  filename: function (req, file, cb) {
+    file.setUniq = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, `${file.setUniq}-${file.originalname}`);
+  },
+});
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50 MB
+  },
+});
+
+// core module
+
+const TahunPelajaran = require("./models/tahunPelajaranModels");
 const login = require("./route/login.js");
 const getTagihanSiswa = require("./route/getTagihanSiswa.js");
 const tagihanSiswa = require("./route/tagihanSiswa.js");
@@ -19,20 +42,23 @@ const verifyToken = require("./middleware/middlewareJWT.js");
 const mongoose = require("mongoose");
 const AccountNumber = require("./models/accountNumber.js");
 const BillStudent = require("./models/billStudent.js");
+const KelasSiswa = require("./models/kelasSiswa.js");
+const FotoBuktiPembayaran = require("./models/gambarBuktiPembayaran.js");
+const { verify } = require("crypto");
 
 app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://127.0.0.1:5500",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 
 dotenv.config();
 
@@ -66,11 +92,11 @@ app.get("/detail-tagihan/:namaSiswa/:infoBilling", async (req, res) => {
 });
 
 app.put("/update-tagihan/:name", async (req, res) => {
-  const { namaSiswa, kelasSiswa, jumlahTagihanSiswa } = req.body;
+  const { namaSiswa, kelasSiswa, jumlahTagihanSiswa, catatanSiswa } = req.body;
   const { name } = req.params;
 
   const updateAccountNumber = await BillStudent.findOneAndUpdate(
-    { namaSiswa: name },
+    { namaSiswa: name, catatanSiswa: catatanSiswa },
     { namaSiswa, kelasSiswa, jumlahTagihanSiswa }
   );
 
@@ -82,12 +108,20 @@ app.put("/update-tagihan/:name", async (req, res) => {
 });
 
 app.put("/update-nomor-rekening/:name", async (req, res) => {
-  const { newAccountNumber } = req.body;
+  const { newAccountNumber, atasNama } = req.body;
   const { name } = req.params;
+
+  const findAccountNumber = await AccountNumber.findOne({
+    accountNumber: newAccountNumber,
+  });
+
+  // if (findAccountNumber ) {
+  //   return res.json({ err: "Nomor rekening sudah ada!" });
+  // }
 
   const updateAccountNumber = await AccountNumber.findOneAndUpdate(
     { accountNumber: name },
-    { accountNumber: newAccountNumber }
+    { accountNumber: newAccountNumber, atasNama: atasNama }
   );
 
   if (!updateAccountNumber) {
@@ -123,6 +157,20 @@ app.delete("/delete-tagihan-siswa/:name", async (req, res) => {
 
 app.get("/tapel", getTapel);
 
+app.get("/kelas_siswa", async (req, res) => {
+  try {
+    const kelasSiswaData = await KelasSiswa.find();
+
+    if (!kelasSiswaData || kelasSiswaData.length === 0) {
+      return res.json({ err: "Data kelas siswa tidak ditemukan!" });
+    }
+
+    return res.json({ kelasSiswaData });
+  } catch (error) {
+    return res.status(500).json({ err: "Terjadi kesalahan pada server!" });
+  }
+});
+
 app.get("/kelasNTapel", async (req, res) => {
   const getTapel = await TahunPelajaran.find();
 
@@ -146,7 +194,7 @@ app.post("/tagihan-siswa", buatTagihanSiswa);
 app.post("/buat-semua-tagihan", buatTagihanSemuaSiswa);
 
 app.post("/tambah-nomor-rekening", async (req, res) => {
-  const { nomorRekening } = req.body;
+  const { nomorRekening, atasNama } = req.body;
 
   const findAccount = await AccountNumber.findOne({
     accountNumber: nomorRekening,
@@ -157,6 +205,7 @@ app.post("/tambah-nomor-rekening", async (req, res) => {
   }
 
   const addAccountNumber = new AccountNumber({
+    atasNama: atasNama,
     accountNumber: nomorRekening,
     status: true,
   });
@@ -168,6 +217,20 @@ app.post("/tambah-nomor-rekening", async (req, res) => {
   }
 });
 
+app.get("/get-verify/:token", async (req, res) => {
+  const { token } = req.params;
+  const checkVerify = jwt.verify(token, process.env.SECRET_KEY);
+
+  if (!checkVerify) return res.json({ err: "Gagal!!!!!" });
+
+  const { role, status } = checkVerify;
+
+  return res.json({ role, status });
+  // const { username, role } = await req.user;
+
+  // return res.json({ username, role });
+});
+
 app.get("/nomor-rekening", async (req, res) => {
   const findAccount = await AccountNumber.find();
 
@@ -177,6 +240,66 @@ app.get("/nomor-rekening", async (req, res) => {
 
   return res.json({ accounts: findAccount });
 });
+
+app.get(
+  "/bukti-pembayaran/:namaSiswa/:jumlahTagihan/:deskripsiTagihan",
+  async (req, res) => {
+    const { namaSiswa, jumlahTagihan, deskripsiTagihan } = req.params;
+    console.log("from server:", req.params);
+
+    const findPhoto = await FotoBuktiPembayaran.findOne({
+      atasNama: namaSiswa,
+      nominal: jumlahTagihan,
+      infoBilling: deskripsiTagihan,
+    });
+
+    if (!findPhoto) {
+      return res.json({ err: "Tidak ada foto!" });
+    }
+
+    return res.json({ image: findPhoto });
+  }
+);
+
+app.put(
+  "/upload-photo/:nama/:nominal/:infoBilling",
+  upload.single("avatar"),
+  async (req, res) => {
+    // infoBilling TODOOOOO
+    const { nama, nominal, infoBilling } = req.params;
+
+    const findHistoryPayment = await FotoBuktiPembayaran.findOneAndUpdate(
+      { atasNama: nama, nominal: nominal, infoBilling },
+      {
+        filename: `${req.file.setUniq}-${req.file.originalname}`,
+        contentType: req.file.mimetype,
+        data: req.file.buffer,
+      }
+    );
+
+    if (findHistoryPayment) {
+      return res.json({ msg: "Tagihan Berhasil di perbarui" });
+    }
+
+    const addPhoto = new FotoBuktiPembayaran({
+      atasNama: nama,
+      nominal: nominal,
+      infoBilling,
+      filename: `${req.file.setUniq}-${req.file.originalname}`,
+      contentType: req.file.mimetype,
+      data: req.file.buffer,
+    });
+
+    await addPhoto.save();
+
+    await BillStudent.findOneAndUpdate(
+      { atasNama: nama, nominal: nominal, infoBilling },
+      { uniqAccessImage: `${req.file.setUniq}-${req.file.originalname}` }
+    );
+
+    return res.json({ msg: "Berhasil!" });
+  }
+);
 
 app.put("/tuntaskan-tagihan/:name", async (req, res) => {
   const { name } = req.params;
@@ -194,7 +317,7 @@ app.put("/tuntaskan-tagihan/:name", async (req, res) => {
 
   const updateBilling = await BillStudent.findOneAndUpdate(
     { namaSiswa, jumlahTagihanSiswa, catatanSiswa },
-    { isPaidOff: true }
+    { isPaidOff: "Menunggu Konfirmasi" }
   );
 
   const result = await updateBilling.save();
@@ -204,6 +327,34 @@ app.put("/tuntaskan-tagihan/:name", async (req, res) => {
   }
 
   return res.json({ msg: "Tagihan berhasil di bayar!", billing: result });
+});
+
+app.put("/confirm-payment/:name", async (req, res) => {
+  const { name } = req.params;
+  const {
+    namaSiswa,
+    kelasSiswa,
+    jumlahTagihanSiswa,
+    catatanSiswa,
+    statusPembayaran,
+    diVerifikasiOleh,
+  } = req.body;
+
+  const updateBilling = await BillStudent.findOneAndUpdate(
+    {
+      namaSiswa: name,
+      kelasSiswa,
+      jumlahTagihanSiswa,
+      catatanSiswa,
+      isPaidOff: statusPembayaran,
+    },
+    { isPaidOff: "Tuntas", verifiedBy: diVerifikasiOleh }
+  );
+
+  if (!updateBilling) {
+    return res.json({ err: "Tagihan gagal untuk di bayar!" });
+  }
+  return res.json({ msg: "Tagihan berhasil di bayar!" });
 });
 
 app.listen(port, () => {
