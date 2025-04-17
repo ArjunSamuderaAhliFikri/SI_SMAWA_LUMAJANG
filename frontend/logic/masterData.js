@@ -323,7 +323,7 @@ function generateList(data, status) {
     "class",
     "flex justify-between items-center bg-gray-50 p-3 rounded shadow-sm"
   );
-  let html = `<input type="hidden" value="${data}" /> <input class="hidden" type="text" value="${data}" /> <span class="">${data}</span>
+  let html = `<input type="hidden" value="${data}" /> <input class="hidden bg-slate-200 px-2 py-2 rounded-md outline-slate-100" type="text" value="${data}" /> <span class="">${data}</span>
   <div class="flex gap-2">
   <button class="btn-edit-${status} bg-yellow-400 text-white px-3 py-1 rounded">Edit</button>
   <button class="btn-delete-${status} bg-red-500 text-white px-3 py-1 rounded">Hapus</button>
