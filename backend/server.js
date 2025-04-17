@@ -171,6 +171,116 @@ app.get("/kelas_siswa", async (req, res) => {
   }
 });
 
+app.post("/add-tapel", async (req, res) => {
+  const { tapel } = req.body;
+
+  if (!tapel) {
+    return res.json({ err: "data kosong" });
+  }
+
+  let addTapel = await TahunPelajaran.findOne({ identifier: "1" });
+
+  const findDuplicateTapel = addTapel.tapel.find(
+    (oldTapel) => oldTapel == tapel
+  );
+
+  if (findDuplicateTapel) {
+    return res.json({ err: "Tapel sudah ada!" });
+  }
+
+  const newTapel = [...addTapel.tapel, tapel];
+
+  const updateTapel = await addTapel.updateOne({ tapel: newTapel });
+
+  return res.json({ msg: "Berhasil menambahkan tapel baru!" });
+});
+
+app.post("/add-kelas", async (req, res) => {
+  const { kelas } = req.body;
+
+  if (!kelas) {
+    return res.json({ err: "Data Kosong" });
+  }
+
+  const findKelas = await KelasSiswa.findOne({});
+
+  const findDuplicateClass = findKelas.kelas.find(
+    (oldKelas) => oldKelas == kelas
+  );
+
+  if (findDuplicateClass) {
+    return res.json({ err: "Kelas sudah ada!" });
+  }
+
+  const newClass = [...findKelas.kelas, kelas];
+
+  await findKelas.updateOne({ kelas: newClass });
+
+  return res.json({ msg: "kelas berhasil ditambahkan" });
+});
+
+app.put("/editKelas/:hidden/:newClass", async (req, res) => {
+  const { hidden, newClass } = req.params;
+
+  const findKelas = await KelasSiswa.findOne({});
+
+  let updateClass = findKelas.kelas.filter((kelas) => kelas != hidden);
+
+  const result = [newClass, ...updateClass];
+
+  await findKelas.updateOne({ kelas: result });
+
+  return res.json({ msg: "update kelas telah berhasil" });
+});
+
+app.put("/editTapel/:hidden/:newTapel", async (req, res) => {
+  const { hidden, newTapel } = req.params;
+
+  let convertHidden = hidden.split("-").join("/");
+
+  let convertTapel = newTapel.split("-").join("/");
+
+  const findTapel = await TahunPelajaran.findOne({});
+
+  let updateTapel = findTapel.tapel.filter((tapel) => tapel != convertHidden);
+
+  const result = [convertTapel, ...updateTapel];
+
+  await findTapel.updateOne({ tapel: result });
+
+  return res.json({ msg: "update tapel telah berhasil" });
+});
+
+app.delete("/deleteTapel/:currentText", async (req, res) => {
+  const { currentText } = req.params;
+
+  let convertText = currentText.split("-").join("/");
+
+  // return console.log(convertText);
+
+  const findNDelete = await TahunPelajaran.findOne({});
+
+  // return console.log(findNDelete);
+
+  let newClass = findNDelete.tapel.filter((tapel) => tapel != convertText);
+
+  await findNDelete.updateOne({ tapel: newClass });
+
+  return res.json({ msg: `${convertText} berhasil dihapus` });
+});
+
+app.delete("/deleteClass/:currentText", async (req, res) => {
+  const { currentText } = req.params;
+
+  const findNDelete = await KelasSiswa.findOne({});
+
+  let newClass = findNDelete.kelas.filter((kelas) => kelas != currentText);
+
+  await findNDelete.updateOne({ kelas: newClass });
+
+  return res.json({ msg: `${currentText} berhasil dihapus` });
+});
+
 app.get("/kelasNTapel", async (req, res) => {
   const getTapel = await TahunPelajaran.find();
 
