@@ -1,6 +1,6 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (error) {
-      return alert(`Error Message : ${error.message}`);
+      return console.error(`Error Message : ${error.message}`);
     }
   }
   handleRetrieveClassStudent();
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (error) {
-      return alert(error);
+      return console.error(error);
     }
   }
 
@@ -112,13 +112,13 @@ form.addEventListener("submit", (event) => {
         const { msg, err } = data;
 
         if (err) {
-          return alert(err);
+          return Swal.fire(err);
         }
 
-        alert(msg);
+        return Swal.fire(msg);
       }
     } catch (error) {
-      alert(`Error Message : ${error.message}`);
+      return console.error(`Error Message : ${error.message}`);
     }
   }
 

@@ -10,7 +10,7 @@
   <body>
     <div class="min-h-screen overflow-x-hidden bg-slate-100">
       <div
-        class="relative flex justify-around items-center max-w-full h-16 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:w-full after:h-6 after:bg-gradient-to-b after:from-slate-100 after:from-40% after:to-transparent z-10"
+        class="relative flex justify-around items-center xl:gap-0 gap-4 max-w-full h-16 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:w-full after:h-6 after:bg-gradient-to-b after:from-slate-100 after:from-40% after:to-transparent z-10"
       >
         <div class="flex items-center gap-2">
           <div class="size-12 rounded-full overflow-hidden">
@@ -21,21 +21,66 @@
             />
           </div>
 
-          <h1 class="font-medium text-lg text-slate-700">
+          <h1 class="font-medium xl:text-lg text-sm text-slate-700">
             SMA Wahidiyah Lumajang
           </h1>
         </div>
 
-        <nav>
-          <ul class="flex gap-12 items-center">
+        <nav class="xl:scale-100 scale-75">
+          <ul class="flex xl:gap-12 gap-5 items-center">
             <li
               class="bg-slate-700 text-slate-100 px-4 py-2 rounded-full font-normal"
             >
               <a href="#">Home</a>
             </li>
-            <li><a href="#">History</a></li>
+            <li class="cursor-pointer">
+              <button
+                id="about-user"
+                type="button"
+                class="size-10 rounded-full bg-slate-900 p-2 text-slate-100 flex justify-center items-center cursor-pointer"
+              >
+                <i class="fa-solid fa-user text-lg"></i>
+              </button>
+            </li>
           </ul>
         </nav>
+
+        <!-- About User | Logout Section -->
+        <div class="absolute right-56 z-[10] top-20 size-fit overflow-hidden">
+          <div
+            id="logout-section"
+            class="w-52 rounded-sm shadow bg-slate-200 overflow-hidden transition-all duration-500 px-6 py-2 pt-7 -translate-y-56"
+          >
+            <div class="flex flex-col gap-y-2 items-center">
+              <div class="size-14 rounded-full overflow-hidden shadow">
+                <img
+                  class="block size-full object-cover"
+                  src="/frontend/public/img/default-profile.jpeg"
+                  alt="Admin"
+                />
+              </div>
+
+              <h1
+                id="admin-name"
+                class="font-medium text-center text-lg text-slate-700"
+              >
+                Admin
+              </h1>
+            </div>
+
+            <hr class="border-b border-slate-300 mt-3" />
+
+            <div class="mt-4">
+              <button
+                id="logout"
+                type="button"
+                class="block mx-auto px-4 py-1 rounded-md border-2 border-red-500 text-red-500 font-medium w-full transition-all duration-150 hover:border-slate-100 hover:bg-red-500 hover:text-slate-100"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="relative w-full h-[475px] bg-slate-500 after:content-['']">
@@ -48,7 +93,7 @@
         <div
           class="flex justify-center items-center gap-6 absolute -bottom-20 left-1/2 -translate-x-1/2"
         >
-          <a
+          <!-- <a
             href="/frontend/pages/user/konfirmasi_pembayaran.html"
             class="w-[300px] flex flex-col items-center justify-start px-8 py-6 bg-slate-100 rounded-md shadow-lg cursor-pointer transition-all duration-150 ease-in-out hover:shadow-xl hover:scale-105"
           >
@@ -78,7 +123,7 @@
                 kirim bukti pembayaran disini
               </button>
             </div>
-          </a>
+          </a> -->
           <a
             href="/frontend/pages/user/cek_tagihan.html"
             class="w-[300px] flex flex-col items-center justify-start px-8 py-6 bg-slate-100 rounded-md shadow-lg cursor-pointer transition-all duration-150 ease-in-out hover:shadow-xl hover:scale-105"
@@ -113,6 +158,9 @@
         </div>
       </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/frontend/logic/dashboard-user.js"></script>
   </body>
 </html>
 

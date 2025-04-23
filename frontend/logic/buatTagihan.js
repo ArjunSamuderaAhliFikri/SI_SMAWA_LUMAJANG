@@ -1,6 +1,6 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (error) {
-      return alert(error);
+      return console.error(error);
     }
   }
 
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   } catch (error) {
-    alert(`Error Message : ${error.message}`);
+    return console.error(`Error Message : ${error.message}`);
   }
 });
 
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (error) {
-      console.error(`Error Message : ${error.message}`);
+      return console.error(`Error Message : ${error.message}`);
     }
   }
 
@@ -154,13 +154,13 @@ form.addEventListener("submit", (event) => {
         const { msg, err } = data;
 
         if (err) {
-          return alert(err);
+          return Swal.fire(err);
         }
 
-        alert(msg);
+        Swal.fire(msg);
       }
     } catch (error) {
-      alert(error.message);
+      return console.error(error.message);
     }
   }
 

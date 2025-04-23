@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (error) {
-      alert(`Gagal untuk melakukan pengambilan data kelas, ${error.message}`);
+      return console.error(
+        `Gagal untuk melakukan pengambilan data kelas, ${error.message}`
+      );
     }
   }
 
@@ -53,7 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (error) {
-      alert(`Gagal untuk melakukan pengambilan data tapel, ${error.message}`);
+      return console.error(
+        `Gagal untuk melakukan pengambilan data tapel, ${error.message}`
+      );
     }
   }
 
@@ -70,7 +74,7 @@ form.addEventListener("submit", async function (event) {
 
   try {
     if (!username || !password || !nomorHP) {
-      return alert("harus di isi!");
+      return Swal.fire("harus di isi!");
     }
 
     const response = await fetch("http://localhost:3000/tambah_siswa", {
@@ -93,14 +97,16 @@ form.addEventListener("submit", async function (event) {
       const { err } = await response.json();
 
       if (err) {
-        return alert("Siswa sudah terdaftar!");
+        return Swal.fire("Siswa sudah terdaftar!");
       }
 
-      return alert("berhasil didaftarkan!");
+      Swal.fire("berhasil didaftarkan!");
     } else {
-      return alert("error!");
+      return Swal.fire("error!");
     }
   } catch (error) {
     return console.error(`Error Message : ${error.message}`);
+  } finally {
+    window.location.href("/frontend/pages/admin/dashboard.html");
   }
 });

@@ -10,10 +10,12 @@
     <div class="relative flex min-h-screen bg-slate-500">
       <!-- Login Form -->
       <div
-        class="container absolute flex overflow-hidden rounded-md shadow-lg top-1/2 -translate-1/2 left-1/2 h-10/12"
+        class="container overflow-hidden absolute flex rounded-md shadow-lg top-1/2 -translate-1/2 left-1/2 h-10/12"
       >
         <!-- Login Section -->
-        <section class="h-full px-6 py-4 z-10 bg-slate-100 grow-1">
+        <section
+          class="relative overflow-hidden flex flex-col justify-center xl:justify-start h-full my-auto px-6 xl:py-4 py-0 z-10 bg-slate-100 grow-1"
+        >
           <!-- header logo section -->
           <div class="flex items-center justify-start">
             <div class="overflow-hidden size-16">
@@ -120,10 +122,30 @@
               </div>
             </form>
           </div>
+
+          <!-- absolute bottom-0 left-0 w-full h-56 rotate-180 -->
+          <div class="absolute bottom-3 left-20 w-full h-fit rotate-180">
+            <svg
+              class="scale-150"
+              data-name="Layer 1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 1200 120"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                class="fill-[#16C47F]"
+              ></path>
+            </svg>
+          </div>
+
+          <!-- <div
+            class="absolute -bottom-32 -left-32 w-[150%] h-[300px] bg-[#16C47F] rotate-[30deg] scale-125 after:content-[''] after:w-36 after:h-28 after:bg-slate-100 after:absolute after:-top-10 after:left-36 after:rounded-bl-full after:rounded-br-lg"
+          ></div> -->
         </section>
 
         <!-- Hero Login Image -->
-        <section class="h-full w-1/2 grow-[1.5] relative">
+        <section class="hidden lg:block h-full w-1/2 grow-[1.5] relative">
           <div class="size-full absolute top-0 -left-[65.5%] rotate-90">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
               <path
@@ -155,6 +177,7 @@
       <div class="h-screen bg-emerald-500 grow"></div>
       <div class="h-screen bg-slate-100 grow-[2.5]"></div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/frontend/logic/loginForm.js"></script>
   </body>
 </html>

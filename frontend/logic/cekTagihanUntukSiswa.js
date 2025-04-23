@@ -4,29 +4,45 @@ const toRupiah = convertRupiah;
 const tBody = document.querySelector("tbody");
 
 tBody.addEventListener("click", (event) => {
-  if (event.srcElement.localName == "td") {
-    const parent = event.target.parentNode;
+  const tdElements = tBody.querySelectorAll("td");
 
-    // todo!
+  tdElements.forEach((td) => {
+    td.addEventListener("click", () => {
+      const parent = td.parentElement;
 
-    const namaSiswa = localStorage.getItem("username");
+      // todo!
 
-    const infoBilling =
-      parent.getElementsByTagName("td")[0].lastElementChild.innerHTML;
-    const nominal =
-      parent.getElementsByTagName("td")[1].lastElementChild.innerHTML;
+      const namaSiswa = localStorage.getItem("username");
 
-    localStorage.setItem("deskripsi_pembayaran", infoBilling);
-    localStorage.setItem("nominal", nominal);
+      const infoBilling = parent
+        .getElementsByTagName("td")[0]
+        .querySelector("span[id=deskripsi-pembayaran").innerHTML;
 
-    const informasiPembayaran = { namaSiswa, catatanSiswa: infoBilling };
+      const nominal = parent
+        .getElementsByTagName("td")[2]
+        .querySelector("span").innerHTML;
 
-    localStorage.setItem("informasi-pembayaran", informasiPembayaran);
+      // return console.log(namaSiswa, infoBilling, nominal);
 
-    window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
-  } else {
-    window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
-  }
+      localStorage.setItem("deskripsi_pembayaran", infoBilling);
+      localStorage.setItem("nominal", nominal);
+
+      const informasiPembayaran = { namaSiswa, catatanSiswa: infoBilling };
+
+      localStorage.setItem("informasi-pembayaran", informasiPembayaran);
+
+      window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
+    });
+  });
+  return;
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const nameStudent = localStorage.getItem("username");
+
+  const aboutUser = document.getElementById("about-user");
+
+  aboutUser.innerHTML = nameStudent;
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -50,7 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
           generateTrElement.innerHTML = generateTdElement(
             data.catatanSiswa,
             toRupiah(data.jumlahTagihanSiswa),
-            data.isPaidOff
+            data.isPaidOff,
+            data.deadline,
+            data.isPaidOn,
+            data.rekeningTujuan
           );
 
           tBody.appendChild(generateTrElement);
@@ -67,22 +86,109 @@ document.addEventListener("DOMContentLoaded", () => {
 function generateTdElement(
   deskripsiPembayaran,
   tanggalPembayaran,
-  statusPembayaran
+  statusPembayaran,
+  deadline,
+  isPaidOn,
+  rekeningTujuan
 ) {
+  function convertDateTime(date) {
+    // 29-04-2025 -> 29 April 2025
+
+    let seperateDate = date.split("-");
+
+    switch (seperateDate[1]) {
+      case "01": {
+        // karena array dalam javascript itu mutable (bisa dirubah nilainya)
+        seperateDate[1] = "Januari";
+        break;
+      }
+      case "02": {
+        seperateDate[1] = "Februari";
+        break;
+      }
+      case "03": {
+        seperateDate[1] = "Maret";
+        break;
+      }
+      case "04": {
+        seperateDate[1] = "April";
+        break;
+      }
+      case "05": {
+        seperateDate[1] = "Mei";
+        break;
+      }
+      case "06": {
+        seperateDate[1] = "Juni";
+        break;
+      }
+      case "07": {
+        seperateDate[1] = "Juli";
+        break;
+      }
+      case "08": {
+        seperateDate[1] = "Agustus";
+        break;
+      }
+      case "09": {
+        seperateDate[1] = "September";
+        break;
+      }
+      case "10": {
+        seperateDate[1] = "Oktober";
+        break;
+      }
+      case "11": {
+        seperateDate[1] = "November";
+        break;
+      }
+      case "12": {
+        seperateDate[1] = "Desember";
+        break;
+      }
+    }
+
+    return seperateDate.join(" ");
+  }
+
+  const isDeadline = convertDateTime(deadline);
+
   return `
-  <td class="flex items-center gap-4 py-4 px-4 border-b font-medium text-slate-500" id="${deskripsiPembayaran}"><i class="fa-solid fa-money-check-dollar text-slate-800 text-xl"></i><span>${deskripsiPembayaran}</span></td>
-<td class="px-4 border-b text-sm font-semibold text-slate-500 text-left"><div></div><span class="inline-block">${tanggalPembayaran}</span></td>
-<td class="flex items-center gap-2 justify-center py-4 px-4 border-b text-md font-semibold ${
+  <td class="py-4 px-4 border-b font-medium text-slate-500" id="${deskripsiPembayaran}">
+  <div class="flex items-center gap-4 xl:w-auto w-[300px]">
+  <i class="fa-solid fa-money-check-dollar text-slate-800 text-xl"></i>
+  <div>
+  <span class="xl:text-md text-sm" id="deskripsi-pembayaran">${deskripsiPembayaran}</span>
+  ${
+    statusPembayaran == "Tuntas"
+      ? `<p class='xl:text-xs text-[10px] text-emerald-600'>Telah Dibayar Pada : ${isPaidOn} || <i class="fa-solid fa-circle-check"></i> Tuntas</p>`
+      : `${
+          isPaidOn
+            ? `<p class='xl:text-xs text-[10px] text-yellow-300'>Telah Dibayar Pada : ${isPaidOn}</p>`
+            : `<p class='xl:text-xs text-[10px] text-red-400'>Mohon Lakukan Transaksi Sebelum : ${isDeadline}</p>`
+        }`
+  }
+  
+  </div>
+  </div>
+  </td>
+  <td class="px-4 border-b text-xs font-semibold text-slate-500 text-center ml-7">${rekeningTujuan}</td>
+<td class="px-4 border-b text-sm font-semibold text-slate-500 text-center"><div></div><span class="inline-block">${tanggalPembayaran}</span></td>
+<td class="py-4 px-4 border-b text-md font-semibold ${
     statusPembayaran == "Tuntas"
       ? "text-emerald-500"
       : statusPembayaran == "Belum Tuntas"
       ? "text-red-500"
       : "text-yellow-500"
-  } text-center">${
+  } text-center">
+  <div class="xl:text-md text-xs flex items-center gap-2 justify-center">
+  ${
     statusPembayaran == "Tuntas"
       ? '<i class="fa-solid fa-circle-check text-xl"></i>'
       : statusPembayaran == "Belum Tuntas"
       ? '<i class="fa-solid fa-circle-xmark text-xl"></i>'
       : '<i class="fa-solid fa-hourglass-start text-xl"></i>'
-  }<span>${statusPembayaran}</span></td>`;
+  }<span>${statusPembayaran}</span>
+  </div>
+  </td>`;
 }

@@ -8,6 +8,10 @@ const BillStudentSchema = new mongoose.Schema({
   catatanSiswa: String,
   jumlahTagihanSiswa: String,
   deadline: String,
+  isPaidOn: {
+    type: String,
+    default: "",
+  },
   uniqAccessImage: String,
   verifiedBy: {
     type: String,

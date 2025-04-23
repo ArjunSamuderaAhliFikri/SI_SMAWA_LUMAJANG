@@ -7,6 +7,8 @@ const port = 3000;
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const moment = require("moment");
+const formatDateINA = require("./logic/formatDateINA.js");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const path = require("path");
@@ -63,7 +65,7 @@ app.use(express.json({ limit: "50mb" }));
 dotenv.config();
 
 app.get("/testing", verifyToken, (req, res) => {
-  return res.send("hello world!");
+  return res.json(req.user);
 });
 
 app.get("/tagihan-siswa", getTagihanSiswa);
@@ -297,6 +299,10 @@ app.get("/kelasNTapel", async (req, res) => {
 
 app.post("/login", login);
 
+app.get("/test-auth", verifyToken, (req, res) => {
+  return res.json({ msg: "hello world!" });
+});
+
 app.post("/tambah_siswa", tambahSiswa);
 
 app.post("/tagihan-siswa", buatTagihanSiswa);
@@ -415,6 +421,9 @@ app.put("/tuntaskan-tagihan/:name", async (req, res) => {
   const { name } = req.params;
   const { namaSiswa, jumlahTagihanSiswa, catatanSiswa } = req.body;
 
+  const getDateTime = moment().format("LLLL");
+  const date = formatDateINA(getDateTime);
+
   const findBilling = await BillStudent.findOne({
     namaSiswa: name,
     jumlahTagihanSiswa,
@@ -427,7 +436,7 @@ app.put("/tuntaskan-tagihan/:name", async (req, res) => {
 
   const updateBilling = await BillStudent.findOneAndUpdate(
     { namaSiswa, jumlahTagihanSiswa, catatanSiswa },
-    { isPaidOff: "Menunggu Konfirmasi" }
+    { isPaidOff: "Menunggu Konfirmasi", isPaidOn: date }
   );
 
   const result = await updateBilling.save();

@@ -9,6 +9,8 @@ const form = document.querySelector("form");
 const namaSiswa = localStorage.getItem("username");
 const infoBilling = localStorage.getItem("deskripsi_pembayaran");
 
+console.log(namaSiswa, infoBilling);
+
 document.addEventListener("DOMContentLoaded", () => {
   async function handleDetailBilling() {
     try {
@@ -19,16 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (response.ok) {
+        // return console.log(data);
         const { billing } = await response.json();
 
         inputNama.value = billing.namaSiswa;
         inputNama.disabled = true;
 
-        inputNominal.value = billing.jumlahTagihanSiswa;
+        inputNominal.setAttribute(
+          "data-realnominal",
+          billing.jumlahTagihanSiswa
+        );
+        inputNominal.value = toRupiah(billing.jumlahTagihanSiswa);
         inputNominal.disabled = true;
       }
     } catch (error) {
-      alert(error);
+      return console.error(error);
     }
   }
 
@@ -76,7 +83,7 @@ form.addEventListener("submit", (event) => {
 
       formData.append("avatar", fileInput.files[0]);
       const uploadPhoto = await fetch(
-        `http://localhost:3000/upload-photo/${inputNama.value}/${inputNominal.value}/${infoBilling}`,
+        `http://localhost:3000/upload-photo/${inputNama.value}/${inputNominal.dataset.realnominal}/${infoBilling}`,
         {
           method: "PUT",
           body: formData,
@@ -102,7 +109,7 @@ form.addEventListener("submit", (event) => {
           },
           body: JSON.stringify({
             namaSiswa: inputNama.value,
-            jumlahTagihanSiswa: inputNominal.value,
+            jumlahTagihanSiswa: inputNominal.dataset.realnominal,
             catatanSiswa: localStorage.getItem("deskripsi_pembayaran"),
           }),
         }

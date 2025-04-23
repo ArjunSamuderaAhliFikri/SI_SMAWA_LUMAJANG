@@ -1,3 +1,9 @@
+document.addEventListener("DOMContentLoaded", (event) => {
+  if (window.location.pathname != "/frontend/pages/auth/login.html") {
+    return window.location.href("/frontend/pages/404.html");
+  }
+});
+
 const form = document.getElementById("login-form");
 const buttonsOptionLogin = document.querySelectorAll('button[id="opsi-login"]');
 

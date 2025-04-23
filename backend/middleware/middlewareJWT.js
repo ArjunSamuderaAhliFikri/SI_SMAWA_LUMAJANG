@@ -3,12 +3,11 @@ const jwt = require("jsonwebtoken");
 const verifyToken = async (req, res, next) => {
   try {
     const { cookie } = await req.headers;
+    const token = cookie && cookie.split("=")[1];
 
     if (!cookie) {
       return res.json({ msg: "Tidak ada token!" });
     }
-
-    const token = await cookie.split("=")[1];
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
 

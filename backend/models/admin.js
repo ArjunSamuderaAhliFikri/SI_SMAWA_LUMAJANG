@@ -5,6 +5,7 @@ const AdminSchema = new mongoose.Schema({
   username: String,
   password: String,
   role: String,
+  nomorHP: String,
   status: String,
 });
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Scanner</title>
+  </head>
+  <body>
+    <button id="startScanBtn">Mulai Scan QR Code</button>
+    <div id="reader" style="width: 100%; display: none"></div>
+    <div id="result"></div>
+
+    <script src="/frontend/assets/html5-qrcode.min.js"></script>
+    <script>
+      function onScanSuccess(decodedText, decodedResult) {
+        console.log(`Code matched = ${decodedText}, decodedResult`);
+        document.getElementById("result").innerText = "Hasil: " + decodedText;
+        html5QrcodeScanner.clear(); // stop scanning after success
+        document.getElementById("reader").style.display = "none";
+      }
+
+      function onScanFailure(error) {
+        if (
+          !String(error).includes(
+            "No MultiFormat Readers were able to detect the code"
+          )
+        )
+          console.warn(`Code scan error = ${error}`);
+      }
+
+      let html5QrcodeScanner;
+
+      document
+        .getElementById("startScanBtn")
+        .addEventListener("click", function () {
+          document.getElementById("reader").style.display = "block";
+          html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            false
+          );
+          html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        });
+    </script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
 let inputAccountNumber = document.getElementById("input-nomor-rekening");
 const inputOwnerAccountNumber = document.getElementById(
@@ -178,7 +178,7 @@ addAccountNumberForm.addEventListener("submit", (event) => {
 });
 
 function generateTdElement(atasNama, nomorRekening, status) {
-  return `<td class="py-4 px-4 border-b text-sm font-semibold text-slate-500 text-center">${atasNama}</td><td class="py-4 px-4 border-b text-sm font-semibold text-slate-500 text-center">${nomorRekening}</td><td class="py-4 px-4 border-b text-sm font-semibold ${
+  return `<td class="py-4 px-4 border-b xl:text-sm text-xs font-semibold text-slate-500 text-center">${atasNama}</td><td class="py-4 px-4 border-b xl:text-sm text-xs font-semibold text-slate-500 text-center">${nomorRekening}</td><td class="py-4 px-4 border-b xl:text-sm text-xs font-semibold ${
     status ? "text-emerald-600" : "text-red-600"
   }  text-center">${status ? "Aktif" : "Tidak Aktif"}</td>`;
 }

@@ -46,6 +46,8 @@ module.exports = async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
+    secure: true,
+    sameSite: "strict",
   });
 
   return res.json({ token, user });

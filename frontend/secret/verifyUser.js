@@ -7,10 +7,13 @@ export default function (redirectPath) {
 
   window.addEventListener("beforeunload", () => {
     clearInterval(deleteToken);
+
+    localStorage.clear();
   });
 
   document.addEventListener("DOMContentLoaded", async () => {
     if (!token) {
+      localStorage.clear();
       return (window.location.href = redirectPath);
     }
 
@@ -26,6 +29,7 @@ export default function (redirectPath) {
         }
       );
       if (!response.ok) {
+        localStorage.clear();
         return alert("Gagal mendapatkan data verifikasi!");
       }
 
@@ -33,6 +37,7 @@ export default function (redirectPath) {
 
       console.log({ role, status });
     } catch (error) {
+      localStorage.clear();
       return (window.location.href = redirectPath);
     }
   });
