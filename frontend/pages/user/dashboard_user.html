@@ -10,7 +10,7 @@
   <body>
     <div class="min-h-screen overflow-x-hidden bg-slate-100">
       <div
-        class="relative flex justify-around items-center xl:gap-0 gap-4 max-w-full h-16 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:w-full after:h-6 after:bg-gradient-to-b after:from-slate-100 after:from-40% after:to-transparent z-10"
+        class="relative flex justify-around items-center xl:gap-0 gap-4 max-w-full h-16 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:w-full after:h-6 after:bg-gradient-to-b after:from-slate-100 after:from-40% after:to-transparent z-10 bg-transparent"
       >
         <div class="flex items-center gap-2">
           <div class="size-12 rounded-full overflow-hidden">
@@ -49,7 +49,7 @@
         <div class="absolute right-56 z-[10] top-20 size-fit overflow-hidden">
           <div
             id="logout-section"
-            class="w-52 rounded-sm shadow bg-slate-200 overflow-hidden transition-all duration-500 px-6 py-2 pt-7 -translate-y-56"
+            class="w-52 rounded-sm shadow bg-slate-50 overflow-hidden transition-all duration-500 px-6 py-2 pt-7 -translate-y-56"
           >
             <div class="flex flex-col gap-y-2 items-center">
               <div class="size-14 rounded-full overflow-hidden shadow">
@@ -83,12 +83,27 @@
         </div>
       </div>
 
-      <div class="relative w-full h-[475px] bg-slate-500 after:content-['']">
-        <img
-          src="/frontend/public/img/Smawa.jpg"
-          alt="SMAWA"
-          class="block size-full object-cover"
-        />
+      <div
+        class="relative w-full h-[475px] bg-gradient-to-b from-3% from-transparent via-50% via-[#16C47F] to-95% to-[#16C47F] after:content-['']"
+      >
+        <div></div>
+
+        <div
+          class="absolute -bottom-[236px] left-0 w-full overflow-hidden leading-0"
+        >
+          <svg
+            class="relative block w-[calc(126% + 1.3px)] h-[238px]"
+            data-name="Layer 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+              class="fill-[#16C47F]"
+            ></path>
+          </svg>
+        </div>
 
         <div
           class="flex justify-center items-center gap-6 absolute -bottom-20 left-1/2 -translate-x-1/2"
@@ -157,10 +172,45 @@
           </a>
         </div>
       </div>
+
+      <div class="mt-[350px]">
+        <div class="text-center max-w-5xl mx-auto px-3">
+          <h1 class="font-semibold text-slate-700 text-3xl">
+            Rekapan Aktivitas Terakhir Belakangan Ini
+          </h1>
+          <p class="mt-3 text-slate-500">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor
+            adipisci dolore nam porro aspernatur nisi consectetur soluta fugiat.
+            Inventore molestiae asperiores odio ex officiis
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="overflow-x-auto xl:max-w-9/12 w-full mx-auto my-10 rounded-l-lg rounded-r-lg shadow-md"
+      >
+        <div>
+          <table class="table-auto min-w-full bg-white">
+            <thead>
+              <tr class="bg-[#16C47F] text-slate-100">
+                <th class="py-4 px-4 border-b text-left">
+                  Informasi Pembayaran
+                </th>
+                <th class="py-4 px-4 border-b text-center">Rekening Tujuan</th>
+                <th class="py-4 px-4 border-b text-center">Nominal</th>
+                <th class="py-4 px-4 border-b text-center">
+                  Status Pembayaran
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/frontend/logic/dashboard-user.js"></script>
+    <script type="module" src="/frontend/logic/dashboard-user.js"></script>
   </body>
 </html>
 

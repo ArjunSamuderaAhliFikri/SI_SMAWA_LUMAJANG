@@ -148,7 +148,13 @@ app.delete("/delete-nomor-rekening/:name", async (req, res) => {
 
 app.delete("/delete-tagihan-siswa/:name", async (req, res) => {
   const { name } = req.params;
-  const deleteDataStudent = await BillStudent.deleteOne({ namaSiswa: name });
+  const { kelasSiswa, jumlahTagihanSiswa } = req.body;
+
+  const deleteDataStudent = await BillStudent.deleteOne({
+    namaSiswa: name,
+    kelasSiswa,
+    jumlahTagihanSiswa,
+  });
 
   if (!deleteDataStudent) {
     return res.json({ err: "Gagal untuk menghapus tagihan!" });
@@ -307,6 +313,41 @@ app.post("/tambah_siswa", tambahSiswa);
 
 app.post("/tagihan-siswa", buatTagihanSiswa);
 
+app.post("/pendaftaran-siswa", async (req, res) => {
+  const getDateTime = moment().format("LLLL");
+
+  const { name, kelas, tapel, accountNumber, nominalPayment, typeofPayment } =
+    req.body;
+
+  const findStudent = await BillStudent.findOne({
+    namaSiswa: name,
+    kelasSiswa: kelas,
+    jumlahTagihanSiswa: nominalPayment,
+  });
+
+  if (findStudent) {
+    return res.json({ err: "Siswa sudah terdaftar!" });
+  }
+
+  const date = formatDateINA(getDateTime);
+
+  const buatTagihanBaru = new BillStudent({
+    namaSiswa: name,
+    kelasSiswa: kelas,
+    tapelSiswa: tapel,
+    catatanSiswa: typeofPayment,
+    deadline: "-",
+    jumlahTagihanSiswa: nominalPayment,
+    rekeningTujuan: accountNumber,
+    createdAt: date,
+    typeofPayment: typeofPayment,
+  });
+
+  await buatTagihanBaru.save();
+
+  return res.json({ msg: `Pendaftaran Atas Nama ${name} Berhasil!` });
+});
+
 app.post("/buat-semua-tagihan", buatTagihanSemuaSiswa);
 
 app.post("/tambah-nomor-rekening", async (req, res) => {
@@ -458,6 +499,15 @@ app.put("/confirm-payment/:name", async (req, res) => {
     statusPembayaran,
     diVerifikasiOleh,
   } = req.body;
+
+  // return console.log({
+  //   name,
+  //   kelasSiswa,
+  //   jumlahTagihanSiswa,
+  //   catatanSiswa,
+  //   statusPembayaran,
+  //   diVerifikasiOleh,
+  // });
 
   const updateBilling = await BillStudent.findOneAndUpdate(
     {

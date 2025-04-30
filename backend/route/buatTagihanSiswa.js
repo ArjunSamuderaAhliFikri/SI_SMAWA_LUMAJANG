@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
     jumlahTagihanSiswa,
     rekeningTujuan,
     createdAt: date,
+    typeofPayment: "Pembayaran SPP",
   });
 
   const saveTagihan = await buatTagihanBaru.save();

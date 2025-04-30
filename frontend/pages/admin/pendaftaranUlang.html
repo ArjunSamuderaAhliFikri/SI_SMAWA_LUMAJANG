@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/frontend/styles/output.css" />
+    <link rel="stylesheet" href="/frontend/assets/css/all.css" />
+  </head>
+  <body>
+    <div
+      class="flex items-center bg-slate-100 min-h-screen w-full overflow-hidden"
+    >
+      <div class="container h-screen mx-auto overflow-hidden bg-slate-100">
+        <div class="h-screen flex justify-center items-center">
+          <div
+            id="container-form"
+            class="w-1/2 bg-slate-50 px-7 py-5 rounded-md shadow overflow-hidden mb-20"
+          >
+            <section
+              class="flex gap-x-6 items-center justify-start text-slate-700"
+            >
+              <i class="fa-solid fa-address-book text-4xl"></i>
+
+              <div class="text-slate-700">
+                <h1
+                  id="typeof-payment"
+                  data-typeofpayment="pendaftaran-ulang-kelas-11"
+                  class="text-slate-700 font-medium text-xl"
+                >
+                  Pendaftaran Ulang Kelas 11
+                </h1>
+                <p class="text-slate-600 font-normal text-xs">
+                  SMA Wahidiyah Kota Lumajang
+                </p>
+              </div>
+            </section>
+
+            <section class="mt-6">
+              <form>
+                <div class="flex flex-col items-start gap-y-3">
+                  <label
+                    for="name-student"
+                    class="font-medium text-slate-600 text-md"
+                    >Username / Nama Siswa</label
+                  >
+
+                  <input
+                    class="block bg-slate-200 w-full px-4 py-2 rounded-sm outline-slate-400"
+                    type="text"
+                    name="name-student"
+                    id="name-student"
+                    placeholder="Nama Siswa..."
+                  />
+                </div>
+
+                <div class="flex flex-col items-start gap-y-3 mt-3">
+                  <label
+                    for="class-student"
+                    class="font-medium text-slate-600 text-md"
+                    >Kelas Siswa</label
+                  >
+
+                  <select
+                    name="class-student"
+                    id="class-student"
+                    class="block bg-slate-200 w-full px-4 py-2 rounded-sm outline-slate-400"
+                  >
+                    <option
+                      value=""
+                      class="font-medium text-slate-500"
+                      selected
+                      disabled
+                      hidden
+                    >
+                      Pilih Kelas
+                    </option>
+                  </select>
+                </div>
+                <div class="flex flex-col items-start gap-y-3 mt-3">
+                  <label
+                    for="tapel-student"
+                    class="font-medium text-slate-600 text-md"
+                    >Tahun Pelajaran Siswa</label
+                  >
+
+                  <select
+                    name="tapel-student"
+                    id="tapel-student"
+                    class="block bg-slate-200 w-full px-4 py-2 rounded-sm outline-slate-400"
+                  >
+                    <option
+                      value=""
+                      class="font-medium text-slate-500"
+                      selected
+                      disabled
+                      hidden
+                    >
+                      Pilih Tahun Pelajaran
+                    </option>
+                  </select>
+                </div>
+
+                <div class="flex flex-col items-start gap-y-3 mt-3">
+                  <label
+                    for="destination-account"
+                    class="font-medium text-slate-600 text-md"
+                    >Rekening Tujuan</label
+                  >
+
+                  <select
+                    name="destination-account"
+                    id="destination-account"
+                    class="block bg-slate-200 w-full px-4 py-2 rounded-sm outline-slate-400"
+                  >
+                    <option
+                      value=""
+                      class="font-medium text-slate-500"
+                      selected
+                      disabled
+                      hidden
+                    >
+                      Pilih Rekening Tujuan
+                    </option>
+                  </select>
+                </div>
+
+                <div class="flex flex-col items-start gap-y-3 my-3">
+                  <div class="flex items-center gap-x-4">
+                    <label
+                      for="nominal-payment"
+                      class="font-medium text-slate-600 text-md"
+                      >Nominal Pendaftaran</label
+                    >
+
+                    <div
+                      id="to-rupiah"
+                      class="p-2 rounded-md text-sm font-normal text-slate-100 bg-slate-500 w-fit"
+                    >
+                      Rp0
+                    </div>
+                  </div>
+
+                  <input
+                    class="block bg-slate-200 w-full px-4 py-2 rounded-sm outline-slate-400"
+                    type="number"
+                    name="nominal-payment"
+                    id="nominal-payment"
+                    placeholder="Nominal"
+                  />
+                </div>
+
+                <div class="w-full overflow-hidden rounded-lg shadow">
+                  <button
+                    type="submit"
+                    class="text-slate-100 font-medium text-md bg-slate-700 px-5 py-2 block w-full cursor-pointer hover:bg-slate-500 transition-all duration-150"
+                  >
+                    Buat Pendaftaran
+                  </button>
+                </div>
+              </form>
+            </section>
+          </div>
+
+          <!-- <div
+            id="container-information"
+            class="w-1/2 flex flex-col justify-center items-center gap-6 border"
+          >
+            <div class="size-56 overflow-hidden">
+              <img
+                src="/frontend/public/svg/briefcase-svgrepo-com.svg"
+                alt="logo"
+                class="block size-full object-cover"
+              />
+            </div>
+
+            <div class="text-center max-w-[550px]">
+              <h1>Pendaftaran Siswa SMA Wahidiyah Lumajang</h1>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Distinctio non, dolore totam eos optio, sed soluta recusandae
+                laborum corrupti quidem accusamus. Ratione, quas quo cupiditate
+                temporibus autem fugiat exercitationem nemo?
+              </p>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/frontend/logic/pendaftaranSiswa.js"></script>
+  </body>
+</html>

@@ -1,8 +1,24 @@
 import verifyUser from "../secret/verifyUser.js";
+import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 
 // verifyUser("/frontend/pages/auth/login.html");
 
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+let inputTagihanSiswa = 50000;
+
+const nominalOptions = document.querySelectorAll("div[id=nominal-spp]");
+nominalOptions.forEach((nominal) => {
+  nominal.addEventListener("click", () => {
+    nominalOptions.forEach((prevNominal) => {
+      prevNominal.classList.remove("scale-90");
+      prevNominal.classList.replace("bg-slate-500", "bg-slate-700");
+    });
+    nominal.classList.add("scale-90");
+    nominal.classList.replace("bg-slate-700", "bg-slate-500");
+
+    const nominalPayment = nominal.querySelector("h4").dataset.realnominal;
+    inputTagihanSiswa = nominalPayment;
+  });
+});
 
 const selectElementName = document.getElementById("nama-siswa");
 const selectElementClass = document.getElementById("kelas-siswa");
@@ -22,19 +38,19 @@ let namaSiswa;
 let kelasSiswa = "XII-1"; // by default
 let tapelSiswa = "2024/2025"; // by default
 
-const inputTagihanSiswa = document.getElementById("jumlah-tagihan-siswa");
-const toRupiah = convertRupiah;
-inputTagihanSiswa.addEventListener("change", (event) => {
-  const rupiahDisplay = document.querySelector("span#rupiah");
+// const inputTagihanSiswa = document.getElementById("jumlah-tagihan-siswa");
+// const toRupiah = convertRupiah;
+// inputTagihanSiswa.addEventListener("change", (event) => {
+//   const rupiahDisplay = document.querySelector("span#rupiah");
 
-  if (!event.target.value) {
-    return (rupiahDisplay.innerHTML = "Rp.0");
-  }
+//   if (!event.target.value) {
+//     return (rupiahDisplay.innerHTML = "Rp.0");
+//   }
 
-  const convertRupiah = toRupiah(event.target.value);
+//   const convertRupiah = toRupiah(event.target.value);
 
-  rupiahDisplay.innerHTML = convertRupiah;
-});
+//   rupiahDisplay.innerHTML = convertRupiah;
+// });
 
 const accountNumberOptionElement = document.querySelector(
   "select[id=opsi-rekening]"
@@ -128,9 +144,9 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const catatanSiswa = document.getElementById("catatan").value;
-  const jumlahTagihanSiswa = document.getElementById(
-    "jumlah-tagihan-siswa"
-  ).value;
+  // const jumlahTagihanSiswa = document.getElementById(
+  //   "jumlah-tagihan-siswa"
+  // ).value;
 
   async function handleMakeBill() {
     try {
@@ -144,7 +160,7 @@ form.addEventListener("submit", (event) => {
           kelasSiswa: selectElementClass.value,
           catatanSiswa,
           deadline: calendarDeadline.value,
-          jumlahTagihanSiswa,
+          jumlahTagihanSiswa: inputTagihanSiswa,
           rekeningTujuan: accountNumberOptionElement.value,
         }),
       });

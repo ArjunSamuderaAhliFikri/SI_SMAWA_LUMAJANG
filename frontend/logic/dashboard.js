@@ -141,9 +141,7 @@ function generateTdElement(
     </td>
     <td
       class="py-4 xl:px-4 border-b text-sm font-semibold text-slate-500 w-auto"
-    >
-    <div class="w-28 text-center mx-auto">
-    ${kelas}</div>
+    ><div class="w-28 text-center mx-auto">${kelas}</div>
     </td>
      <td
       class="py-4 border-b text-sm font-semibold text-slate-500 text-center"

@@ -5,6 +5,6 @@ const studentClassSchema = new mongoose.Schema({
   kelas: [String],
 });
 
-const KelasSiswa = mongoose.model("kelas", studentClassSchema);
+const KelasSiswa = mongoose.model("kela", studentClassSchema);
 
 module.exports = KelasSiswa;

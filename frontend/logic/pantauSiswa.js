@@ -76,10 +76,31 @@ document.addEventListener("DOMContentLoaded", () => {
             data.isPaidOff,
             data.catatanSiswa,
             data.verifiedBy,
-            data.isPaidOn
+            data.isPaidOn,
+            data.typeofPayment
           );
 
           bodyOfTable.appendChild(createTrElement);
+        });
+
+        tagihan.forEach((data) => {
+          const trElementHidden = document.createElement("tr");
+          const tableBodyHidden = document.getElementById("hidden-table-body");
+
+          const tdElementHidden = generateTdElementHidden(
+            data.namaSiswa,
+            data.kelasSiswa,
+            data.catatanSiswa,
+            data.isPaidOn,
+            data.tapelSiswa,
+            toRupiah(data.jumlahTagihanSiswa),
+            data.typeofPayment,
+            data.createdAt,
+            data.isPaidOff
+          );
+
+          trElementHidden.innerHTML = tdElementHidden;
+          tableBodyHidden.appendChild(trElementHidden);
         });
       }
 
@@ -244,7 +265,8 @@ sortingNama.addEventListener("change", (event) => {
         data.isPaidOff,
         data.catatanSiswa,
         data.verifiedBy,
-        data.isPaidOn
+        data.isPaidOn,
+        data.typeofPayment
       );
 
       trElement.innerHTML = tdElement;
@@ -271,7 +293,8 @@ sortingNama.addEventListener("change", (event) => {
         data.isPaidOff,
         data.catatanSiswa,
         data.verifiedBy,
-        data.isPaidOn
+        data.isPaidOn,
+        data.typeofPayment
       );
 
       trElement.innerHTML = tdElement;
@@ -424,7 +447,8 @@ sortingKelas.addEventListener("change", (event) => {
         data.isPaidOff,
         data.catatanSiswa,
         data.verifiedBy,
-        data.isPaidOn
+        data.isPaidOn,
+        data.typeofPayment
       );
 
       trElement.innerHTML = tdElement;
@@ -451,7 +475,8 @@ sortingKelas.addEventListener("change", (event) => {
         data.isPaidOff,
         data.catatanSiswa,
         data.verifiedBy,
-        data.isPaidOn
+        data.isPaidOn,
+        data.typeofPayment
       );
 
       trElement.innerHTML = tdElement;
@@ -580,6 +605,13 @@ sortingKelas.addEventListener("change", (event) => {
   });
 });
 
+const tableToExcelButton = document.getElementById("download-to-excel");
+tableToExcelButton.addEventListener("click", () => {
+  const table = document.getElementById("table-hidden");
+  const table2Excel = new Table2Excel();
+  table2Excel.export(table, "Rekapan Administrasi SMA Wahidiyah Kota Lumajang");
+});
+
 resetDataButton.addEventListener("click", () => {
   window.location.reload();
 });
@@ -611,7 +643,8 @@ searchStudentInput.addEventListener("keyup", (event) => {
         data.isPaidOff,
         data.catatanSiswa,
         data.verifiedBy,
-        data.isPaidOn
+        data.isPaidOn,
+        data.typeofPayment
       );
 
       trElement.innerHTML = tdElement;
@@ -636,7 +669,8 @@ searchStudentInput.addEventListener("keyup", (event) => {
       data.isPaidOff,
       data.catatanSiswa,
       data.verifiedBy,
-      data.isPaidOn
+      data.isPaidOn,
+      data.typeofPayment
     );
 
     trElement.innerHTML = tdElement;
@@ -788,7 +822,8 @@ tapelFilter.addEventListener("change", (event) => {
         data.isPaidOff,
         data.catatanSiswa,
         data.verifiedBy,
-        data.isPaidOn
+        data.isPaidOn,
+        data.typeofPayment
       );
 
       trElement.innerHTML = tdElement;
@@ -923,6 +958,11 @@ const formDeletedStudent = document.getElementById("form-deleted-siswa");
 formDeletedStudent.addEventListener("submit", (event) => {
   event.preventDefault();
 
+  const currentUser = {
+    kelasSiswa: popupKelas.value,
+    jumlahTagihanSiswa: popupJumlahTagihan.value,
+  };
+
   async function deleteDataStudent() {
     try {
       const response = await fetch(
@@ -932,6 +972,7 @@ formDeletedStudent.addEventListener("submit", (event) => {
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify(currentUser),
         }
       );
 
@@ -990,7 +1031,7 @@ formUpdateStudent.addEventListener("submit", (event) => {
 
       if (err) return console.log(err);
 
-      return alert(msg);
+      await Swal.fire(msg);
     } catch (error) {
       return alert(error);
     } finally {
@@ -1036,6 +1077,91 @@ buttonClosePopup.addEventListener("click", () => {
   popup.classList.replace("flex", "hidden");
 });
 
+function generateTdElementHidden(
+  namaSiswa,
+  kelasSiswa,
+  informasiPembayaran,
+  dibayarPada,
+  tahunPelajaran,
+  nominalTagihan,
+  tipePembayaran,
+  tagihanDibuat,
+  deadline
+) {
+  let printStudentClass;
+  switch (kelasSiswa) {
+    case "XII-1": {
+      printStudentClass = "12.1";
+      break;
+    }
+    case "XII-2": {
+      printStudentClass = "12.2";
+      break;
+    }
+    case "XII-3": {
+      printStudentClass = "12.3";
+      break;
+    }
+    case "XII-4": {
+      printStudentClass = "12.4";
+      break;
+    }
+    case "XII-5": {
+      printStudentClass = "12.5";
+      break;
+    }
+    case "XI-1": {
+      printStudentClass = "11.1";
+      break;
+    }
+    case "XI-2": {
+      printStudentClass = "11.2";
+      break;
+    }
+    case "XI-3": {
+      printStudentClass = "11.3";
+      break;
+    }
+    case "XI-4": {
+      printStudentClass = "11.4";
+      break;
+    }
+    case "XI-5": {
+      printStudentClass = "11.5";
+      break;
+    }
+    case "X-1": {
+      printStudentClass = "10.1";
+      break;
+    }
+    case "X-2": {
+      printStudentClass = "10.2";
+      break;
+    }
+    case "X-3": {
+      printStudentClass = "10.3";
+      break;
+    }
+    case "X-4": {
+      printStudentClass = "10.4";
+      break;
+    }
+    case "X-5": {
+      printStudentClass = "10.5";
+      break;
+    }
+  }
+  return `<td>${namaSiswa}</td>
+  <td>${printStudentClass ? printStudentClass : "-"}</td>
+  <td>${tahunPelajaran}</td>
+  <td>${informasiPembayaran}</td>
+  <td>${tipePembayaran}</td>
+  <td>${nominalTagihan}</td>
+  <td>${dibayarPada}</td>
+  <td>${deadline ? deadline : "-"}</td>
+  <td>${tagihanDibuat}</td>`;
+}
+
 function generateTdElement(
   name,
   kelas,
@@ -1045,7 +1171,8 @@ function generateTdElement(
   statusPembayaran,
   deskripsiPembayaran,
   verifiedBy,
-  isPaidOn
+  isPaidOn,
+  typeofPayment
 ) {
   return `<td class="py-4 px-4 border-b w-auto">
     <div class="flex items-center gap-8 w-[375px] xl:w-[400px] 2xl:w-auto">
@@ -1089,23 +1216,20 @@ function generateTdElement(
   </td>
   <td
     class="py-4 xl:px-4 border-b text-sm xl:text-[12px] font-semibold text-slate-500 w-auto"
-  >
-  <div class="w-28 text-center mx-auto">
-  ${kelas}</div>
-  </td>
+  ><div class="w-28 text-center mx-auto">${kelas}</div></td>
    <td
     class="py-4 border-b text-sm xl:text-[12px] font-semibold text-slate-500 text-center"
-  >
-  <div class="w-28 mx-auto text-center">${tapel}</div>
-  </td>  
+  ><div class="w-28 mx-auto text-center">${tapel}</div></td>  
   <td
     class="py-4 px-4 border-b text-sm xl:text-[12px] font-semibold text-slate-500 text-center"
     data-realnominal="${jumlahTagihan}"
   >${toRupiah(jumlahTagihan)}</td>
   <td
     class="py-4 px-4 border-b text-sm xl:text-[12px] font-semibold text-slate-500 text-center"
-  >
-  <div class="w-44 mx-auto text-center">${createdAt}</div>
+  >${typeofPayment}</td>
+  <td
+    class="py-4 px-4 border-b text-sm xl:text-[12px] font-semibold text-slate-500 text-center"
+  ><div class="w-44 mx-auto text-center">${createdAt}</div>
   </td>
   `;
 }

@@ -6,7 +6,10 @@
     <title>Buat Tagihan Siswa</title>
     <link rel="stylesheet" href="/frontend/styles/output.css" />
     <link rel="stylesheet" href="/frontend/assets/css/all.css" />
+
+    <script src="/frontend/logic/tableToExcel/table2Excel.js"></script>
   </head>
+
   <body>
     <div class="min-h-screen bg-slate-100">
       <div class="relative bg-slate-700 w-full h-[275px]">
@@ -196,24 +199,27 @@
                     id="tapel-sorting"
                     class="outline-emerald-600"
                   ></select>
-
-                  <button
-                    id="reset-data"
-                    class="absolute -right-32 bg-slate-800 text-slate-200 font-medium px-4 py-2 rounded-sm shadow cursor-pointer hover:bg-slate-900"
-                    type="button"
-                  >
-                    <i class="fa-solid fa-rotate pr-1"></i>
-                    Reset
-                  </button>
                 </div>
               </div>
+              <button
+                id="download-to-excel"
+                class="bg-emerald-600 text-slate-200 font-medium px-4 py-2 rounded-sm shadow cursor-pointer hover:bg-emerald-800 text-sm"
+                type="button"
+              >
+                <i class="fa-solid fa-table pr-1"></i>
+                Download Table To Excel
+              </button>
+              <button
+                id="reset-data"
+                class="bg-slate-800 text-slate-200 font-medium px-4 py-2 rounded-sm shadow cursor-pointer hover:bg-slate-900"
+                type="button"
+              >
+                <i class="fa-solid fa-rotate pr-1"></i>
+                Reset
+              </button>
             </div>
 
-            <table
-              class="table-fixed min-w-full bg-white"
-              cellspacing="0"
-              cellpadding="0"
-            >
+            <table class="table-fixed min-w-full bg-white">
               <thead>
                 <tr class="bg-[#16C47F] text-slate-100">
                   <th class="py-4 pl-6 border-b xl:text-sm text-left">Nama</th>
@@ -225,18 +231,41 @@
                     Nominal Tagihan
                   </th>
                   <th class="py-4 px-4 border-b xl:text-sm text-center">
+                    Tipe Pembayaran
+                  </th>
+                  <th class="py-4 px-4 border-b xl:text-sm text-center">
                     Tagihan Dibuat
                   </th>
                 </tr>
               </thead>
               <tbody></tbody>
             </table>
+
+            <div class="">
+              <table id="table-hidden" class="">
+                <thead>
+                  <tr>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>Tahun Pelajaran</th>
+                    <th>Informasi Pembayaran</th>
+                    <th>Tipe Pembayaran</th>
+                    <th>Nominal Tagihan</th>
+                    <th>Dibayar Pada</th>
+                    <th>Status Pembayaran</th>
+                    <th>Tagihan Dibuat</th>
+                  </tr>
+                </thead>
+                <tbody id="hidden-table-body"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- <script src="/frontend/logic/popupPantauSiswa.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="/frontend/logic/pantauSiswa.js"></script>
   </body>
 </html>
