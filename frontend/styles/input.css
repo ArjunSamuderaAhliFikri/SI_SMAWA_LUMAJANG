@@ -1,1 +1,30 @@
 @import "tailwindcss";
+
+@theme {
+  --animate-spotlight-after: spotlight_after 9s infinite alternate;
+  --animate-spotlight-bef: spotlight_before 9s infinite alternate;
+
+  @keyframes spotlight_before {
+    0% {
+      left: 15%;
+      bottom: 15%;
+    }
+
+    100% {
+      left: 80%;
+      bottom: 80%;
+    }
+  }
+
+  @keyframes spotlight_after {
+    0% {
+      top: 15%;
+      right: 15%;
+    }
+
+    100% {
+      right: 80%;
+      top: 80%;
+    }
+  }
+}
