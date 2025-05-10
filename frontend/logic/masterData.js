@@ -251,6 +251,37 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
+const wrapperListMedia = document.getElementById("wrapper-media");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const retrieveDataMedia = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/media");
+
+      if (!response.ok) {
+        return console.log("Response not ok!");
+      }
+
+      const { data } = await response.json();
+
+      data.forEach((media) => {
+        const listItem = generateListMedia(
+          media.title,
+          media.description,
+          media.image,
+          media.datePost
+        );
+
+        wrapperListMedia.appendChild(listItem);
+      });
+    } catch (error) {
+      return console.error(error.message);
+    }
+  };
+
+  retrieveDataMedia();
+});
+
 const tapelInput = document.getElementById("tapel-input");
 const kelasInput = document.getElementById("kelas-input");
 
@@ -316,6 +347,46 @@ formTapel.addEventListener("submit", (event) => {
 
   handleAddNewItem();
 });
+
+function generateListMedia(title, description, image, dateTime) {
+  const hyperLink = document.createElement("a");
+  hyperLink.setAttribute(
+    "class",
+    "group relative max-w-[320px] h-[225px] overflow-hidden rounded-lg transition-all duration-150 hover:scale-105 after:content-[''] after:block after:absolute after:top-0 after:left-0 after:size-full after:bg-gradient-to-t after:from-slate-800/75 after:to-transparent cursor-pointer after:transition-all after:duration-300 after:translate-y-full hover:after:translate-y-0"
+  );
+
+  hyperLink.setAttribute(
+    "href",
+    `/frontend/pages/pusat_informasi/topic-admin.html?title=${title}`
+  );
+  const html = `<li class="block size-full">
+                  <img
+                    class="block size-full object-cover"
+                    src="/frontend/public/img/mediaPost/${image}"
+                    alt="${image}"
+                  />
+
+                  <div
+                    class="absolute bottom-3 left-2 px-2 py-1 translate-y-full transition-all duration-500 group-hover:translate-y-0 z-10"
+                  >
+                  <h1 class="text-slate-200 font-medium text-lg capitalize">${title.substring(
+                    0,
+                    32
+                  )} ${title.length > 32 ? "..." : ""}</h1>
+                    <p class="text-slate-300 text-xs mt-1 capitalize">${description.substring(
+                      0,
+                      128
+                    )} ${
+    description.length > 128 ? " Baca Selengkapnya..." : ""
+  }</p>
+  <div class="mt-2 text-xs font-normal text-slate-200">${dateTime}</div>  
+                  </div>
+                </li>`;
+
+  hyperLink.innerHTML = html;
+
+  return hyperLink;
+}
 
 function generateList(data, status) {
   const listItem = document.createElement("li");

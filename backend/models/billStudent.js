@@ -24,6 +24,10 @@ const BillStudentSchema = new mongoose.Schema({
     default: "Belum Tuntas",
   },
   typeofPayment: String,
+  historyPayment: {
+    type: Array,
+    default: [],
+  },
 });
 
 const BillStudent = mongoose.model(

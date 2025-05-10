@@ -1,6 +1,15 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
+
+const downloadCardButton = document.getElementById("download-card");
+const cardStudent = document.getElementById("popup-card");
+
+downloadCardButton.addEventListener("click", () => {
+  setTimeout(() => {
+    cardStudent.classList.toggle("translate-x-[120%]");
+  }, 2000);
+});
 
 const form = document.querySelector("form");
 const tahunPelajaran = document.querySelector('select[id="tahun-pelajaran"]');
@@ -72,6 +81,10 @@ form.addEventListener("submit", async function (event) {
   const password = document.querySelector('input[type="password"]').value;
   const nomorHP = document.querySelector('input[type="number"]').value;
 
+  const cardStudentName = document.getElementById("card-student-name");
+  const cardStudentClass = document.getElementById("card-student-class");
+  const cardStudentTapel = document.getElementById("card-student-tapel");
+
   try {
     if (!username || !password || !nomorHP) {
       return Swal.fire("harus di isi!");
@@ -101,6 +114,54 @@ form.addEventListener("submit", async function (event) {
       }
 
       Swal.fire("berhasil didaftarkan!");
+
+      // fill name in card
+      cardStudentName.textContent = username;
+      cardStudentClass.textContent = kelasSiswa.value;
+      cardStudentTapel.textContent = tahunPelajaran.value;
+
+      const generateQRCode = (filename) => {
+        var qrcode = new QRCode("qrcode", {
+          text: `http://192.168.1.12:5500/frontend/pages/user/cek_tagihan.html?name=${username}`,
+          width: 200,
+          height: 200,
+          colorDark: "#000",
+          colorLight: "#FFF",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+
+        qrcode.makeCode(filename);
+
+        async function handleDownloadCard() {
+          const card = await html2canvas(cardStudent, {
+            scale: 3,
+            useCORS: true,
+          });
+
+          const data = card.toDataURL("image/png");
+
+          downloadCardButton.setAttribute("href", data);
+          downloadCardButton.download = `KTS-${username}.jpg`;
+        }
+
+        setTimeout(() => {
+          // let qelem = document.querySelector("#qrcode img");
+          // let dlink = document.querySelector("#qrcode_download");
+          // let qr = qelem.getAttribute("src");
+          // dlink.setAttribute("href", qr);
+          // dlink.setAttribute("download", "filename");
+          // dlink.removeAttribute("hidden");
+
+          handleDownloadCard();
+        }, 500);
+
+        cardStudent.classList.remove("hidden");
+        cardStudent.classList.toggle("translate-x-[120%]");
+      };
+
+      generateQRCode(
+        `http://192.168.1.12:5500/frontend/pages/user/cek_tagihan.html?name=${username}`
+      );
     } else {
       return Swal.fire("error!");
     }

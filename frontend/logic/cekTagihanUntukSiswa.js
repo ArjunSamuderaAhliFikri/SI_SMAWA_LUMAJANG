@@ -37,17 +37,22 @@ tBody.addEventListener("click", (event) => {
   return;
 });
 
+const URL = new URLSearchParams(window.location.search);
+const username = URL.get("name");
+
+console.log(username);
+
 document.addEventListener("DOMContentLoaded", () => {
-  const nameStudent = localStorage.getItem("username");
+  // const nameStudent = localStorage.getItem("username");
 
   const aboutUser = document.getElementById("about-user");
 
-  aboutUser.innerHTML = nameStudent;
+  aboutUser.innerHTML = username;
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   async function handleGetBilling() {
-    const username = localStorage.getItem("username");
+    // const username = localStorage.getItem("username");
 
     try {
       const response = await fetch(`http://localhost:3000/tagihan/${username}`);
@@ -69,7 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
             data.isPaidOff,
             data.deadline,
             data.isPaidOn,
-            data.rekeningTujuan
+            data.rekeningTujuan,
+            data.typeofPayment
           );
 
           tBody.appendChild(generateTrElement);
@@ -89,7 +95,8 @@ function generateTdElement(
   statusPembayaran,
   deadline,
   isPaidOn,
-  rekeningTujuan
+  rekeningTujuan,
+  typeofPayment
 ) {
   function convertDateTime(date) {
     // 29-04-2025 -> 29 April 2025
@@ -174,6 +181,7 @@ function generateTdElement(
   </td>
   <td class="px-4 border-b text-xs font-semibold text-slate-500 text-center ml-7">${rekeningTujuan}</td>
 <td class="px-4 border-b text-sm font-semibold text-slate-500 text-center"><div></div><span class="inline-block">${tanggalPembayaran}</span></td>
+<td class="px-4 border-b text-xs font-semibold text-slate-500 text-center ml-7">${typeofPayment}</td>
 <td class="py-4 px-4 border-b text-md font-semibold ${
     statusPembayaran == "Tuntas"
       ? "text-emerald-500"

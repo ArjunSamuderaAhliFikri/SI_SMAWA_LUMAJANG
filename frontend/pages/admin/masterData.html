@@ -13,7 +13,7 @@
     <script src="/frontend/node_modules/flatpickr/dist/flatpickr.min.js"></script>
   </head>
   <body>
-    <div class="min-h-screen bg-slate-100">
+    <div class="min-h-fit bg-slate-100">
       <div class="relative bg-slate-700 w-full h-[275px]">
         <a
           href="/frontend/pages/admin/dashboard.html"
@@ -96,6 +96,32 @@
               <!-- Tambahkan item lainnya di sini -->
             </ul>
           </div>
+        </div>
+        <div
+          class="absolute left-1/2 -bottom-[500px] -translate-x-1/2 translate-y-3/4 z-30 bg-transparent w-5xl px-3 py-6 rounded-lg shadow-lg"
+        >
+          <section id="header-information-center" class="text-center">
+            <h1 class="capitalize text-xl font-medium text-slate-700">
+              pusat informasi SMA Wahidiyah Kota Lumajang
+            </h1>
+            <p class="text-sm text-slate-600 capitalize font-normal">
+              anda bisa mengelola informasi disini
+            </p>
+          </section>
+
+          <section class="mt-6">
+            <ul
+              id="wrapper-media"
+              class="flex justify-center items-center flex-wrap gap-5"
+            >
+              <a
+                href="/frontend/pages/pusat_informasi/create-information.html"
+                class="grid place-content-center group relative w-[320px] h-[225px] overflow-hidden rounded-lg transition-all duration-150 bg-slate-300 hover:scale-105 hover:bg-slate-400 after:content-[''] after:block after:absolute after:top-0 after:left-0 after:size-full after:bg-gradient-to-t after:from-slate-400/25 after:to-transparent cursor-pointer after:transition-all after:duration-300 after:translate-y-full hover:after:translate-y-0"
+              >
+                <li class="text-6xl font-semibold text-slate-700">+</li>
+              </a>
+            </ul>
+          </section>
         </div>
       </div>
     </div>

@@ -140,7 +140,7 @@
             </div>
           </a> -->
           <a
-            href="/frontend/pages/user/cek_tagihan.html"
+            id="cek_tagihan_spp"
             class="w-[300px] flex flex-col items-center justify-start px-8 py-6 bg-slate-100 rounded-md shadow-lg cursor-pointer transition-all duration-150 ease-in-out hover:shadow-xl hover:scale-105"
           >
             <div
@@ -275,44 +275,51 @@
             informasi terkini
           </h1>
 
-          <ul class="flex flex-wrap justify-center items-center gap-6 mt-14">
-            <li class="max-w-[400px] overflow-hidden rounded-lg shadow">
-              <div class="relative w-full overflow-hidden">
-                <img
-                  class="block size-full object-cover"
-                  src="/frontend/public/img/walpaper-laptop.jpg"
-                  alt="informasi"
-                />
-              </div>
+          <ul
+            id="wrapper-media"
+            class="flex flex-wrap justify-center items-center gap-6 mt-14"
+          >
+            <!-- <a href="#" class="block">
+              <li class="max-w-[400px] overflow-hidden rounded-lg shadow">
+                <div class="relative w-full overflow-hidden">
+                  <img
+                    class="block size-full object-cover"
+                    src="/frontend/public/img/walpaper-laptop.jpg"
+                    alt="informasi"
+                  />
+                </div>
 
-              <div class="relative py-3 px-4">
-                <button
-                  type="button"
-                  class="absolute bg-slate-100 shadow-lg z-20 -top-5 left-5 px-5 py-2 rounded-full text-sm font-medium cursor-pointer hover:bg-red-500 hover:text-slate-100 transition-all duration-150 group"
-                >
-                  <i
-                    class="fa-regular fa-heart pr-2 text-red-500 text-lg group-hover:text-slate-100 group-hover:scale-125 transition-all duration-150"
-                  ></i>
-                  17 disukai
-                </button>
+                <div class="relative py-3 px-4">
+                  <button
+                    type="button"
+                    class="absolute bg-slate-100 shadow-lg z-20 -top-5 left-5 px-5 py-2 rounded-full text-sm font-medium cursor-pointer hover:bg-red-500 hover:text-slate-100 transition-all duration-150 group"
+                  >
+                    <i
+                      class="fa-regular fa-heart pr-2 text-red-500 text-lg group-hover:text-slate-100 group-hover:scale-125 transition-all duration-150"
+                    ></i>
+                    17 disukai
+                  </button>
 
-                <h1 class="capitalize text-lg font-medium text-slate-600 mt-4">
-                  definisi teknik membaca scanning
-                </h1>
-                <p class="capitalize text-xs font-normal text-slate-500 mt-1">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Officia esse consequatur molestias voluptas veniam nobis ad.
-                  Quam error ducimus non, perferendis reiciendis, fuga deleniti
-                  dicta nobis ipsam reprehenderit laudantium. Amet!
-                </p>
-                <button
-                  type="button"
-                  class="w-full mt-4 bg-slate-700 px-3 py-2 font-medium text-slate-200 rounded-md text-sm cursor-pointer hover:bg-slate-900"
-                >
-                  Baca Sekarang
-                </button>
-              </div>
-            </li>
+                  <h1
+                    class="capitalize text-lg font-medium text-slate-600 mt-4"
+                  >
+                    definisi teknik membaca scanning
+                  </h1>
+                  <p class="capitalize text-xs font-normal text-slate-500 mt-1">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Officia esse consequatur molestias voluptas veniam nobis ad.
+                    Quam error ducimus non, perferendis reiciendis, fuga
+                    deleniti dicta nobis ipsam reprehenderit laudantium. Amet!
+                  </p>
+                  <button
+                    type="button"
+                    class="w-full mt-4 bg-slate-700 px-3 py-2 font-medium text-slate-200 rounded-md text-sm cursor-pointer hover:bg-slate-900"
+                  >
+                    Baca Sekarang
+                  </button>
+                </div>
+              </li>
+            </a> -->
             <!-- <li class="max-w-[400px] overflow-hidden rounded-lg shadow">
               <div class="relative w-full overflow-hidden">
                 <img

@@ -6,6 +6,12 @@ const nameStudent = localStorage.getItem("username");
 const tbody = document.querySelector("tbody");
 
 document.addEventListener("DOMContentLoaded", () => {
+  const cekTagihanSPP = document.getElementById("cek_tagihan_spp");
+  cekTagihanSPP.setAttribute(
+    "href",
+    `/frontend/pages/user/cek_tagihan.html?name=${nameStudent}`
+  );
+
   async function handleRetrieveDataUser() {
     try {
       const response = await fetch(
@@ -48,6 +54,39 @@ document.addEventListener("DOMContentLoaded", () => {
   adminName.innerHTML = nameStudent;
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const retrieveMedia = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/media`);
+
+      if (!response.ok) {
+        return console.log("Response not ok!");
+      }
+
+      const { data } = await response.json();
+
+      const wrapperListMedia = document.getElementById("wrapper-media");
+
+      data.forEach((item) => {
+        const { title, description, image, datePost } = item;
+
+        const listMediaElement = generateListMedia(
+          title,
+          description,
+          image,
+          datePost
+        );
+
+        wrapperListMedia.appendChild(listMediaElement);
+      });
+    } catch (error) {
+      return console.error(error.message);
+    }
+  };
+
+  retrieveMedia();
+});
+
 const logoutSection = document.getElementById("logout-section");
 const logoutButton = document.getElementById("logout");
 const buttonAboutUser = document.getElementById("about-user");
@@ -73,6 +112,54 @@ logoutButton.addEventListener("click", () => {
 buttonAboutUser.addEventListener("click", () => {
   logoutSection.classList.toggle("-translate-y-56");
 });
+
+function generateListMedia(title, description, image, dateTime) {
+  const hyperLink = document.createElement("a");
+  hyperLink.setAttribute(
+    "href",
+    `/frontend/pages/pusat_informasi/topic.html?title=${title}`
+  );
+  hyperLink.setAttribute(
+    "class",
+    "block max-w-[400px] min-h-[350px] max-h-[700px] overflow-hidden rounded-lg shadow overflow-hidden"
+  );
+  const html = `<li>
+                  <div class="max-w-full max-h-56 overflow-hidden">
+                    <img class="block size-full object-cover" src="/frontend/public/img/mediaPost/${image}" alt="informasi"/>
+                  </div>
+
+                  <div class="relative py-3 px-4">
+                    <button
+                      type="button"
+                      class="absolute bg-slate-100 shadow-lg z-20 -top-5 right-5 px-5 py-2 rounded-full text-sm font-medium cursor-pointer hover:bg-slate-500 hover:text-slate-100 transition-all duration-150 group"
+                    >
+                     <i class="fa-solid fa-calendar text-slate-600 text-lg pr-2"></i> 
+                     ${dateTime}
+                    </button>
+
+                    <h1 class="capitalize text-lg font-medium text-slate-600 mt-4">${title.substring(
+                      0,
+                      32
+                    )} ${title.length > 32 ? "..." : ""}</h1>
+                    <p class="capitalize text-xs font-normal text-slate-500 mt-1">${description.substring(
+                      0,
+                      32
+                    )} ${
+    description.length > 36 ? "Baca Selengkapnya..." : ""
+  }</p>
+                    <button
+                      type="button"
+                      class="w-full mt-4 bg-slate-700 px-3 py-2 font-medium text-slate-200 rounded-md text-sm cursor-pointer hover:bg-slate-900"
+                    >
+                      Baca Sekarang
+                    </button>
+                  </div>
+            </li>`;
+
+  hyperLink.innerHTML = html;
+
+  return hyperLink;
+}
 
 function generateTdElement(
   deskripsiPembayaran,

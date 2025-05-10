@@ -6,7 +6,11 @@ const verifyToken = async (req, res, next) => {
     const token = cookie && cookie.split("=")[1];
 
     if (!cookie) {
-      return res.json({ msg: "Tidak ada token!" });
+      const tokenCookies = req.cookies.token;
+
+      if (!tokenCookies) {
+        return res.json({ msg: "Tidak ada token!" });
+      }
     }
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);

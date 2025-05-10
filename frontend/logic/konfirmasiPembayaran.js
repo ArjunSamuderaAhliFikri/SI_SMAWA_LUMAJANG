@@ -12,6 +12,13 @@ const infoBilling = localStorage.getItem("deskripsi_pembayaran");
 console.log(namaSiswa, infoBilling);
 
 document.addEventListener("DOMContentLoaded", () => {
+  const buttonBackToPage = document.getElementById("prev_page");
+
+  buttonBackToPage.setAttribute(
+    "href",
+    `/frontend/pages/user/cek_tagihan.html?name=${namaSiswa}`
+  );
+
   async function handleDetailBilling() {
     try {
       const response = await fetch(
@@ -125,7 +132,7 @@ form.addEventListener("submit", (event) => {
         if (msg) {
           handleUploadPhoto();
           alert(msg);
-          window.location.href = "/frontend/pages/user/cek_tagihan.html";
+          window.location.href = `/frontend/pages/user/cek_tagihan.html?name=${namaSiswa}`;
         }
       }
     } catch (error) {

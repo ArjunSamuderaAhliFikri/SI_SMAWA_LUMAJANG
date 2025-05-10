@@ -13,6 +13,8 @@ const popupJumlahTagihan = document.getElementById(
   "popup-jumlah-tagihan-siswa"
 );
 
+const paymentViaAdmin = document.getElementById("payment-via-admin");
+
 let copyPayment;
 
 const displayToRupiah = document.querySelector("span[id=to-rupiah]");
@@ -108,6 +110,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tdElements.forEach((td) => {
         td.addEventListener("click", () => {
+          paymentViaAdmin.setAttribute(
+            "href",
+            `/frontend/pages/admin/pembayaranViaAdmin.html?name=${
+              td.parentElement.querySelector("span[id=nama-siswa]").textContent
+            }&description=${
+              td.parentElement.querySelector("#deskripsi-pembayaran")
+                .textContent
+            }`
+          );
+
           const popup = document.getElementById("popup-update-siswa");
 
           const getNameStudent = td.parentElement.querySelector(
@@ -1189,7 +1201,7 @@ function generateTdElement(
       >${name}</span>
     ${
       statusPembayaran == "Tuntas"
-        ? `<div class="flex items-center gap-2 2xl:text-xs xl:text-[10px] text-[11px] text-emerald-600 font-medium">
+        ? `<div class="hidden items-center gap-2 2xl:text-xs xl:text-[10px] text-[11px] text-emerald-600 font-medium">
             <i class="fa-solid fa-certificate text-sm"></i>
             <p>Di Verifikasi Oleh ${verifiedBy}</p>
           </div>`
@@ -1199,7 +1211,8 @@ function generateTdElement(
       <div class="flex items-center justify-start gap-1 xl:mt-1 mt-2 ${
         statusPembayaran == "Tuntas"
           ? "text-emerald-600"
-          : statusPembayaran == "Menunggu Konfirmasi"
+          : statusPembayaran == "Menunggu Konfirmasi" ||
+            statusPembayaran == "Via Admin - Cicilan"
           ? "text-yellow-600"
           : "text-red-600"
       }">
