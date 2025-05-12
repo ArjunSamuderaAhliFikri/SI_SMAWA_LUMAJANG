@@ -46,6 +46,7 @@ const verifyToken = require("./middleware/middlewareJWT.js");
 const mongoose = require("mongoose");
 const AccountNumber = require("./models/accountNumber.js");
 const BillStudent = require("./models/billStudent.js");
+const Siswa = require("./models/siswa.js");
 const KelasSiswa = require("./models/kelasSiswa.js");
 const FotoBuktiPembayaran = require("./models/gambarBuktiPembayaran.js");
 const MediaUpload = require("./models/mediaUpload.js");
@@ -69,6 +70,54 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 
 dotenv.config();
+
+// Middleware to handle automatic class promotion
+app.use(async (req, res, next) => {
+  const start = Date.now();
+
+  const updateClass = await Siswa.find();
+
+  for (let i = 0; i < updateClass.length; i++) {
+    const { nextGrade, username, kelas } = updateClass[i];
+
+    if (start == nextGrade || start > nextGrade) {
+      let changedClass = kelas.split("-");
+      changedClass[0] += "I";
+      changedClass = changedClass.join("-");
+
+      await Siswa.findOneAndUpdate(
+        { username },
+        { nextGrade: start + 1000 * 60 * 60 * 24 * 365, kelas: changedClass }
+      );
+
+      console.log(`Kelas ${username} Berubah!!`);
+    }
+  }
+
+  next();
+
+  // SAMPLE KENAIKAN KELAS OTOMATIS
+  // const start = Date.now();
+
+  // const updateClass = await Siswa.find();
+
+  // for (let i = 0; i < updateClass.length; i++) {
+  //   const { nextGrade, username, kelas } = updateClass[i];
+
+  //   if (start == nextGrade || start > nextGrade) {
+  //     let changedClass = kelas.split("-");
+  //     changedClass[0] += "I";
+  //     changedClass = changedClass.join("-");
+
+  //     await Siswa.findOneAndUpdate(
+  //       { username },
+  //       { nextGrade: start + 10000, kelas: changedClass }
+  //     );
+
+  //     console.log(`Kelas ${username} Berubah!!`);
+  //   }
+  // }
+});
 
 app.get("/media", async (req, res) => {
   const data = await MediaUpload.find();
@@ -373,6 +422,8 @@ app.put(
 
           return res.json({ msg: "Pembayaran berhasil!!" });
         }
+      } else {
+        return res.json({ msg: "Nominal Pembayaran Melebihi Tagihan Tersisa" });
       }
 
       // const uploadPhoto = await FotoBuktiPembayaran.findOneAndUpdate(

@@ -1,12 +1,13 @@
 const Siswa = require("../models/siswa");
 
 module.exports = async (req, res) => {
-  const { username, password, nomorHP, role, kelas, tapel } = req.body;
+  const { username, password, nomorHP, role, kelas, tapel, nisn } = req.body;
 
   const findStudent = await Siswa.findOne({ username });
   const checkNomorHP = await Siswa.findOne({ nomorHP });
+  const checkNISN = await Siswa.findOne({ nisn });
 
-  if (findStudent || checkNomorHP) {
+  if (findStudent || checkNomorHP || checkNISN) {
     return res.json({ err: "Siswa sudah terdaftar!" });
   }
 
@@ -21,6 +22,7 @@ module.exports = async (req, res) => {
     role,
     kelas,
     tapel,
+    nisn,
   });
 
   const simpanSiswa = await siswaBaru.save();

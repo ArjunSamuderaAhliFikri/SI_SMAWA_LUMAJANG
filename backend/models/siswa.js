@@ -7,6 +7,11 @@ const siswaSchema = new mongoose.Schema({
   nomorHP: String,
   kelas: String,
   tapel: String,
+  nisn: String,
+  nextGrade: {
+    type: Number,
+    default: Date.now() + 1000 * 60 * 60 * 24 * 365,
+  },
 });
 
 const Siswa = mongoose.model("siswas", siswaSchema);

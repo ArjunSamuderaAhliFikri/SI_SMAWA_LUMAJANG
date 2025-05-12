@@ -1,3 +1,7 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 const listOfClass = document.getElementById("list-kelas");
 const listOfTapel = document.getElementById("list-tapel");
 
@@ -305,13 +309,21 @@ formKelas.addEventListener("submit", (event) => {
 
       const { msg, err } = await response.json();
 
-      if (err) return alert(err);
+      if (err) {
+        Swal.fire(err).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      }
 
-      return alert(msg);
+      return Swal.fire(msg).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
     } catch (error) {
       return console.error(error);
-    } finally {
-      window.location.reload();
     }
   }
 
@@ -335,13 +347,21 @@ formTapel.addEventListener("submit", (event) => {
 
       const { msg, err } = await response.json();
 
-      if (err) return alert(err);
+      if (err) {
+        Swal.fire(err).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      }
 
-      return alert(msg);
+      return Swal.fire(msg).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
     } catch (error) {
       return console.error(error);
-    } finally {
-      window.location.reload();
     }
   }
 

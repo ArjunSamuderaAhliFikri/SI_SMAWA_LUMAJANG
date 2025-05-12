@@ -1,3 +1,7 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 
 const form = document.querySelector("form");
@@ -53,13 +57,20 @@ form.addEventListener("submit", (event) => {
 
       const { msg, err } = await response.json();
 
-      if (err) return alert(err);
+      if (err)
+        return Swal.fire(err).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
 
-      alert(msg);
+      Swal.fire(msg).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
     } catch (error) {
       return console.error(error);
-    } finally {
-      window.location.reload();
     }
   };
 

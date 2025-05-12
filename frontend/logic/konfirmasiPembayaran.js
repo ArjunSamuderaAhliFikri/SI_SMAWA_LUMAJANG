@@ -1,4 +1,8 @@
 // module environment variables
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
 
@@ -96,9 +100,8 @@ form.addEventListener("submit", (event) => {
           body: formData,
         }
       );
-
       if (uploadPhoto.ok) {
-        alert("Berhasil upload foto!");
+        return alert("Berhasil upload foto!");
       }
     } catch (error) {
       return alert(error);
@@ -130,9 +133,12 @@ form.addEventListener("submit", (event) => {
         }
 
         if (msg) {
-          handleUploadPhoto();
-          alert(msg);
-          window.location.href = `/frontend/pages/user/cek_tagihan.html?name=${namaSiswa}`;
+          Swal.fire(msg).then((result) => {
+            if (result.isConfirmed) {
+              handleUploadPhoto();
+              window.location.href = `/frontend/pages/user/cek_tagihan.html?name=${namaSiswa}`;
+            }
+          });
         }
       }
     } catch (error) {

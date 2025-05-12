@@ -3,7 +3,7 @@ import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 
 const toRupiah = convertRupiah;
 
-// verifyUser("/frontend/pages/auth/login.html");
+verifyUser("/frontend/pages/auth/login.html");
 
 const wrapperMedia = document.getElementById("wrapper-media");
 

@@ -1,3 +1,7 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 
 const toRupiah = convertRupiah;
@@ -82,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (error) {
-      alert(`Error Message : ${error.message}`);
+      return console.error(`Error Message : ${error.message}`);
     }
   }
 

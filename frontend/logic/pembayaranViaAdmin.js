@@ -1,3 +1,7 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 import convertToRupiah from "../features/convertRupiah/convertRupiah.js";
 
 const params = new URLSearchParams(window.location.search);
@@ -115,7 +119,9 @@ form.addEventListener("submit", async (event) => {
 
   try {
     const formData = new FormData();
-    formData.append("avatar", input.files[0]);
+    if (input.files[0]) {
+      formData.append("avatar", input.files[0]);
+    }
 
     const response = await fetch(
       `http://localhost:3000/via-admin/${getName}/${getDescription}/${nominalPayment.value}`,
@@ -130,16 +136,13 @@ form.addEventListener("submit", async (event) => {
     }
 
     const { msg } = await response.json();
-    if (msg) {
-      alert(msg);
-    }
-
-    setTimeout(() => {
-      window.location.href = "/frontend/pages/admin/pantau_siswa.html";
-    }, 500);
+    Swal.fire("Pembayaran Berhasil!").then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/frontend/pages/admin/pantau_siswa.html";
+      }
+    });
   } catch (error) {
     console.error(error.message);
-    alert("Terjadi kesalahan: " + error.message);
   }
 });
 

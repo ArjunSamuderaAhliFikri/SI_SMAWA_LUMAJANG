@@ -7,8 +7,6 @@ export default function (redirectPath) {
 
   window.addEventListener("beforeunload", () => {
     clearInterval(deleteToken);
-
-    localStorage.clear();
   });
 
   document.addEventListener("DOMContentLoaded", async () => {

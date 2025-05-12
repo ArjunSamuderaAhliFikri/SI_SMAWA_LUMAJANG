@@ -1,13 +1,13 @@
 import verifyUser from "../secret/verifyUser.js";
 
-// verifyUser("/frontend/pages/auth/login.html");
+verifyUser("/frontend/pages/auth/login.html");
 
 const downloadCardButton = document.getElementById("download-card");
 const cardStudent = document.getElementById("popup-card");
 
 downloadCardButton.addEventListener("click", () => {
   setTimeout(() => {
-    cardStudent.classList.toggle("translate-x-[120%]");
+    cardStudent.classList.replace("translate-y-[8%]", "-translate-y-[150%]");
   }, 2000);
 });
 
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const { kelas } = kelasSiswaData[0];
 
         if (err) {
-          return alert(err);
+          return Swal.fire(err);
         }
 
         kelas.forEach((kelas) => {
@@ -77,11 +77,13 @@ form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
   const fileImage = document.querySelector('input[type="file"]');
-  const username = document.querySelector('input[type="text"]').value;
+  const username = document.getElementById("username").value;
   const password = document.querySelector('input[type="password"]').value;
   const nomorHP = document.querySelector('input[type="number"]').value;
+  const NISN = document.getElementById("nisn-input").value;
 
   const cardStudentName = document.getElementById("card-student-name");
+  const cardStudentNISN = document.getElementById("nisn");
   const cardStudentClass = document.getElementById("card-student-class");
   const cardStudentTapel = document.getElementById("card-student-tapel");
 
@@ -102,6 +104,7 @@ form.addEventListener("submit", async function (event) {
         nomorHP,
         kelas: kelasSiswa.value,
         tapel: tahunPelajaran.value,
+        nisn: NISN,
       }),
     });
 
@@ -117,8 +120,10 @@ form.addEventListener("submit", async function (event) {
 
       // fill name in card
       cardStudentName.textContent = username;
-      cardStudentClass.textContent = kelasSiswa.value;
-      cardStudentTapel.textContent = tahunPelajaran.value;
+      cardStudentNISN.textContent = NISN;
+
+      // cardStudentClass.textContent = kelasSiswa.value;
+      // cardStudentTapel.textContent = tahunPelajaran.value;
 
       const generateQRCode = (filename) => {
         var qrcode = new QRCode("qrcode", {
@@ -155,8 +160,11 @@ form.addEventListener("submit", async function (event) {
           handleDownloadCard();
         }, 500);
 
-        cardStudent.classList.remove("hidden");
-        cardStudent.classList.toggle("translate-x-[120%]");
+        // cardStudent.classList.remove("hidden");
+        cardStudent.classList.replace(
+          "-translate-y-[150%]",
+          "translate-y-[8%]"
+        );
       };
 
       generateQRCode(

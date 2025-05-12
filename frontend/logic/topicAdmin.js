@@ -1,3 +1,7 @@
+import verifyUser from "../secret/verifyUser.js";
+
+verifyUser("/frontend/pages/auth/login.html");
+
 const params = new URLSearchParams(window.location.search);
 const paramsTitle = params.get("title");
 

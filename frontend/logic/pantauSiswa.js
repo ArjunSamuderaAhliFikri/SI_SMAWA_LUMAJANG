@@ -1,6 +1,6 @@
 import verifyUser from "../secret/verifyUser.js";
 
-// verifyUser("/frontend/pages/auth/login.html");
+verifyUser("/frontend/pages/auth/login.html");
 
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
@@ -990,17 +990,18 @@ formDeletedStudent.addEventListener("submit", (event) => {
 
       if (response.ok) {
         const { deleted } = await response.json();
-        alert(`${deleted} berhasil dihapus!`);
-        window.location.reload();
+        Swal.fire(`${deleted} berhasil dihapus!`).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
       }
     } catch (error) {
-      alert(error);
+      return console.error(error);
     }
   }
   deleteDataStudent();
 });
-
-console.log(formUpdateStudent);
 
 formUpdateStudent.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -1041,13 +1042,15 @@ formUpdateStudent.addEventListener("submit", (event) => {
 
       const { msg, err } = await response.json();
 
-      if (err) return console.log(err);
+      if (err) return Swal.fire(err);
 
-      await Swal.fire(msg);
+      Swal.fire(msg).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
     } catch (error) {
-      return alert(error);
-    } finally {
-      window.location.reload();
+      return console.error(error);
     }
   }
 
@@ -1065,11 +1068,14 @@ formUpdateStudent.addEventListener("submit", (event) => {
       );
 
       if (response.ok) {
-        alert("Data berhasil diperbarui");
-        window.location.reload();
+        Swal.fire("Data berhasil diperbarui").then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
       }
     } catch (error) {
-      alert("Update data gagal!");
+      return console.error(error.messsage);
     }
   }
 

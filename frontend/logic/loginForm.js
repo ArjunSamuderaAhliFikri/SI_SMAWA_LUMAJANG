@@ -51,10 +51,10 @@ form.addEventListener("submit", async function (event) {
         window.location.href = "/frontend/pages/user/dashboard_user.html";
       }
     } else {
-      console.log("error bro");
+      Swal.fire("Gagal Untuk Melakukan Login!");
       window.location.href = "#";
     }
   } catch (error) {
-    console.error(error);
+    Swal.fire("Username / Password Anda Salah!");
   }
 });

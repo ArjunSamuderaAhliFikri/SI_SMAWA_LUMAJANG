@@ -33,6 +33,7 @@ module.exports = async (req, res) => {
       deadline,
       rekeningTujuan,
       createdAt: date,
+      typeofPayment: "Pembayaran SPP",
     });
 
     await buatTagihanBaru.save();

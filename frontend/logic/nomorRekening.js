@@ -1,6 +1,6 @@
 import verifyUser from "../secret/verifyUser.js";
 
-// verifyUser("/frontend/pages/auth/login.html");
+verifyUser("/frontend/pages/auth/login.html");
 
 let inputAccountNumber = document.getElementById("input-nomor-rekening");
 const inputOwnerAccountNumber = document.getElementById(
@@ -35,11 +35,14 @@ formUpdateAccountNumber.addEventListener("submit", (event) => {
       );
 
       if (response.ok) {
-        alert("Data berhasil diperbarui");
-        window.location.reload();
+        Swal.fire("Data berhasil diperbarui").then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
       }
     } catch (error) {
-      alert("Update data gagal!");
+      return error.message("Update data gagal!");
     }
   }
 
@@ -66,8 +69,11 @@ formDeletedAccountNumber.addEventListener("submit", (event) => {
     );
 
     if (response.ok) {
-      alert("Data berhasil dihapus!");
-      window.location.reload();
+      Swal.fire("Data berhasil dihapus!").then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
     }
   }
 
@@ -163,14 +169,21 @@ addAccountNumberForm.addEventListener("submit", (event) => {
         const { message, err } = await response.json();
 
         if (err) {
-          return alert(err);
+          return Swal.fire(err).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
         }
 
-        alert(message);
-        window.location.reload();
+        Swal.fire(message).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
       }
     } catch (error) {
-      return alert(`Gagal menambahkan nomor rekening!, ${error}`);
+      return console.error(`Gagal menambahkan nomor rekening!, ${error}`);
     }
   }
 

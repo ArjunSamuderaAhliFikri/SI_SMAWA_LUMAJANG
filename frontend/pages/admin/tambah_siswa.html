@@ -11,7 +11,7 @@
       <div class="bg-slate-700 relative h-[275px]">
         <div
           id="popup-card"
-          class="block absolute 2xl:-bottom-[335%] xl:top-20 right-10 translate-x-[120%] 2xl:-translate-y-3/4 z-30 min-w-52 min-h-32 bg-[url(/frontend/public/background-card.png)] bg-cover bg-no-repeat bg-center rounded-md w-[38%] h-[42dvh] overflow-hidden transition-all duration-500"
+          class="absolute top-4 left-1/2 -translate-x-1/2 -translate-y-[150%] z-30 min-w-52 min-h-32 bg-[url(/frontend/public/background-card.png)] bg-cover bg-no-repeat bg-center rounded-md w-[38%] h-[42dvh] overflow-hidden transition-all duration-500"
         >
           <!-- after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-48 after:bg-[#16C47F] -->
           <div class="relative size-full overflow-hidden">
@@ -28,8 +28,8 @@
                 <p
                   class="text-center 2xl:text-[9px] text-[6px] text-slate-600 font-normal"
                 >
-                  Kelas <span id="card-student-class">XII-1</span> ||
-                  <span id="card-student-tapel">2024/2025</span>
+                  NISN :
+                  <span id="nisn">1071717 / 012910929</span>
                 </p>
               </div>
             </div>
@@ -191,7 +191,7 @@
                   <input
                     type="text"
                     name="name"
-                    id="name"
+                    id="username"
                     placeholder="Sebaiknya menggunakan Nama Lengkap Siswa"
                     class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
                   />
@@ -222,6 +222,21 @@
                     name="no_hp"
                     id="no_hp"
                     placeholder="081234567890"
+                    class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    class="text-sm text-slate-600 font-semibold"
+                    for="nisn-input"
+                    >NISN</label
+                  >
+                  <input
+                    type="text"
+                    name="nisn-input"
+                    id="nisn-input"
+                    placeholder="Nomor NISN"
                     class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
                   />
                 </div>

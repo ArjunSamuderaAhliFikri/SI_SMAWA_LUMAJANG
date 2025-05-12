@@ -1,3 +1,6 @@
+import verifyUser from "../secret/verifyUser.js";
+verifyUser("/frontend/pages/auth/login.html");
+
 const params = new URLSearchParams(window.location.search);
 const paramsTitle = params.get("title");
 const isEdit = params.get("edit");
@@ -88,7 +91,9 @@ form.addEventListener("submit", (event) => {
       const media = document.getElementById("avatar");
 
       const formData = new FormData();
-      formData.append("media-photo", media.files[0]);
+      if (media.files[0]) {
+        formData.append("media-photo", media.files[0]);
+      }
 
       const response = await fetch(
         `http://localhost:3000/post-content/${titlePost.value}/${descriptionPost.value}`,
@@ -104,13 +109,25 @@ form.addEventListener("submit", (event) => {
 
       const { msg, err } = await response.json();
 
-      if (err) return alert(err);
+      if (err) {
+        return Swal.fire(err).then((result) => {
+          if (result.isConfirmed) {
+            setTimeout(() => {
+              window.location.href = "/frontend/pages/admin/masterData.html";
+            }, 500);
+          }
+        });
+      }
 
-      alert(msg);
+      if (msg) {
+        return Swal.fire(msg).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/frontend/pages/admin/masterData.html";
+          }
+        });
+      }
     } catch (error) {
       return console.error(error);
-    } finally {
-      window.location.href = "/frontend/pages/admin/masterData.html";
     }
   };
 
@@ -119,7 +136,9 @@ form.addEventListener("submit", (event) => {
       const media = document.getElementById("avatar");
 
       const formData = new FormData();
-      formData.append("media-photo", media.files[0]);
+      if (media.files[0]) {
+        formData.append("media-photo", media.files[0]);
+      }
 
       const response = await fetch(
         `http://localhost:3000/edit-content/${hiddenTitle.value}/${titlePost.value}/${descriptionPost.value}`,
@@ -133,13 +152,21 @@ form.addEventListener("submit", (event) => {
 
       const { msg, err } = await response.json();
 
-      if (err) return alert(err);
+      if (err) {
+        Swal.fire(err).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/frontend/pages/admin/masterData.html";
+          }
+        });
+      }
 
-      alert(msg);
+      Swal.fire(msg).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/frontend/pages/admin/masterData.html";
+        }
+      });
     } catch (error) {
       return console.error(error);
-    } finally {
-      window.location.href = "/frontend/pages/admin/masterData.html";
     }
   };
 
