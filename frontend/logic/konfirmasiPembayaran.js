@@ -92,7 +92,10 @@ form.addEventListener("submit", (event) => {
       const fileInput = document.getElementById("avatar");
       const formData = new FormData();
 
-      formData.append("avatar", fileInput.files[0]);
+      if (fileInput.files[0]) {
+        formData.append("avatar", fileInput.files[0]);
+      }
+
       const uploadPhoto = await fetch(
         `http://localhost:3000/upload-photo/${inputNama.value}/${inputNominal.dataset.realnominal}/${infoBilling}`,
         {
@@ -100,51 +103,25 @@ form.addEventListener("submit", (event) => {
           body: formData,
         }
       );
-      if (uploadPhoto.ok) {
-        return alert("Berhasil upload foto!");
+      if (!uploadPhoto.ok) {
+        throw new Error("Response not ok!");
+      }
+
+      const { msg } = await response.json();
+
+      if (msg) {
+        Swal.fire(msg).then((result) => {
+          if (result.isConfirmed) {
+            setTimeout(() => {
+              window.location.href = `/frontend/pages/user/cek_tagihan.html/name=${namaSiswa}`;
+            }, 500);
+          }
+        });
       }
     } catch (error) {
-      return alert(error);
+      return console.error(error);
     }
   }
 
-  async function handleCompleteBilling() {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/tuntaskan-tagihan/${inputNama.value}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            namaSiswa: inputNama.value,
-            jumlahTagihanSiswa: inputNominal.dataset.realnominal,
-            catatanSiswa: localStorage.getItem("deskripsi_pembayaran"),
-          }),
-        }
-      );
-
-      if (response.ok) {
-        const { msg, err } = await response.json();
-
-        if (err) {
-          return alert(err);
-        }
-
-        if (msg) {
-          Swal.fire(msg).then((result) => {
-            if (result.isConfirmed) {
-              handleUploadPhoto();
-              window.location.href = `/frontend/pages/user/cek_tagihan.html?name=${namaSiswa}`;
-            }
-          });
-        }
-      }
-    } catch (error) {
-      return alert("update gagal");
-    }
-  }
-
-  handleCompleteBilling();
+  handleUploadPhoto();
 });

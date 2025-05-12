@@ -10,6 +10,7 @@ const cors = require("cors");
 const moment = require("moment");
 const formatDateINA = require("./logic/formatDateINA.js");
 const cookieParser = require("cookie-parser");
+const cron = require("node-cron");
 const multer = require("multer");
 const path = require("path");
 const storage = multer.diskStorage({
@@ -71,52 +72,29 @@ app.use(express.json({ limit: "50mb" }));
 
 dotenv.config();
 
-// Middleware to handle automatic class promotion
-app.use(async (req, res, next) => {
-  const start = Date.now();
-
+// FITUR NAIK KELAS SECARA OTOMATIS BERDASARKAN TAHUN AJARAN BARU!
+cron.schedule("0 0 0 2 6 *", async () => {
   const updateClass = await Siswa.find();
 
   for (let i = 0; i < updateClass.length; i++) {
-    const { nextGrade, username, kelas } = updateClass[i];
+    const { username, kelas } = updateClass[i];
 
-    if (start == nextGrade || start > nextGrade) {
-      let changedClass = kelas.split("-");
-      changedClass[0] += "I";
-      changedClass = changedClass.join("-");
+    let changedClass = kelas.split("-");
+    changedClass[0] += "I";
 
-      await Siswa.findOneAndUpdate(
-        { username },
-        { nextGrade: start + 1000 * 60 * 60 * 24 * 365, kelas: changedClass }
-      );
+    if (changedClass[0].length > 3) {
+      await BillStudent.deleteMany({ namaSiswa: username });
+      await FotoBuktiPembayaran.deleteMany({ atasNama: username });
 
-      console.log(`Kelas ${username} Berubah!!`);
+      console.log(`Akun ${username} akan segera dihapus!`);
+      await Siswa.deleteOne({ username });
+
+      return;
     }
+    changedClass = changedClass.join("-");
+
+    await Siswa.findOneAndUpdate({ username }, { kelas: changedClass });
   }
-
-  next();
-
-  // SAMPLE KENAIKAN KELAS OTOMATIS
-  // const start = Date.now();
-
-  // const updateClass = await Siswa.find();
-
-  // for (let i = 0; i < updateClass.length; i++) {
-  //   const { nextGrade, username, kelas } = updateClass[i];
-
-  //   if (start == nextGrade || start > nextGrade) {
-  //     let changedClass = kelas.split("-");
-  //     changedClass[0] += "I";
-  //     changedClass = changedClass.join("-");
-
-  //     await Siswa.findOneAndUpdate(
-  //       { username },
-  //       { nextGrade: start + 10000, kelas: changedClass }
-  //     );
-
-  //     console.log(`Kelas ${username} Berubah!!`);
-  //   }
-  // }
 });
 
 app.get("/media", async (req, res) => {
@@ -425,44 +403,7 @@ app.put(
       } else {
         return res.json({ msg: "Nominal Pembayaran Melebihi Tagihan Tersisa" });
       }
-
-      // const uploadPhoto = await FotoBuktiPembayaran.findOneAndUpdate(
-      //   { atasNama: name, infoBilling: description },
-      //   {
-      //     nominal: nominal,
-      //     filename: `${req.file.setUniq}-${req.file.originalname}`,
-      //     contentType: req.file.mimetype,
-      //     data: req.file.buffer,
-      //   }
-      // );
-
-      // if (!uploadPhoto) {
-      //   const newUploadPhoto = new FotoBuktiPembayaran({
-      //     atasNama: name,
-      //     infoBilling: description,
-      //     nominal: nominal,
-      //     filename: `${req.file.setUniq}-${req.file.originalname}`,
-      //     contentType: req.file.mimetype,
-      //     data: req.file.buffer,
-      //   });
-      //   await newUploadPhoto.save();
-      // }
-
-      // return res.json({ msg: "Pembayaran berhasil!!" });
     }
-
-    // const findAndUpdate = await BillStudent.findOneAndUpdate(
-    //   { namaSiswa: name, catatanSiswa: description },
-    //   {
-    //     jumlahTagihanSiswa: nominal,
-    //     isPaidOff: "Via Admin - Cicilan",
-    //     uniqAccessImage: `${req.file.setUniq}-${req.file.originalname}`,
-    //   }
-    // );
-
-    // if (!findAndUpdate) {
-    //   return res.json({ err: "Tagihan tidak ditemukan!" });
-    // }
   }
 );
 
@@ -775,7 +716,6 @@ app.get(
   "/bukti-pembayaran/:namaSiswa/:jumlahTagihan/:deskripsiTagihan",
   async (req, res) => {
     const { namaSiswa, jumlahTagihan, deskripsiTagihan } = req.params;
-    console.log("from server:", req.params);
 
     const findPhoto = await FotoBuktiPembayaran.findOne({
       atasNama: namaSiswa,
@@ -798,6 +738,9 @@ app.put(
     // infoBilling TODOOOOO
     const { nama, nominal, infoBilling } = req.params;
 
+    const getDateTime = moment().format("LLLL");
+    const date = formatDateINA(getDateTime);
+
     const findHistoryPayment = await FotoBuktiPembayaran.findOneAndUpdate(
       { atasNama: nama, nominal: nominal, infoBilling },
       {
@@ -807,8 +750,21 @@ app.put(
       }
     );
 
-    if (findHistoryPayment) {
-      return res.json({ msg: "Tagihan Berhasil di perbarui" });
+    const updateBilling = await BillStudent.findOneAndUpdate(
+      {
+        namaSiswa: nama,
+        jumlahTagihanSiswa: nominal,
+        catatanSiswa: infoBilling,
+      },
+      {
+        isPaidOff: "Menunggu Konfirmasi",
+        isPaidOn: date,
+        uniqAccessImage: `${req.file.setUniq}-${req.file.originalname}`,
+      }
+    );
+
+    if (findHistoryPayment && updateBilling) {
+      return res.json({ msg: "Tagihan Berhasil di Perbarui!" });
     }
 
     const addPhoto = new FotoBuktiPembayaran({
@@ -820,14 +776,11 @@ app.put(
       data: req.file.buffer,
     });
 
-    await addPhoto.save();
+    const result = await addPhoto.save();
 
-    await BillStudent.findOneAndUpdate(
-      { atasNama: nama, nominal: nominal, infoBilling },
-      { uniqAccessImage: `${req.file.setUniq}-${req.file.originalname}` }
-    );
-
-    return res.json({ msg: "Berhasil!" });
+    if (result) {
+      return res.json({ msg: "Tagihan Berhasil di Ditambahkan!" });
+    }
   }
 );
 
