@@ -195,6 +195,47 @@ app.post(
   }
 );
 
+app.get("/siswa", async (req, res) => {
+  const findSiswa = await Siswa.find();
+
+  if (!findSiswa) {
+    return res.json({ err: "Siswa tidak ada!" });
+  }
+
+  return res.json({ siswa: findSiswa });
+});
+
+app.put("/siswa", async (req, res) => {
+  const { hidden, username, kelas, tapel, nomorHP, nisn } = req.body;
+
+  const updateStudent = await Siswa.updateOne(
+    { username: hidden },
+    {
+      username,
+      kelas,
+      tapel,
+      nomorHP,
+      nisn,
+    }
+  );
+
+  if (updateStudent) {
+    return res.json({ msg: `Data ${hidden} berhasil dirubah!` });
+  }
+});
+
+app.get("/siswa/:username", async (req, res) => {
+  const { username } = req.params;
+
+  const findStudent = await Siswa.findOne({ username });
+
+  if (!findStudent) {
+    return res.json({ err: "Siswa tidak ditemukan!" });
+  }
+
+  return res.json({ siswa: findStudent });
+});
+
 app.get("/tagihan-siswa", getTagihanSiswa);
 
 app.get("/tagihan/:username", tagihanSiswa);
