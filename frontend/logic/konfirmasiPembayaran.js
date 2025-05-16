@@ -1,7 +1,7 @@
 // module environment variables
-import verifyUser from "../secret/verifyUser.js";
+// import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;

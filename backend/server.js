@@ -3,7 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const jwt = require("jsonwebtoken");
-const port = 3000;
+const port = process.env.PORT || 3000;
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -95,6 +95,16 @@ cron.schedule("0 0 0 2 6 *", async () => {
 
     await Siswa.findOneAndUpdate({ username }, { kelas: changedClass });
   }
+});
+
+app.use("/mahasiswa", require("./routes/siswa.js"));
+
+app.get("/mahasiswi", (req, res) => {
+  return res.status(200).send("Test!");
+});
+
+app.get("/", (req, res) => {
+  return res.send("Hello Domain!");
 });
 
 app.get("/media", async (req, res) => {
@@ -893,7 +903,16 @@ app.put("/confirm-payment/:name", async (req, res) => {
   return res.json({ msg: "Tagihan berhasil di bayar!" });
 });
 
-app.listen(port, () => {
-  connectDB();
-  console.log(`Server is running on port ${port}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB(); // tunggu koneksi berhasil
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Gagal koneksi ke database:", error.message);
+    process.exit(1); // keluar dari proses karena koneksi DB gagal
+  }
+};
+
+startServer();

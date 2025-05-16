@@ -110,9 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         const data = await response.json();
 
-        const { getAllStudents } = data;
+        const { siswa } = data;
 
-        getAllStudents.forEach((element) => {
+        siswa.forEach((element) => {
           let optionElement = document.createElement("option");
           const nama = element.username;
 
