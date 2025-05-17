@@ -53,6 +53,7 @@ const FotoBuktiPembayaran = require("./models/gambarBuktiPembayaran.js");
 const MediaUpload = require("./models/mediaUpload.js");
 const ImageUpload = require("./models/imageUpload.js");
 const { verify } = require("crypto");
+const db = require("./config/mysql.js");
 
 app.use(cookieParser());
 
@@ -95,12 +96,6 @@ cron.schedule("0 0 0 2 6 *", async () => {
 
     await Siswa.findOneAndUpdate({ username }, { kelas: changedClass });
   }
-});
-
-app.use("/mahasiswa", require("./routes/siswa.js"));
-
-app.get("/mahasiswi", (req, res) => {
-  return res.status(200).send("Test!");
 });
 
 app.get("/", (req, res) => {
