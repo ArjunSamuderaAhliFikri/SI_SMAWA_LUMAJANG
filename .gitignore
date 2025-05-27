@@ -1,4 +1,6 @@
 /*/node_modules
 /frontend/assets
+/frontend/public
+/backend/public
 /dist
 /backend/.env

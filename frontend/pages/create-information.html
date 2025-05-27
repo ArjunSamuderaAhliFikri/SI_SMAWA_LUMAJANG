@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Article</title>
+    <link rel="stylesheet" href="/frontend/styles/output.css" />
+    <link rel="stylesheet" href="/frontend/assets/css/all.min.css" />
+  </head>
+  <body>
+    <div class="relative min-h-screen bg-slate-300">
+      <a
+        id="back-to-masterdata"
+        class="absolute top-10 left-14 px-4 py-3 rounded-lg bg-slate-700 text-slate-200 font-medium text-sm cursor-pointer transition-all duration-150 hover:bg-slate-500"
+        >Kembali</a
+      >
+      <div class="container mx-auto">
+        <div class="h-screen flex justify-center items-center">
+          <div
+            id="container-post"
+            class="max-w-5xl w-2xl bg-gray-100 px-6 py-6 rounded-lg shadow-md scale-90"
+          >
+            <section
+              id="header-post"
+              class="flex items-center gap-x-3 text-slate-700"
+            >
+              <i class="fa-solid fa-blog text-3xl"></i>
+              <h1 class="font-medium text-xl capitalize">buat postingan</h1>
+            </section>
+
+            <section id="form-post">
+              <form enctype="multipart/form-data">
+                <div class="relative mt-5 overflow-hidden rounded-lg">
+                  <label
+                    for="avatar"
+                    class="relative flex justify-center items-center gap-x-4 h-48 bg-slate-300 text-slate-800 cursor-pointer transition-all duration-150 hover:bg-slate-400"
+                  >
+                    <img
+                      id="media-post"
+                      alt="media-post"
+                      class="hidden absolute top-0 left-0 size-full object-cover"
+                    />
+                    <i class="fa-solid fa-camera text-2xl"></i>
+                    <span class="text-md font-medium">Unggah Gambar</span>
+                  </label>
+                  <input
+                    type="file"
+                    name="media-photo"
+                    id="avatar"
+                    class="absolute top-0 left-0 size-full hidden"
+                  />
+                </div>
+
+                <input type="hidden" id="hidden-title" />
+
+                <div class="mt-5">
+                  <label
+                    for="title-post"
+                    class="block font-medium text-slate-600 text-lg my-2"
+                    >Judul Postingan</label
+                  >
+                  <textarea
+                    class="block w-full outline-slate-500 border-2 border-slate-400 px-3 py-2 rounded-md text-slate-700"
+                    name="title-post"
+                    id="title-post"
+                    placeholder="Judul Postingan..."
+                  ></textarea>
+                </div>
+
+                <div class="mt-5">
+                  <label
+                    for="description-post"
+                    class="block font-medium text-slate-600 text-lg my-2"
+                    >Deskripsi Postingan</label
+                  >
+                  <textarea
+                    class="block w-full h-36 outline-slate-500 border-2 border-slate-400 px-3 py-2 rounded-md text-slate-700"
+                    name="description-post"
+                    id="description-post"
+                    placeholder="Deskripsi Postingan..."
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full block px-4 py-3 rounded-lg shadow bg-slate-700 text-slate-100 font-medium text-sm mt-4 cursor-pointer transition-all duration-150 hover:bg-slate-500"
+                >
+                  Buat Postingan
+                </button>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="/frontend/logic/createInformation.js"></script>
+  </body>
+</html>

@@ -1,6 +1,10 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
+
+import port from "../secret/port.js";
+
+const token = localStorage.getItem("token");
 
 const params = new URLSearchParams(window.location.search);
 const paramsTitle = params.get("title");
@@ -14,27 +18,34 @@ const dateTime = document.getElementById("date-time");
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveDetailMedia = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/media/${paramsTitle}`
-      );
+      const response = await fetch(`${port}/media/by-title/${paramsTitle}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { data } = await response.json();
+      const { data, warn } = await response.json();
 
-      title.innerHTML = data.title;
-      description.innerHTML = data.description;
-      dateTime.innerHTML = data.datePost;
+      if (warn) {
+        window.location.href = "/";
+      }
+
+      title.innerHTML = data[0].title;
+      description.innerHTML = data[0].description;
+      dateTime.innerHTML = data[0].datePost;
       headerImage.setAttribute(
         "src",
-        `/frontend/public/img/mediaPost/${data.image}`
+        `http://localhost:3000/test/${data[0].image}`
       );
 
       editPost.setAttribute(
         "href",
-        `/frontend/pages/pusat_informasi/create-information.html?edit=true&title=${paramsTitle}`
+        `/frontend/pages/create-information.html?edit=true&title=${paramsTitle}`
       );
     } catch (error) {
       return console.error(error.message);
@@ -51,18 +62,22 @@ formDelete.addEventListener("submit", (event) => {
 
   const handleDeleteMedia = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/media/${paramsTitle}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${port}/media/${paramsTitle}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { msg, err } = await response.json();
+      const { msg, err, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err) {
         return console.log(err);
@@ -89,7 +104,7 @@ formDelete.addEventListener("submit", (event) => {
         icon: "success",
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = "/frontend/pages/admin/masterData.html";
+          window.location.href = "/frontend/pages/masterData.html";
         }
       });
     }

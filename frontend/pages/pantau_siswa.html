@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buat Tagihan Siswa</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/frontend/assets/css/all.css" />
+
+    <script src="/frontend/logic/tableToExcel/table2Excel.js"></script>
+  </head>
+
+  <body>
+    <div class="min-h-fit bg-slate-100">
+      <div class="relative bg-slate-700 w-full h-[275px]">
+        <div
+          id="popup-update-siswa"
+          class="2xl:w-[35%] xl:w-[45%] w-[95%] h-fit fixed 2xl:top-1/4 xl:top-28 top-1/4 xl:left-[40%] left-1/2 xl:-translate-x-1/4 -translate-x-1/2 bg-slate-200 rounded-2xl z-40 px-8 xl:py-7 py-5 flex-col justify-center shadow-md hidden"
+        >
+          <button
+            id="close-popup"
+            type="button"
+            class="size-10 rounded-full bg-red-600 text-slate-100 grid place-items-center absolute -right-3 -top-3 font-semibold text-lg cursor-pointer transition-all duration-150 hover:bg-red-800"
+          >
+            X
+          </button>
+
+          <div class="relative flex gap-4 items-center justify-start my-4">
+            <i class="fa-solid fa-file-pen text-4xl text-slate-700"></i>
+            <div>
+              <h1 class="font-medium text-xl text-slate-700">
+                Perbarui Status Data Siswa
+              </h1>
+              <p class="text-xs font-medium text-slate-600">
+                SMA Wahidiyah Kota Lumajang
+              </p>
+            </div>
+
+            <a
+              class="absolute top-0 right-0 px-4 py-3 rounded-lg font-medium text-slate-200 text-sm bg-slate-700 cursor-pointer transition-all duration-150 hover:bg-slate-500"
+              id="payment-via-admin"
+              >Pembayaran Via Admin ?</a
+            >
+          </div>
+          <div>
+            <div
+              class="flex xl:flex-row flex-col xl:items-start items-center gap-5"
+            >
+              <div
+                class="hidden w-[275px] h-full rounded-lg relative"
+                id="bukti-pembayaran"
+              >
+                <a
+                  id="download-image-payment"
+                  class="absolute right-3 bottom-2 px-3 py-2 rounded-lg bg-blue-600 text-slate-100 font-medium text-xs transition-all duration-150 hover:bg-blue-800"
+                  >Download Gambar</a
+                >
+                <div class="size-full overflow-hidden rounded-lg">
+                  <img
+                    alt="foto-bukti-pembayaran"
+                    class="block size-full object-cover"
+                  />
+                </div>
+              </div>
+              <div class="w-full flex flex-col space-y-4">
+                <input
+                  type="hidden"
+                  name="nama"
+                  id="popup-hidden"
+                  class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3"
+                  placeholder="Masukkan Nama Siswa"
+                />
+
+                <div class="flex flex-col space-y-2 w-full">
+                  <label for="nama">Nama</label>
+                  <input
+                    name="nama"
+                    id="popup-nama-siswa"
+                    class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3 disabled:opacity-50 disabled:border-2 disabled:border-slate-300"
+                    placeholder="Masukkan Nama Siswa"
+                  />
+                </div>
+
+                <div class="flex flex-col space-y-2 w-full">
+                  <label for="kelas">Kelas</label>
+                  <input
+                    name="kelas"
+                    id="popup-kelas-siswa"
+                    class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3 disabled:opacity-50 disabled:border-2 disabled:border-slate-300"
+                    placeholder="Masukkan Kelas Siswa"
+                    value="XII-1"
+                  />
+                </div>
+
+                <div class="flex flex-col space-y-2 w-full">
+                  <div class="flex gap-3 items-center">
+                    <label for="jumlah-tagihan">Jumlah Tagihan :</label>
+                    <span
+                      id="to-rupiah"
+                      class="px-3 py-1 rounded-sm bg-slate-600 text-slate-200 font-medium text-sm"
+                      >Rp.0</span
+                    >
+                  </div>
+                  <input
+                    type="number"
+                    name="jumlah-tagihan"
+                    id="popup-jumlah-tagihan-siswa"
+                    class="border-none outline-none py-2 bg-slate-300 text-slate-700 rounded-md px-3 disabled:opacity-50 disabled:border-2 disabled:border-slate-300"
+                    value="Rp. 1.000.000"
+                    placeholder="Masukkan Jumlah Tagihan"
+                  />
+                </div>
+
+                <!-- <div id="wrapper-proof-of-payment"></div> -->
+
+                <div id="wrapper-edit-payment" class="flex xl:gap-4 gap-2">
+                  <form id="form-deleted-siswa" class="w-full block">
+                    <button
+                      id="delete-and-cancel-payment"
+                      type="submit"
+                      class="w-full bg-red-600 text-white rounded-md px-4 py-2 cursor-pointer transition-all duration-150 hover:bg-red-800 font-semibold"
+                    >
+                      Hapus
+                    </button>
+                  </form>
+                  <form id="form-update-siswa" class="w-full block">
+                    <button
+                      id="save-and-confirm-payment"
+                      type="submit"
+                      class="w-full bg-emerald-600 text-white rounded-md px-4 py-2 cursor-pointer transition-all duration-150 hover:bg-emerald-800 font-semibold disabled:opacity-40"
+                    >
+                      Simpan
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a
+          href="/frontend/pages/dashboard.html"
+          class="absolute top-8 xl:left-16 left-6 px-4 py-2 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-500 hover:text-slate-100 transition-all duration-150 font-semibold"
+          >Kembali</a
+        >
+
+        <div class="flex gap-6 items-center absolute top-28 xl:left-16 left-7">
+          <i
+            class="fa-solid fa-user-group text-slate-100 xl:text-6xl text-5xl"
+          ></i>
+          <div>
+            <h1
+              class="text-slate-100 font-semibold xl:text-3xl text-xl capitalize"
+            >
+              pantau pembayaran siswa
+            </h1>
+            <p
+              class="text-slate-300 font-normal xl:text-sm text-xs capitalize mt-1"
+            >
+              SMA Wahidiyah Lumajang
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="absolute top-42 left-1/2 -translate-x-1/2 2xl:w-5/6 xl:w-full w-full"
+        >
+          <div
+            class="overflow-x-auto max-w-11/12 mx-auto my-10 rounded-l-lg rounded-r-lg shadow-md"
+          >
+            <div
+              class="flex xl:flex-row flex-col gap-3 bg-slate-100 xl:w-fit w-full px-2 py-3 rounded-tl-lg rounded-tr-lg shadow-md"
+            >
+              <div class="grid place-items-center">
+                <input
+                  type="text"
+                  placeholder="Cari Siswa..."
+                  class="block px-3 py-2 rounded-md bg-slate-300 text-sm outline-slate-600/50 border-none xl:w-[275px] w-full h-10"
+                  id="search-student"
+                />
+              </div>
+
+              <div class="flex flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                  <label
+                    class="text-sm font-medium texet-slate-800"
+                    for="tingkatan_nama"
+                    >Bds. Nama</label
+                  >
+                  <select
+                    name="tingkatan_nama"
+                    id="tingkatan_nama"
+                    class="outline-emerald-600"
+                  >
+                    <option value="A-Z">A - Z</option>
+                    <option value="Z-A">Z - A</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <label
+                    class="text-sm font-medium texet-slate-800"
+                    for="tingkatan_kelas"
+                    >Ting. Kelas</label
+                  >
+                  <select
+                    name="tingkatan_kelas"
+                    id="tingkatan_kelas"
+                    class="outline-emerald-600"
+                  >
+                    <option value="10-12">10 - 12</option>
+                    <option value="12-10">12 - 10</option>
+                  </select>
+                </div>
+
+                <div class="relative flex items-center gap-2">
+                  <label class="text-sm font-medium text-slate-800" for="tapel"
+                    >Tahun Pelajaran</label
+                  >
+                  <select
+                    name="tapel"
+                    id="tapel-sorting"
+                    class="outline-emerald-600"
+                  ></select>
+                </div>
+              </div>
+              <button
+                id="download-to-excel"
+                class="bg-emerald-600 text-slate-200 font-medium px-4 py-2 rounded-sm shadow cursor-pointer hover:bg-emerald-800 text-sm"
+                type="button"
+              >
+                <i class="fa-solid fa-table pr-1"></i>
+                Download Table To Excel
+              </button>
+              <button
+                id="reset-data"
+                class="bg-slate-800 text-slate-200 font-medium px-4 py-2 rounded-sm shadow cursor-pointer hover:bg-slate-900"
+                type="button"
+              >
+                <i class="fa-solid fa-rotate pr-1"></i>
+                Reset
+              </button>
+            </div>
+
+            <table class="table-fixed min-w-full bg-white">
+              <thead>
+                <tr class="bg-[#16C47F] text-slate-100">
+                  <th class="py-4 pl-6 border-b xl:text-sm text-left">Nama</th>
+                  <th class="py-4 border-b xl:text-sm text-center">Kelas</th>
+                  <th class="py-4 px-4 border-b xl:text-sm text-center">
+                    Tapel
+                  </th>
+                  <th class="py-4 px-4 border-b xl:text-sm text-center">
+                    Nominal Tagihan
+                  </th>
+                  <th class="py-4 px-4 border-b xl:text-sm text-center">
+                    Tipe Pembayaran
+                  </th>
+                  <th class="py-4 px-4 border-b xl:text-sm text-center">
+                    Tagihan Dibuat
+                  </th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+
+            <div class="size-0 overflow-hidden">
+              <table id="table-hidden" class="">
+                <thead>
+                  <tr>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>Tahun Pelajaran</th>
+                    <th>Informasi Pembayaran</th>
+                    <th>Tipe Pembayaran</th>
+                    <th>Nominal Tagihan</th>
+                    <th>Dibayar Pada</th>
+                    <th>Status Pembayaran</th>
+                    <th>Tagihan Dibuat</th>
+                  </tr>
+                </thead>
+                <tbody id="hidden-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <script src="/logic/popupPantauSiswa.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="/frontend/logic/pantauSiswa.js"></script>
+  </body>
+</html>

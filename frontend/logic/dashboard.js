@@ -1,24 +1,33 @@
 import verifyUser from "../secret/verifyUser.js";
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+import convertRupiah from "/frontend/features/convertRupiah/convertRupiah.js";
 
 const toRupiah = convertRupiah;
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
 const wrapperMedia = document.getElementById("wrapper-media");
+
+const token = localStorage.getItem("token");
 
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveMedia = async () => {
     try {
       const response = await fetch("http://localhost:3000/media", {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { data } = await response.json();
+      const { data, err, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       data.forEach((media) => {
         const { title, description, image, datePost } = media;
@@ -39,15 +48,24 @@ const tableBody = document.querySelector("tbody");
 
 document.addEventListener("DOMContentLoaded", () => {
   async function retrieveDataPayment() {
-    const response = await fetch("http://localhost:3000/tagihan-siswa");
+    const response = await fetch("http://localhost:3000/student-payments", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       return console.log("Response not ok!");
     }
 
-    const { tagihan } = await response.json();
+    const { tagihan, warn, err } = await response.json();
 
-    const setLimitData = 3;
+    if (warn) {
+      window.location.href = "/";
+    }
+
+    console.log(tagihan);
 
     // karena data terbaru ditempatkan di urutan yang paling bawah, maka sebelum kita ambil datanya kita reverse dulu untuk mendapatkan data terbaru!
     const showData = tagihan.reverse().slice(0, 3);
@@ -59,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const tdElement = generateTdElement(
         data.namaSiswa,
         data.kelasSiswa,
-        data.tapelSiswa,
+        data.tapel,
         data.jumlahTagihanSiswa,
         data.createdAt,
         data.isPaidOff,
@@ -94,7 +112,7 @@ logoutButton.addEventListener("click", () => {
     confirmButtonText: "Keluar",
   }).then((result) => {
     if (result.isConfirmed) {
-      window.location.href = "/frontend/pages/auth/login.html";
+      window.location.href = "/frontend/pages/";
     }
   });
 });
@@ -110,14 +128,11 @@ function generateListMedia(title, description, image, dateTime) {
     "group relative max-w-[320px] h-[225px] overflow-hidden rounded-lg transition-all duration-150 hover:scale-105 after:content-[''] after:block after:absolute after:top-0 after:left-0 after:size-full after:bg-gradient-to-t after:from-slate-800/75 after:to-transparent cursor-pointer after:transition-all after:duration-300 after:translate-y-full hover:after:translate-y-0"
   );
 
-  hyperLink.setAttribute(
-    "href",
-    `/frontend/pages/pusat_informasi/topic-admin.html?title=${title}`
-  );
+  hyperLink.setAttribute("href", `/pages/topic-admin.html?title=${title}`);
   const html = `<li class="block size-full">
                   <img
                     class="block size-full object-cover"
-                    src="/frontend/public/img/mediaPost/${image}"
+                    src="http://localhost:3000/test/${image}"
                     alt="${image}"
                   />
 
@@ -190,7 +205,9 @@ function generateTdElement(
             ? '<i class="fa-solid fa-hourglass-end text-sm"></i>'
             : '<i class="fa-solid fa-circle-xmark text-sm"></i>'
         }
-        <p class="xl:text-xs text-[9px] font-medium"><span id="deskripsi-pembayaran">${deskripsiPembayaran}</span> <span id="status-pembayaran">${statusPembayaran}</span> || <span class="text-slate-600" id="waktu-pembayaran"><i class="fa-solid fa-clock"></i> Dibayar pada : ${isPaidOn}</span></p>
+        <p class="xl:text-xs text-[9px] font-medium"><span id="deskripsi-pembayaran">${deskripsiPembayaran}</span> <span id="status-pembayaran">${statusPembayaran}</span> || <span class="text-slate-600" id="waktu-pembayaran"><i class="fa-solid fa-clock"></i> Dibayar pada : ${
+    isPaidOn ? isPaidOn : "-"
+  }</span></p>
         </div>
       </div></div>
     </td>
@@ -214,80 +231,3 @@ function generateTdElement(
     </td>
     `;
 }
-
-// document.addEventListener("DOMContentLoaded", async () => {
-//   try {
-//     const response = await fetch("http://localhost:3000/test-auth", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: "Bearer",
-//       },
-//     });
-
-//     if (!response.ok) return console.log("gagal!");
-
-//     const data = await response.json();
-
-//     return console.log(data);
-//   } catch (error) {
-//     return console.error(error);
-//   }
-// });
-
-// const token = localStorage.getItem("token");
-
-// const deleteToken = setInterval(() => {
-//   localStorage.removeItem("token");
-// }, 2000);
-
-// window.addEventListener("beforeunload", () => {
-//   clearInterval(deleteToken);
-// });
-
-// document.addEventListener("DOMContentLoaded", async () => {
-//   if (!token) {
-//     return (window.location.href = "/frontend/pages/auth/login.html");
-//   }
-
-//   try {
-//     const response = await fetch(`http://localhost:3000/get-verify/${token}`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: "Bearer Token",
-//       },
-//     });
-//     if (!response.ok) {
-//       return alert("Gagal mendapatkan data verifikasi!");
-//     }
-
-//     const { role, status } = await response.json();
-
-//     console.log({ role, status });
-//   } catch (error) {
-//     return (window.location.href = "/frontend/pages/auth/login.html");
-//   }
-// });
-
-// document.addEventListener("DOMContentLoaded", async () => {
-// document.cookie = "token=arjun; expires=1s";
-
-// const getToken = document.cookie.split("=")[1];
-// console.log(getToken);
-
-// const status = localStorage.getItem("status");
-
-// if (!status) {
-// window.location.href = "/frontend/pages/auth/login.html";
-// }
-// });
-
-// setTimeout(() => {
-//   document.cookie = "token=; expires=0s";
-// }, 3000);
-
-// setTimeout(() => {
-//   const getCookie = document.cookie.split("=")[1];
-//   console.log(getCookie == "");
-// }, 4000);

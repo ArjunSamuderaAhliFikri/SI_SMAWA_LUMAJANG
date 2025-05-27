@@ -1,5 +1,9 @@
 import verifyUser from "../secret/verifyUser.js";
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
+
+import port from "../secret/port.js";
+
+const token = localStorage.getItem("token");
 
 const params = new URLSearchParams(window.location.search);
 const paramsTitle = params.get("title");
@@ -41,32 +45,35 @@ input.addEventListener("change", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  backToMasterData.setAttribute(
-    "href",
-    "/frontend/pages/admin/masterData.html"
-  );
+  backToMasterData.setAttribute("href", "/frontend/pages/masterData.html");
 
   if (paramsTitle) {
-    console.log(paramsTitle);
     hiddenTitle.value = paramsTitle;
 
     const retrieveDataQuery = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/media/${paramsTitle}`
-        );
+        const response = await fetch(`${port}/media/by-title/${paramsTitle}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           return console.log("Response not ok!");
         }
 
-        const { data } = await response.json();
+        const { data, warn } = await response.json();
 
-        titlePost.innerHTML = data.title;
-        descriptionPost.innerHTML = data.description;
+        if (warn) {
+          window.location.href = "/";
+        }
+
+        titlePost.innerHTML = data[0].title;
+        descriptionPost.innerHTML = data[0].description;
 
         img.classList.replace("hidden", "block");
-        img.setAttribute("src", `/frontend/public/img/mediaPost/${data.image}`);
+        img.setAttribute("src", `http://localhost:3000/test/${data[0].image}`);
       } catch (error) {
         return console.error(error.message);
       }
@@ -79,50 +86,48 @@ document.addEventListener("DOMContentLoaded", () => {
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  console.log(hiddenTitle.value);
-
-  const contents = {
-    title: titlePost.value,
-    description: descriptionPost.value,
-  };
-
   const handlePostMedia = async () => {
     try {
       const media = document.getElementById("avatar");
 
       const formData = new FormData();
-      if (media.files[0]) {
-        formData.append("media-photo", media.files[0]);
-      }
+      formData.append("media-photo", media.files[0]);
 
       const response = await fetch(
-        `http://localhost:3000/post-content/${titlePost.value}/${descriptionPost.value}`,
+        `${port}/media/post-information/${titlePost.value}/${descriptionPost.value}`,
         {
           method: "POST",
           body: formData,
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       if (!response.ok) {
-        return console.log("Response not ok!");
+        console.log("Response not ok!");
       }
 
-      const { msg, err } = await response.json();
+      const { msg, err, warn, image } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err) {
         return Swal.fire(err).then((result) => {
           if (result.isConfirmed) {
             setTimeout(() => {
-              window.location.href = "/frontend/pages/admin/masterData.html";
+              window.location.href = "/pages/masterData.html";
             }, 500);
           }
         });
       }
 
       if (msg) {
-        return Swal.fire(msg).then((result) => {
+        Swal.fire(msg).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/frontend/pages/admin/masterData.html";
+            setTimeout(() => {
+              window.location.href = "/pages/masterData.html";
+            }, 5000);
           }
         });
       }
@@ -141,28 +146,35 @@ form.addEventListener("submit", (event) => {
       }
 
       const response = await fetch(
-        `http://localhost:3000/edit-content/${hiddenTitle.value}/${titlePost.value}/${descriptionPost.value}`,
+        `${port}/media/${titlePost.value}/${hiddenTitle.value}/${descriptionPost.value}`,
         {
-          method: "POST",
+          method: "PUT",
           body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
       if (!response.ok) return console.log("not ok!");
 
-      const { msg, err } = await response.json();
+      const { msg, err, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err) {
         Swal.fire(err).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/frontend/pages/admin/masterData.html";
+            window.location.href = "/frontend/pages/masterData.html";
           }
         });
       }
 
       Swal.fire(msg).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = "/frontend/pages/admin/masterData.html";
+          window.location.href = "/frontend/pages/masterData.html";
         }
       });
     } catch (error) {
@@ -172,6 +184,7 @@ form.addEventListener("submit", (event) => {
 
   if (isEdit) {
     handleEditMedia();
+    return;
   } else {
     handlePostMedia();
   }

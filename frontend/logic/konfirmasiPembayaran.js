@@ -3,46 +3,66 @@
 
 // verifyUser("/frontend/pages/auth/login.html");
 
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+import port from "../secret/port.js";
+
+const token = localStorage.getItem("token");
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const namaSiswa = localStorage.getItem("siswa");
+
+import convertRupiah from "/frontend/features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
 
 const inputNama = document.querySelector('input[id="nama"]');
 const inputNominal = document.querySelector('input[id="nominal"]');
 const form = document.querySelector("form");
-
-const namaSiswa = localStorage.getItem("username");
-const infoBilling = localStorage.getItem("deskripsi_pembayaran");
-
-console.log(namaSiswa, infoBilling);
+const imageInput = document.querySelector("input[name=avatar]");
+const buttonConfirm = document.getElementById("button-confirm");
+const currentImagePayment = document.getElementById("current-image-payment");
 
 document.addEventListener("DOMContentLoaded", () => {
   const buttonBackToPage = document.getElementById("prev_page");
 
   buttonBackToPage.setAttribute(
     "href",
-    `/frontend/pages/user/cek_tagihan.html?name=${namaSiswa}`
+    `/frontend/pages/cek_tagihan.html?name=${namaSiswa}`
   );
 
   async function handleDetailBilling() {
     try {
-      const response = await fetch(
-        `http://localhost:3000/detail-tagihan/${encodeURIComponent(
-          namaSiswa
-        )}/${encodeURIComponent(infoBilling)}`
-      );
+      const response = await fetch(`${port}/student-payments/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         // return console.log(data);
-        const { billing } = await response.json();
+        const { siswa, warn } = await response.json();
 
-        inputNama.value = billing.namaSiswa;
+        if (warn) {
+          window.location.href = "/";
+        }
+
+        if (siswa[0].image) {
+          currentImagePayment.setAttribute(
+            "src",
+            `http://localhost:3000/test/${siswa[0].image}`
+          );
+
+          buttonConfirm.innerHTML = "Perbarui Pembayaran";
+        }
+
+        inputNama.value = siswa[0].namaSiswa;
         inputNama.disabled = true;
 
         inputNominal.setAttribute(
           "data-realnominal",
-          billing.jumlahTagihanSiswa
+          siswa[0].jumlahTagihanSiswa
         );
-        inputNominal.value = toRupiah(billing.jumlahTagihanSiswa);
+        inputNominal.value = toRupiah(siswa[0].jumlahTagihanSiswa);
         inputNominal.disabled = true;
       }
     } catch (error) {
@@ -54,11 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const fileImage = document.querySelector("input[type=file]");
-const currentImagePayment = document.getElementById("current-image-payment");
 const buttonSubmit = document.querySelector("button[type=submit]");
 const checkboxPayment = document.querySelector("input[type=checkbox]");
-
-console.log(checkboxPayment);
 
 fileImage.addEventListener("change", (event) => {
   const file = fileImage.files[0];
@@ -87,33 +104,42 @@ fileImage.addEventListener("change", (event) => {
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  async function handleUploadPhoto() {
+  async function handleConfirmPayment() {
     try {
       const fileInput = document.getElementById("avatar");
       const formData = new FormData();
 
       if (fileInput.files[0]) {
         formData.append("avatar", fileInput.files[0]);
+      } else {
+        Swal.fire("Berhasil!");
       }
 
       const uploadPhoto = await fetch(
-        `http://localhost:3000/upload-photo/${inputNama.value}/${inputNominal.dataset.realnominal}/${infoBilling}`,
+        `${port}/student-payments/confirm-payment/${id}`,
         {
           method: "PUT",
           body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       if (!uploadPhoto.ok) {
         throw new Error("Response not ok!");
       }
 
-      const { msg } = await response.json();
+      const { msg, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (msg) {
-        Swal.fire(msg).then((result) => {
+        Swal.fire("msg").then((result) => {
           if (result.isConfirmed) {
             setTimeout(() => {
-              window.location.href = `/frontend/pages/user/cek_tagihan.html/name=${namaSiswa}`;
+              window.location.href = `/frontend/pages/cek_tagihan.html/name=${namaSiswa}`;
             }, 500);
           }
         });
@@ -123,5 +149,5 @@ form.addEventListener("submit", (event) => {
     }
   }
 
-  handleUploadPhoto();
+  handleConfirmPayment();
 });

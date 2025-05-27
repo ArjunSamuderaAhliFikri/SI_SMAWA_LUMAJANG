@@ -1,8 +1,10 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+import convertRupiah from "/features/convertRupiah/convertRupiah.js";
+
+const token = localStorage.getItem("token");
 
 const form = document.querySelector("form");
 const nameStudent = document.getElementById("name-student");
@@ -29,11 +31,11 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const profileStudent = {
-    name: nameStudent.value,
-    kelas: selectClass.value,
-    tapel: selectTapel.value,
-    accountNumber: accountNumber.value,
-    nominalPayment: nominalPayment.value,
+    namaSiswa: nameStudent.value,
+    kelasSiswa: selectClass.value,
+    tapelSiswa: selectTapel.value,
+    rekeningTujuan: accountNumber.value,
+    jumlahTagihanSiswa: nominalPayment.value,
     typeofPayment:
       typePayment.dataset.typeofpayment == "pendaftaran-kelas-10"
         ? "Pendaftaran Siswa Kelas X"
@@ -42,20 +44,28 @@ form.addEventListener("submit", (event) => {
 
   const handleRegisterStudent = async () => {
     try {
-      const response = await fetch("http://localhost:3000/pendaftaran-siswa", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(
+        "https://api2.smawalmj.com/student-payments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
 
-        body: JSON.stringify(profileStudent),
-      });
+          body: JSON.stringify(profileStudent),
+        }
+      );
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { msg, err } = await response.json();
+      const { msg, err, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err)
         return Swal.fire(err).then((result) => {
@@ -81,13 +91,22 @@ form.addEventListener("submit", (event) => {
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveTapel = async () => {
     try {
-      const response = await fetch("http://localhost:3000/tapel");
+      const response = await fetch("https://api2.smawalmj.com/tapel", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { tapel } = await response.json();
+      const { tapel, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       generateOption(tapel, selectTapel);
     } catch (error) {
@@ -97,15 +116,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const retrieveClass = async () => {
     try {
-      const response = await fetch("http://localhost:3000/kelas_siswa");
+      const response = await fetch("https://api2.smawalmj.com/kelas", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { kelasSiswaData } = await response.json();
+      const { kelas, warn } = await response.json();
 
-      const { kelas } = kelasSiswaData[0];
+      if (warn) {
+        window.location.href = "/";
+      }
 
       generateOption(kelas, selectClass);
     } catch (error) {
@@ -115,13 +141,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const retrieveAccountNumbers = async () => {
     try {
-      const response = await fetch("http://localhost:3000/nomor-rekening");
+      const response = await fetch(
+        "https://api2.smawalmj.com/account-billing",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { accounts } = await response.json();
+      const { accounts, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       generateOptionAccountNumber(accounts, accountNumber);
     } catch (error) {
@@ -136,10 +174,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function generateOptionAccountNumber(data, selectElement) {
   data.forEach((item) => {
+    const { id, atasNama, rekening } = item;
     const option = document.createElement("option");
 
-    option.setAttribute("value", item.accountNumber);
-    option.innerHTML = item.accountNumber;
+    option.setAttribute("value", rekening);
+    option.innerHTML = rekening;
 
     selectElement.appendChild(option);
   });
@@ -147,11 +186,23 @@ function generateOptionAccountNumber(data, selectElement) {
 
 function generateOption(data, selectElement) {
   data.forEach((item) => {
+    const { kelas, tapel } = item;
+    if (kelas) {
+      const option = document.createElement("option");
+
+      option.setAttribute("value", kelas);
+      option.innerHTML = kelas;
+
+      selectElement.appendChild(option);
+      return;
+    }
+
     const option = document.createElement("option");
 
-    option.setAttribute("value", item);
-    option.innerHTML = item;
+    option.setAttribute("value", tapel);
+    option.innerHTML = tapel;
 
     selectElement.appendChild(option);
+    return;
   });
 }

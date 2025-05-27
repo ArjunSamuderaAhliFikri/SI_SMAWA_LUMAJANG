@@ -1,7 +1,11 @@
 import convertRupiah from "../features/convertRupiah/convertRupiah.js";
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+import port from "../secret/port.js";
+
+// verifyUser("/frontend/pages/auth/login.html");
+
+const token = localStorage.getItem("token");
 
 let inputTagihanSiswa = 50000;
 
@@ -38,20 +42,6 @@ let namaSiswa;
 let kelasSiswa = "XII-1"; // by default
 let tapelSiswa = "2024/2025"; // by default
 
-// const inputTagihanSiswa = document.getElementById("jumlah-tagihan-siswa");
-// const toRupiah = convertRupiah;
-// inputTagihanSiswa.addEventListener("change", (event) => {
-//   const rupiahDisplay = document.querySelector("span#rupiah");
-
-//   if (!event.target.value) {
-//     return (rupiahDisplay.innerHTML = "Rp.0");
-//   }
-
-//   const convertRupiah = toRupiah(event.target.value);
-
-//   rupiahDisplay.innerHTML = convertRupiah;
-// });
-
 const accountNumberOptionElement = document.querySelector(
   "select[id=opsi-rekening]"
 );
@@ -59,16 +49,27 @@ const accountNumberOptionElement = document.querySelector(
 document.addEventListener("DOMContentLoaded", () => {
   async function retrieveDataAccountNumber() {
     try {
-      const response = await fetch("http://localhost:3000/nomor-rekening");
+      const response = await fetch(`${port}/account-billing`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        const { accounts } = await response.json();
+        const { accounts, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
 
         accounts.forEach((item) => {
+          const { id, atasNama, rekening } = item;
+
           const option = document.createElement("option");
 
-          option.setAttribute("value", item.accountNumber);
-          option.innerHTML = item.accountNumber;
+          option.setAttribute("value", rekening);
+          option.innerHTML = rekening;
 
           accountNumberOptionElement.appendChild(option);
         });
@@ -82,17 +83,27 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const response = await fetch("http://localhost:3000/kelas_siswa");
+  const response = await fetch(`${port}/kelas`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   try {
     if (response.ok) {
-      const { kelasSiswaData } = await response.json();
-      const { kelas } = kelasSiswaData[0];
+      const { kelas, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       kelas.forEach((item) => {
+        const { kelas } = item;
+
         const option = document.createElement("option");
 
-        option.setAttribute("value", item);
-        option.innerHTML = item;
+        option.setAttribute("value", kelas);
+        option.innerHTML = kelas;
 
         selectElementClass.appendChild(option);
       });
@@ -105,20 +116,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.addEventListener("DOMContentLoaded", () => {
   async function handleGetStudents() {
     try {
-      const response = await fetch("http://localhost:3000/siswa");
+      const response = await fetch(`${port}/siswa`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        const data = await response.json();
+        const { siswa, warn } = await response.json();
 
-        const { siswa } = data;
+        if (warn) {
+          window.location.href = "/";
+        }
 
-        siswa.forEach((element) => {
+        siswa.forEach((item) => {
+          const { username } = item;
           let optionElement = document.createElement("option");
-          const nama = element.username;
 
           // Untuk memasukkan nama
-          optionElement.innerHTML = nama;
-          optionElement.setAttribute("value", nama);
+          optionElement.innerHTML = username;
+          optionElement.setAttribute("value", username);
 
           selectElementName.appendChild(optionElement);
         });
@@ -133,6 +151,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
 selectElementName.addEventListener("change", (event) => {
   namaSiswa = event.target.value;
+
+  const retrieveClassStudent = async () => {
+    try {
+      const response = await fetch(
+        `${port}/siswa/detailSiswa/${selectElementName.value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        return console.log("Response not ok!");
+      }
+
+      const { siswa } = await response.json();
+
+      selectElementClass.disabled = true;
+
+      selectElementClass.value = siswa[0].kelas;
+    } catch (error) {
+      return console.error(error.message);
+    }
+  };
+
+  retrieveClassStudent();
 });
 
 selectElementClass.addEventListener("change", (event) => {
@@ -144,16 +189,14 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const catatanSiswa = document.getElementById("catatan").value;
-  // const jumlahTagihanSiswa = document.getElementById(
-  //   "jumlah-tagihan-siswa"
-  // ).value;
 
   async function handleMakeBill() {
     try {
-      const response = await fetch("http://localhost:3000/tagihan-siswa", {
+      const response = await fetch(`${port}/student-payments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           namaSiswa,
@@ -162,18 +205,23 @@ form.addEventListener("submit", (event) => {
           deadline: calendarDeadline.value,
           jumlahTagihanSiswa: inputTagihanSiswa,
           rekeningTujuan: accountNumberOptionElement.value,
+          typeofPayment: "Pembayaran SPP",
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        const { msg, err } = data;
+        const { msg, err, warn } = data;
 
-        if (err) {
-          return Swal.fire(err);
+        if (warn) {
+          window.location.href = "/";
         }
 
-        Swal.fire(msg);
+        if (msg) {
+          return Swal.fire(msg);
+        }
+
+        return Swal.fire(err);
       }
     } catch (error) {
       return console.error(error.message);

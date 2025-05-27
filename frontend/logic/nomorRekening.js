@@ -1,6 +1,10 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
+
+import port from "../secret/port.js";
+
+const token = localStorage.getItem("token");
 
 let inputAccountNumber = document.getElementById("input-nomor-rekening");
 const inputOwnerAccountNumber = document.getElementById(
@@ -20,22 +24,25 @@ formUpdateAccountNumber.addEventListener("submit", (event) => {
 
   async function updateAccountNumber() {
     try {
-      const response = await fetch(
-        `http://localhost:3000/update-nomor-rekening/${hidden.value}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            newAccountNumber: inputAccountNumber.value,
-            atasNama: inputOwnerAccountNumber.value,
-          }),
-        }
-      );
+      const response = await fetch(`${port}/account-billing/${hidden.value}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          newAccountNumber: inputAccountNumber.value,
+          atasNama: inputOwnerAccountNumber.value,
+        }),
+      });
 
       if (response.ok) {
-        Swal.fire("Data berhasil diperbarui").then((result) => {
+        const { msg, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
+        Swal.fire(msg).then((result) => {
           if (result.isConfirmed) {
             window.location.reload();
           }
@@ -58,18 +65,22 @@ formDeletedAccountNumber.addEventListener("submit", (event) => {
   event.preventDefault();
 
   async function handleDeleteAccountNumber() {
-    const response = await fetch(
-      `http://localhost:3000/delete-nomor-rekening/${hidden.value}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${port}/account-billing/${hidden.value}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (response.ok) {
-      Swal.fire("Data berhasil dihapus!").then((result) => {
+      const { msg, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
+
+      Swal.fire(msg).then((result) => {
         if (result.isConfirmed) {
           window.location.reload();
         }
@@ -85,16 +96,26 @@ const bodyOfTable = document.querySelector("tbody");
 document.addEventListener("DOMContentLoaded", () => {
   async function retrieveAccountNumber() {
     try {
-      const response = await fetch("http://localhost:3000/nomor-rekening");
+      const response = await fetch(`${port}/account-billing`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        const { accounts, err } = await response.json();
+        const { accounts, err, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
 
         if (err) {
           return alert(err);
         }
 
         accounts.forEach((data) => {
+          const { id, atasNama, rekening, status } = data;
           const createTrElement = document.createElement("tr");
           createTrElement.setAttribute(
             "class",
@@ -102,9 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
           createTrElement.innerHTML = generateTdElement(
-            data.atasNama,
-            data.accountNumber,
-            data.status
+            atasNama,
+            rekening,
+            status
           );
 
           bodyOfTable.appendChild(createTrElement);
@@ -151,22 +172,24 @@ addAccountNumberForm.addEventListener("submit", (event) => {
 
   async function handleAddAccountNumber() {
     try {
-      const response = await fetch(
-        "http://localhost:3000/tambah-nomor-rekening",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            nomorRekening: addAccountNumber.value,
-            atasNama: inputAtasNama.value,
-          }),
-        }
-      );
+      const response = await fetch(`${port}/account-billing`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rekening: addAccountNumber.value,
+          atasNama: inputAtasNama.value,
+        }),
+      });
 
       if (response.ok) {
-        const { message, err } = await response.json();
+        const { msg, err, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
 
         if (err) {
           return Swal.fire(err).then((result) => {
@@ -176,7 +199,7 @@ addAccountNumberForm.addEventListener("submit", (event) => {
           });
         }
 
-        Swal.fire(message).then((result) => {
+        Swal.fire(msg).then((result) => {
           if (result.isConfirmed) {
             window.location.reload();
           }

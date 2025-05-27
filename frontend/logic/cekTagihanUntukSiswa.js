@@ -2,53 +2,19 @@
 
 // verifyUser("/frontend/pages/auth/login.html");
 
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+import convertRupiah from "/frontend/features/convertRupiah/convertRupiah.js";
+
+import port from "../secret/port.js";
 
 const toRupiah = convertRupiah;
 const tBody = document.querySelector("tbody");
 
-tBody.addEventListener("click", (event) => {
-  const tdElements = tBody.querySelectorAll("td");
-
-  tdElements.forEach((td) => {
-    td.addEventListener("click", () => {
-      const parent = td.parentElement;
-
-      // todo!
-
-      const namaSiswa = localStorage.getItem("username");
-
-      const infoBilling = parent
-        .getElementsByTagName("td")[0]
-        .querySelector("span[id=deskripsi-pembayaran").innerHTML;
-
-      const nominal = parent
-        .getElementsByTagName("td")[2]
-        .querySelector("span").innerHTML;
-
-      // return console.log(namaSiswa, infoBilling, nominal);
-
-      localStorage.setItem("deskripsi_pembayaran", infoBilling);
-      localStorage.setItem("nominal", nominal);
-
-      const informasiPembayaran = { namaSiswa, catatanSiswa: infoBilling };
-
-      localStorage.setItem("informasi-pembayaran", informasiPembayaran);
-
-      window.location.href = "/frontend/pages/user/konfirmasi_pembayaran.html";
-    });
-  });
-  return;
-});
+const token = localStorage.getItem("token");
 
 const URL = new URLSearchParams(window.location.search);
 const username = URL.get("name");
 
-console.log(username);
-
 document.addEventListener("DOMContentLoaded", () => {
-  // const nameStudent = localStorage.getItem("username");
-
   const aboutUser = document.getElementById("about-user");
 
   aboutUser.innerHTML = username;
@@ -56,16 +22,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   async function handleGetBilling() {
-    // const username = localStorage.getItem("username");
-
     try {
-      const response = await fetch(`http://localhost:3000/tagihan/${username}`);
+      const response = await fetch(
+        `${port}/student-payments/by-username/${username}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
-        const data = await response.json();
-        const { msg, findBilling } = data;
+        const { data } = await response.json();
 
-        findBilling.forEach((data) => {
+        data.forEach((data) => {
           const generateTrElement = document.createElement("tr");
           generateTrElement.setAttribute(
             "class",
@@ -73,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
           generateTrElement.innerHTML = generateTdElement(
+            data.id,
             data.catatanSiswa,
             toRupiah(data.jumlahTagihanSiswa),
             data.isPaidOff,
@@ -94,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function generateTdElement(
+  id,
   deskripsiPembayaran,
   tanggalPembayaran,
   statusPembayaran,
@@ -165,7 +138,8 @@ function generateTdElement(
   const isDeadline = convertDateTime(deadline);
 
   return `
-  <td class="py-4 px-4 border-b font-medium text-slate-500" id="${deskripsiPembayaran}">
+  <td class="relative py-4 px-4 border-b font-medium text-slate-500" id="${deskripsiPembayaran}">
+  <a href="/frontend/pages/konfirmasi_pembayaran.html?id=${id}" class="block h-full w-[1440px] absolute top-0 left-0 bg-transparent"></a>
   <div class="flex items-center gap-4 xl:w-auto w-[300px]">
   <i class="fa-solid fa-money-check-dollar text-slate-800 text-xl"></i>
   <div>

@@ -1,8 +1,11 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");s
 
 // Initialize Feather icons
+
+const token = localStorage.getItem("token");
+
 document.addEventListener("DOMContentLoaded", function () {
   feather.replace();
 });
@@ -21,20 +24,32 @@ const nisnInput = document.getElementById("nisn");
 
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveDetailStudent = async () => {
-    const response = await fetch(`http://localhost:3000/siswa/${username}`);
+    const response = await fetch(
+      `https://api2.smawalmj.com/siswa/detailSiswa/${username}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Response not ok!");
     }
 
-    const { siswa } = await response.json();
+    const { siswa, warn } = await response.json();
 
-    hidden.value = siswa.username;
-    nameInput.value = siswa.username;
-    classInput.value = siswa.kelas;
-    tapelInput.value = siswa.tapel;
-    nomorHPInput.value = siswa.nomorHP;
-    nisnInput.value = siswa.nisn;
+    if (warn) {
+      window.location.href = "/";
+    }
+
+    hidden.value = siswa[0].username;
+    nameInput.value = siswa[0].username;
+    classInput.value = siswa[0].kelas;
+    tapelInput.value = siswa[0].tapel;
+    nomorHPInput.value = siswa[0].nomorHP;
+    nisnInput.value = siswa[0].nisn;
   };
 
   retrieveDetailStudent();
@@ -54,9 +69,10 @@ form.addEventListener("submit", (event) => {
 
   const handleEditSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3000/siswa", {
+      const response = await fetch("https://api2.smawalmj.com/siswa", {
         method: "PUT",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(dataStudent),
@@ -66,7 +82,11 @@ form.addEventListener("submit", (event) => {
         throw new Error("Response not ok!");
       }
 
-      const { msg, err } = await response.json();
+      const { msg, err, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err) {
         return Swal.fire(err);
@@ -74,7 +94,7 @@ form.addEventListener("submit", (event) => {
 
       return Swal.fire(msg).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = `/frontend/pages/admin/data_siswa.html?username=${username}`;
+          window.location.href = `/pages/data_siswa.html?username=${username}`;
         }
       });
     } catch (error) {
@@ -83,4 +103,44 @@ form.addEventListener("submit", (event) => {
   };
 
   handleEditSubmit();
+});
+
+const deleteStudent = document.getElementById("delete-data-student");
+
+deleteStudent.addEventListener("click", () => {
+  const deleteDataStudent = async () => {
+    try {
+      const response = await fetch(
+        `https://api2.smawalmj.com/siswa/${username}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        return console.log("Response not ok!");
+      }
+
+      const { msg, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
+
+      if (msg) {
+        return Swal.fire(msg).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/pages/data_siswa.html";
+          }
+        });
+      }
+    } catch (error) {
+      return console.error(error);
+    }
+  };
+
+  deleteDataStudent();
 });

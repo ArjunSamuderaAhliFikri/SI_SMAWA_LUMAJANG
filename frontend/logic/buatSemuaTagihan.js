@@ -1,9 +1,11 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+import convertRupiah from "/features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
+
+const token = localStorage.getItem("token");
 
 const form = document.querySelector("form");
 const selectElementClass = document.getElementById("kelas");
@@ -20,17 +22,26 @@ flatpickr(calendarDeadline, {
 document.addEventListener("DOMContentLoaded", () => {
   async function handleRetrieveClassStudent() {
     try {
-      const response = await fetch("http://localhost:3000/kelas_siswa");
+      const response = await fetch("https://api2.smawalmj.com/kelas", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        const { kelasSiswaData } = await response.json();
-        const { kelas } = kelasSiswaData[0];
+        const { kelas, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
 
         kelas.forEach((item) => {
+          const { kelas } = item;
           const option = document.createElement("option");
 
-          option.setAttribute("value", item);
-          option.innerHTML = item;
+          option.setAttribute("value", kelas);
+          option.innerHTML = kelas;
 
           selectElementClass.appendChild(option);
         });
@@ -49,16 +60,29 @@ const accountNumberOptionElement = document.querySelector(
 document.addEventListener("DOMContentLoaded", () => {
   async function retrieveDataAccountNumber() {
     try {
-      const response = await fetch("http://localhost:3000/nomor-rekening");
+      const response = await fetch(
+        "https://api2.smawalmj.com/account-billing",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
-        const { accounts } = await response.json();
+        const { accounts, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
 
         accounts.forEach((item) => {
+          const { rekening } = item;
           const option = document.createElement("option");
 
-          option.setAttribute("value", item.accountNumber);
-          option.innerHTML = item.accountNumber;
+          option.setAttribute("value", rekening);
+          option.innerHTML = rekening;
 
           accountNumberOptionElement.appendChild(option);
         });
@@ -92,24 +116,34 @@ form.addEventListener("submit", (event) => {
 
   async function handleCreateAllBilling() {
     try {
-      const response = await fetch("http://localhost:3000/buat-semua-tagihan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          kelasTagihan: selectElementClass.value,
-          rekeningTujuan: accountNumberOptionElement.value,
-          deadline: calendarDeadline.value,
-          catatanTagihan: catatanTagihan.value,
-          jumlahTagihanSiswa: jumlahTagihan,
-        }),
-      });
+      const response = await fetch(
+        "https://api2.smawalmj.com/student-payments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            kelasSiswa: selectElementClass.value,
+            rekeningTujuan: accountNumberOptionElement.value,
+            deadline: calendarDeadline.value,
+            catatanSiswa: catatanTagihan.value,
+            jumlahTagihanSiswa: jumlahTagihan,
+            typeofPayment: "Pembayaran SPP",
+            specialKeyword: "Fitur Buat Tagihan Untuk Semua Siswa",
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
 
-        const { msg, err } = data;
+        const { msg, err, warn } = data;
+
+        if (warn) {
+          window.location.href = "/";
+        }
 
         if (err) {
           return Swal.fire(err);

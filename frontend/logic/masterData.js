@@ -1,6 +1,10 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
+
+import port from "../secret/port.js";
+
+const token = localStorage.getItem("token");
 
 const listOfClass = document.getElementById("list-kelas");
 const listOfTapel = document.getElementById("list-tapel");
@@ -8,17 +12,29 @@ const listOfTapel = document.getElementById("list-tapel");
 document.addEventListener("DOMContentLoaded", async () => {
   async function handleRetrieveClassNTapel() {
     try {
-      const classResponse = await fetch("http://localhost:3000/kelas_siswa");
-      const tapelResponse = await fetch("http://localhost:3000/tapel");
+      const classResponse = await fetch(`${port}/kelas`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const tapelResponse = await fetch(`${port}/tapel`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!classResponse || !tapelResponse) {
         return console.log("Response not ok");
       }
 
-      const dataKelas = await classResponse.json();
-
+      const { kelas, warn } = await classResponse.json();
       const { tapel } = await tapelResponse.json();
-      const { kelas } = await dataKelas.kelasSiswaData[0];
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       return { kelas, tapel };
     } catch (error) {
@@ -29,13 +45,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { kelas, tapel } = await handleRetrieveClassNTapel();
 
   kelas.forEach((item) => {
-    const listItem = generateList(item, "kelas");
+    const { kelas } = item;
+    const listItem = generateList(kelas, "kelas");
 
     listOfClass.appendChild(listItem);
   });
 
   tapel.forEach((item) => {
-    const listItem = generateList(item, "tapel");
+    const { tapel } = item;
+    const listItem = generateList(tapel, "tapel");
 
     listOfTapel.appendChild(listItem);
   });
@@ -103,10 +121,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/editTapel/${hiddenValue.value}/${currentText.value}`,
+          `${port}/tapel/${hiddenValue.value}/${currentText.value}`,
           {
             method: "PUT",
             headers: {
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }
@@ -114,7 +133,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!response.ok) return console.log("gagal simpan perubahan");
 
-        const { msg, err } = await response.json();
+        const { msg, err, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
+
         if (err) return alert(err);
 
         alert(msg);
@@ -149,10 +173,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         ).value;
       try {
         const response = await fetch(
-          `http://localhost:3000/editKelas/${hiddenValue}/${currentText}`,
+          `${port}/kelas/${hiddenValue}/${currentText}`,
           {
             method: "PUT",
             headers: {
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }
@@ -200,10 +225,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/deleteTapel/${currentText.textContent}`,
+          `${port}/tapel/${currentText.textContent}`,
           {
             method: "DELETE",
             headers: {
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }
@@ -230,10 +256,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/deleteClass/${currentText.textContent}`,
+          `${port}/kelas/${currentText.textContent}`,
           {
             method: "DELETE",
             headers: {
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }
@@ -260,16 +287,26 @@ const wrapperListMedia = document.getElementById("wrapper-media");
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveDataMedia = async () => {
     try {
-      const response = await fetch("http://localhost:3000/media");
+      const response = await fetch(`${port}/media`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { data } = await response.json();
+      const { data, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       data.forEach((media) => {
         const listItem = generateListMedia(
+          media.id,
           media.title,
           media.description,
           media.image,
@@ -297,9 +334,10 @@ formKelas.addEventListener("submit", (event) => {
 
   async function handleAddNewItem() {
     try {
-      const response = await fetch("http://localhost:3000/add-kelas", {
+      const response = await fetch(`${port}/kelas`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ kelas: kelasInput.value }),
@@ -307,7 +345,11 @@ formKelas.addEventListener("submit", (event) => {
 
       if (!response.ok) return console.log("response not ok");
 
-      const { msg, err } = await response.json();
+      const { msg, err, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err) {
         Swal.fire(err).then((result) => {
@@ -335,9 +377,10 @@ formTapel.addEventListener("submit", (event) => {
 
   async function handleAddNewItem() {
     try {
-      const response = await fetch(`http://localhost:3000/add-tapel`, {
+      const response = await fetch(`${port}/tapel`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ tapel: tapelInput.value }),
@@ -368,7 +411,7 @@ formTapel.addEventListener("submit", (event) => {
   handleAddNewItem();
 });
 
-function generateListMedia(title, description, image, dateTime) {
+function generateListMedia(id, title, description, image, dateTime) {
   const hyperLink = document.createElement("a");
   hyperLink.setAttribute(
     "class",
@@ -377,12 +420,12 @@ function generateListMedia(title, description, image, dateTime) {
 
   hyperLink.setAttribute(
     "href",
-    `/frontend/pages/pusat_informasi/topic-admin.html?title=${title}`
+    `/frontend/pages/topic-admin.html?title=${title}`
   );
   const html = `<li class="block size-full">
                   <img
                     class="block size-full object-cover"
-                    src="/frontend/public/img/mediaPost/${image}"
+                    src="http://localhost:3000/test/${image}"
                     alt="${image}"
                   />
 

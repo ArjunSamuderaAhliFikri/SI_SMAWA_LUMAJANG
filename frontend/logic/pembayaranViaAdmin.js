@@ -1,12 +1,15 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
-import convertToRupiah from "../features/convertRupiah/convertRupiah.js";
+import convertToRupiah from "/frontend/features/convertRupiah/convertRupiah.js";
+
+import port from "../secret/port.js";
+
+const token = localStorage.getItem("token");
 
 const params = new URLSearchParams(window.location.search);
-const getName = params.get("name");
-const getDescription = params.get("description");
+const id = params.get("id");
 
 const input = document.querySelector('input[type="file"]');
 const img = document.getElementById("preview-avatar");
@@ -65,21 +68,30 @@ input.addEventListener("change", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const retriveDetailPayment = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/tagihan/${getName}/${getDescription}`
-      );
+      const response = await fetch(`${port}/student-payments/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
 
-      const { findBilling } = await response.json();
+      const { siswa, warn } = await response.json();
 
-      studentName.value = findBilling.namaSiswa;
-      studentClass.value = findBilling.kelasSiswa;
+      if (warn) {
+        window.location.href = "/";
+      }
 
-      if (findBilling.isPaidOff === "Tuntas") {
-        billingStatus.textContent = findBilling.isPaidOff;
+      studentName.value = siswa[0].namaSiswa;
+      studentClass.value = siswa[0].kelasSiswa;
+
+      if (siswa[0].isPaidOff === "Tuntas") {
+        billingStatus.textContent = siswa[0].isPaidOff;
+
+        nominalPayment.value = siswa[0].jumlahTagihanSiswa;
         nominalPayment.disabled = true;
 
         submitButton.disabled = true;
@@ -90,28 +102,55 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
 
-      isBilling.textContent = convertToRupiah(findBilling.jumlahTagihanSiswa);
+      isBilling.textContent = convertToRupiah(
+        siswa[0].jumlahTagihanSiswa.toString()
+      );
 
-      if (findBilling.uniqAccessImage) {
-        img.setAttribute(
-          "src",
-          `/frontend/public/img/buktiPembayaran/${findBilling.uniqAccessImage}`
-        );
+      if (siswa[0].image) {
+        img.setAttribute("src", `${port}/test/${siswa[0].image}`);
         img.classList.replace("hidden", "block");
       }
-
-      const historyPayment = findBilling.historyPayment;
-
-      historyPayment.forEach((item) => {
-        const listItem = generateListItem(item.datetime, item.nominal);
-        wrapperListHistoryPayment.appendChild(listItem);
-      });
     } catch (error) {
       return console.error(error.message);
     }
   };
 
+  const historyPaymentViaAdmin = async () => {
+    try {
+      const response = await fetch(`${port}/history-payment-via-admin/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        return console.log("Response not ok!");
+      }
+
+      const { payments, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
+
+      if (payments) {
+        payments.forEach((payment) => {
+          const { nominal, createdAt } = payment;
+
+          const generateListPayment = generateListItem(createdAt, nominal);
+
+          wrapperListHistoryPayment.prepend(generateListPayment);
+        });
+      }
+    } catch (error) {
+      return console.error(error);
+    }
+  };
+
   retriveDetailPayment();
+
+  historyPaymentViaAdmin();
 });
 
 form.addEventListener("submit", async (event) => {
@@ -119,15 +158,16 @@ form.addEventListener("submit", async (event) => {
 
   try {
     const formData = new FormData();
-    if (input.files[0]) {
-      formData.append("avatar", input.files[0]);
-    }
+    formData.append("avatar", input.files[0]);
 
     const response = await fetch(
-      `http://localhost:3000/via-admin/${getName}/${getDescription}/${nominalPayment.value}`,
+      `${port}/student-payments/via-admin-with-photo/${id}/${studentName.value}/${nominalPayment.value}`,
       {
         method: "PUT",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -135,12 +175,24 @@ form.addEventListener("submit", async (event) => {
       throw new Error("Gagal memperbarui data");
     }
 
-    const { msg } = await response.json();
-    Swal.fire("Pembayaran Berhasil!").then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/frontend/pages/admin/pantau_siswa.html";
-      }
-    });
+    const { msg, warn, image } = await response.json();
+
+    if (image) {
+      window.location.href = image;
+      return;
+    }
+
+    if (warn) {
+      window.location.href = "/";
+    }
+
+    setTimeout(() => {
+      Swal.fire(msg).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/pages/pantau_siswa.html";
+        }
+      });
+    }, 500);
   } catch (error) {
     console.error(error.message);
   }

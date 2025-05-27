@@ -1,9 +1,3 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-  if (window.location.pathname != "/frontend/pages/auth/login.html") {
-    return window.location.href("/frontend/pages/404.html");
-  }
-});
-
 const form = document.getElementById("login-form");
 const buttonsOptionLogin = document.querySelectorAll('button[id="opsi-login"]');
 
@@ -34,27 +28,31 @@ form.addEventListener("submit", async function (event) {
       body: JSON.stringify({ username, password }),
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      const { status, role, username, infoKelas, token } = data.user;
-      localStorage.setItem("token", data.token);
+    if (!response.ok) {
+      return console.log("Response not ok!");
+    }
 
-      if (role == "admin") {
-        localStorage.setItem("status", status);
+    const { role, admin, siswa, token, err } = await response.json();
 
-        window.location.href = "/frontend/pages/admin/dashboard.html";
-      } else {
-        localStorage.setItem("status", "Siswa");
-        localStorage.setItem("username", username);
-        localStorage.setItem("kelas", infoKelas);
+    if (err) {
+      return Swal.fire(err);
+    }
 
-        window.location.href = "/frontend/pages/user/dashboard_user.html";
-      }
+    if (role == "Siswa") {
+      localStorage.setItem("role", role);
+      localStorage.setItem("token", token);
+      localStorage.setItem("siswa", siswa[0].username);
+      localStorage.setItem("id", siswa[0].id);
+
+      window.location.href = "/frontend/pages/dashboard_user.html";
     } else {
-      Swal.fire("Gagal Untuk Melakukan Login!");
-      window.location.href = "#";
+      localStorage.setItem("role", role);
+      localStorage.setItem("token", token);
+      localStorage.setItem("admin", admin);
+
+      window.location.href = "/frontend/pages/dashboard.html";
     }
   } catch (error) {
-    Swal.fire("Username / Password Anda Salah!");
+    Swal.fire(error.message);
   }
 });

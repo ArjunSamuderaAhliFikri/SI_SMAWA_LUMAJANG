@@ -1,34 +1,48 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+import port from "../secret/port.js";
+
+import convertRupiah from "/frontend/features/convertRupiah/convertRupiah.js";
 
 const toRupiah = convertRupiah;
 
-const nameStudent = localStorage.getItem("username");
+const token = localStorage.getItem("token");
+const nameStudent = localStorage.getItem("siswa");
+const id = localStorage.getItem("id");
 const tbody = document.querySelector("tbody");
 
 document.addEventListener("DOMContentLoaded", () => {
   const cekTagihanSPP = document.getElementById("cek_tagihan_spp");
   cekTagihanSPP.setAttribute(
     "href",
-    `/frontend/pages/user/cek_tagihan.html?name=${nameStudent}`
+    `/frontend/pages/cek_tagihan.html?id=${id}&name=${nameStudent}`
   );
 
   async function handleRetrieveDataUser() {
     try {
       const response = await fetch(
-        `http://localhost:3000/tagihan/${nameStudent}`
+        `${port}/student-payments/by-username/${nameStudent}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { findBilling } = await response.json();
+      const { data, warn } = await response.json();
 
-      const highlightBilling = findBilling.slice(0, 4);
+      if (warn) {
+        window.location.href = "/";
+      }
+
+      const highlightBilling = data.slice(0, 4);
 
       highlightBilling.forEach((data) => {
         const trElement = document.createElement("tr");
@@ -61,20 +75,29 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveMedia = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/media`);
+      const response = await fetch(`${port}/media`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("Response not ok!");
       }
 
-      const { data } = await response.json();
+      const { data, warn } = await response.json();
+      if (warn) {
+        window.location.href = "/";
+      }
 
       const wrapperListMedia = document.getElementById("wrapper-media");
 
       data.forEach((item) => {
-        const { title, description, image, datePost } = item;
+        const { id, title, description, image, datePost } = item;
 
         const listMediaElement = generateListMedia(
+          id,
           title,
           description,
           image,
@@ -108,7 +131,7 @@ logoutButton.addEventListener("click", () => {
     confirmButtonText: "Keluar",
   }).then((result) => {
     if (result.isConfirmed) {
-      window.location.href = "/frontend/pages/auth/login.html";
+      window.location.href = "/frontend/pages/";
     }
   });
 });
@@ -117,19 +140,16 @@ buttonAboutUser.addEventListener("click", () => {
   logoutSection.classList.toggle("-translate-y-56");
 });
 
-function generateListMedia(title, description, image, dateTime) {
+function generateListMedia(id, title, description, image, dateTime) {
   const hyperLink = document.createElement("a");
-  hyperLink.setAttribute(
-    "href",
-    `/frontend/pages/pusat_informasi/topic.html?title=${title}`
-  );
+  hyperLink.setAttribute("href", `/frontend/pages/topic.html?id=${id}`);
   hyperLink.setAttribute(
     "class",
     "block max-w-[400px] min-h-[350px] max-h-[700px] overflow-hidden rounded-lg shadow overflow-hidden"
   );
   const html = `<li>
                   <div class="max-w-full max-h-56 overflow-hidden">
-                    <img class="block size-full object-cover" src="/frontend/public/img/mediaPost/${image}" alt="informasi"/>
+                    <img class="block size-full object-cover" src="http://localhost:3000/test/${image}" alt="informasi"/>
                   </div>
 
                   <div class="relative py-3 px-4">

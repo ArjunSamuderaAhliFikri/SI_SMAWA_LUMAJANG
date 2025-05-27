@@ -1,6 +1,10 @@
 import verifyUser from "../secret/verifyUser.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
+
+import port from "../secret/port.js";
+
+const token = localStorage.getItem("token");
 
 const downloadCardButton = document.getElementById("download-card");
 const cardStudent = document.getElementById("popup-card");
@@ -18,18 +22,27 @@ const kelasSiswa = document.querySelector('select[id="kelas-siswa"]');
 document.addEventListener("DOMContentLoaded", () => {
   async function handleRetrieveClassStudent() {
     try {
-      const response = await fetch("http://localhost:3000/kelas_siswa");
+      const response = await fetch(`${port}/kelas`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        const { kelasSiswaData, err } = await response.json();
+        // const { kelas, warn } = await response.json();
+        const { kelas, warn } = await response.json();
 
-        const { kelas } = kelasSiswaData[0];
-
-        if (err) {
-          return Swal.fire(err);
+        if (warn) {
+          window.location.href = "/";
         }
 
-        kelas.forEach((kelas) => {
+        if (!kelas) {
+          return Swal.fire("Tidak ada kelas yang tersedia!");
+        }
+
+        kelas.forEach((item) => {
+          const { kelas } = item;
           const optionElement = document.createElement("option");
           optionElement.setAttribute("value", kelas);
           optionElement.innerHTML = kelas;
@@ -50,12 +63,22 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   async function getTapel() {
     try {
-      const response = await fetch("http://localhost:3000/tapel");
+      const response = await fetch(`${port}/tapel`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        const { tapel } = await response.json();
+        const { tapel, warn } = await response.json();
 
-        tapel.forEach((tapel) => {
+        if (warn) {
+          window.location.href = "/";
+        }
+
+        tapel.forEach((item) => {
+          const { tapel } = item;
           const optionElement = document.createElement("option");
           optionElement.setAttribute("value", tapel);
           optionElement.innerHTML = tapel;
@@ -92,13 +115,13 @@ form.addEventListener("submit", async function (event) {
       return Swal.fire("harus di isi!");
     }
 
-    const response = await fetch("http://localhost:3000/tambah_siswa", {
+    const response = await fetch(`${port}/siswa`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        role: "siswa",
         username,
         password,
         nomorHP,
@@ -110,13 +133,17 @@ form.addEventListener("submit", async function (event) {
 
     if (response.ok) {
       //   message
-      const { err } = await response.json();
+      const { err, msg, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err) {
         return Swal.fire("Siswa sudah terdaftar!");
       }
 
-      Swal.fire("berhasil didaftarkan!");
+      Swal.fire(msg);
 
       // fill name in card
       cardStudentName.textContent = username;
@@ -127,7 +154,7 @@ form.addEventListener("submit", async function (event) {
 
       const generateQRCode = (filename) => {
         var qrcode = new QRCode("qrcode", {
-          text: `http://192.168.1.12:5500/frontend/pages/user/cek_tagihan.html?name=${username}`,
+          text: `https://smawalmj.com/pages/cek_tagihan.html?${username}`,
           width: 200,
           height: 200,
           colorDark: "#000",
@@ -167,15 +194,11 @@ form.addEventListener("submit", async function (event) {
         );
       };
 
-      generateQRCode(
-        `http://192.168.1.12:5500/frontend/pages/user/cek_tagihan.html?name=${username}`
-      );
+      generateQRCode(`https://smawalmj.com/pages/cek_tagihan.html?${username}`);
     } else {
       return Swal.fire("error!");
     }
   } catch (error) {
     return console.error(`Error Message : ${error.message}`);
-  } finally {
-    window.location.href("/frontend/pages/admin/dashboard.html");
   }
 });

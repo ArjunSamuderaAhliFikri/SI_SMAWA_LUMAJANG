@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Konfirmasi Pembayaran</title>
+    <link rel="stylesheet" href="/frontend/styles/minify.css" />
+    <link rel="stylesheet" href="/frontend/assets/css/all.css" />
+  </head>
+  <body>
+    <div class="min-h-screen overflow-hidden">
+      <div class="relative w-full h-56 bg-slate-700">
+        <a
+          id="prev_page"
+          class="absolute top-8 xl:left-16 left-6 px-4 py-2 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-500 hover:text-slate-100 transition-all duration-150 font-semibold"
+          >Kembali</a
+        >
+        <div
+          class="absolute left-1/2 -translate-x-1/2 xl:translate-y-1/4 translate-y-1/3 -bottom-[270px] container xl:max-w-2xl w-[90%] bg-slate-100 px-6 py-4 rounded-lg shadow-lg"
+        >
+          <div class="text-left">
+            <h1 class="capitalize text-lg font-semibold text-slate-700">
+              konfirmasi pembayaran
+            </h1>
+            <p class="capitalize text-slate-600 font-normal text-xs">
+              anda dapat melakukan konfirmasi pembayaran lewat sini
+            </p>
+          </div>
+
+          <div class="my-4">
+            <form enctype="multipart/form-data">
+              <div class="flex flex-col w-full space-y-2 rounded-md mt-3">
+                <label for="nama" class="font-medium text-slate-700"
+                  >Nama</label
+                >
+                <input
+                  type="text"
+                  name="nama"
+                  id="nama"
+                  class="bg-slate-200 py-3 px-2 rounded-md disabled:opacity-50 disabled:border-2 disabled:border-slate-300"
+                />
+              </div>
+
+              <div class="flex flex-col w-full space-y-2 rounded-md mt-3">
+                <label for="nominal" class="font-medium text-slate-700"
+                  >Nominal Yang Harus Dibayar
+                </label>
+                <input
+                  type="text"
+                  name="nominal"
+                  id="nominal"
+                  class="bg-slate-200 py-3 px-2 rounded-md disabled:opacity-50 disabled:border-2 disabled:border-slate-300"
+                  placeholder="nominal.."
+                />
+              </div>
+
+              <div>
+                <label
+                  for="avatar"
+                  class="h-42 block w-full rounded-md font-medium text-slate-100 bg-transparent border-dashed border-2 border-slate-600 text-center cursor-pointer text-sm transition-all duration-150 hover:bg-slate-300 mt-2 overflow-hidden"
+                >
+                  <img
+                    id="current-image-payment"
+                    class="block size-full object-cover"
+                  />
+
+                  <!-- <div
+                    class="size-full flex flex-col justify-center items-center gap-3 text-slate-700"
+                  >
+                    <i class="fa-solid fa-file text-2xl"></i>
+                    <h1 class="text-xl font-medium">
+                      Upload Bukti Pembayaran Disini
+                    </h1>
+                  </div> -->
+                </label>
+                <input class="hidden" type="file" name="avatar" id="avatar" />
+              </div>
+
+              <div
+                class="flex flex-row-reverse justify-start items-center w-fit gap-3 mt-4"
+              >
+                <label
+                  for="konfirmasi_pembayaran"
+                  class="capitalize font-normal text-slate-700 text-sm"
+                  >saya telah mengirimkan foto bukti pembayaran dengan
+                  benar</label
+                >
+                <input
+                  type="checkbox"
+                  name="konfirmasi_pembayaran"
+                  id="konfirmasi_pembayaran"
+                />
+              </div>
+
+              <button
+                id="button-confirm"
+                disabled="true"
+                type="submit"
+                class="w-full text-slate-100 bg-blue-600 rounded-lg shadow-md text-sm font-medium capitalize px-4 py-2 mt-4 transition-all duration-150 ease-in-out hover:bg-blue-700 cursor-pointer disabled:opacity-45"
+              >
+                konfirmasi pembayaran
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      type="module"
+      src="/frontend/logic/konfirmasiPembayaran.js"
+    ></script>
+  </body>
+</html>

@@ -1,9 +1,16 @@
+const params = new URLSearchParams(window.location.search);
+
+const id = params.get("id");
+
 import verifyUser from "../secret/verifyUser.js";
+import port from "../secret/port.js";
 
-verifyUser("/frontend/pages/auth/login.html");
+// verifyUser("/frontend/pages/auth/login.html");
 
-import convertRupiah from "../features/convertRupiah/convertRupiah.js";
+import convertRupiah from "/frontend/features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
+
+const token = localStorage.getItem("token");
 
 const bodyOfTable = document.querySelector("tbody");
 const hidden = document.getElementById("popup-hidden");
@@ -25,22 +32,113 @@ popupJumlahTagihan.addEventListener("keyup", (event) => {
   displayToRupiah.innerHTML = rupiah;
 });
 
+const tapelFilter = document.getElementById("tapel-sorting");
+const sortingKelas = document.getElementById("tingkatan_kelas");
+const sortingNama = document.getElementById("tingkatan_nama");
+const resetDataButton = document.getElementById("reset-data");
+
+const updateStudent = document.getElementById("popup-update-siswa");
+const closePopup = document.getElementById("close-popup");
+const buktiPembayaran = document.getElementById("bukti-pembayaran");
+const imagePayment = buktiPembayaran.querySelector("img");
+const downloadImagePayment = document.getElementById("download-image-payment");
+
+const confirmPayment = document.getElementById("save-and-confirm-payment");
+
 document.addEventListener("DOMContentLoaded", () => {
+  closePopup.addEventListener("click", () => {
+    window.location.href = "/frontend/pages/pantau_siswa.html";
+  });
+
+  if (id) {
+    paymentViaAdmin.setAttribute(
+      "href",
+      `/frontend/pages/pembayaranViaAdmin.html?id=${id}`
+    );
+    updateStudent.classList.remove("hidden");
+
+    const retrieveDetailStudent = async () => {
+      try {
+        const response = await fetch(`${port}/student-payments/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          return console.log("Response not ok!");
+        }
+
+        const { siswa, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
+
+        if (
+          siswa[0].isPaidOff == "Menunggu Konfirmasi" ||
+          (siswa[0].isPaidOff == "Pembayaran Via Admin" && siswa[0].image)
+        ) {
+          confirmPayment.innerHTML = "Konfirmasi Tagihan";
+
+          buktiPembayaran.classList.remove("hidden");
+
+          imagePayment.setAttribute(
+            "src",
+            `http://localhost:3000/test/${siswa[0].image}`
+          );
+
+          downloadImagePayment.setAttribute(
+            "href",
+            `/public/img/buktiPembayaran/${siswa[0].image}`
+          );
+
+          downloadImagePayment.setAttribute("download", siswa[0].image);
+
+          popupNama.disabled = true;
+          popupKelas.disabled = true;
+          popupJumlahTagihan.disabled = true;
+        }
+
+        popupNama.value = siswa[0].namaSiswa;
+        popupKelas.value = siswa[0].kelasSiswa;
+        popupJumlahTagihan.value = siswa[0].jumlahTagihanSiswa;
+
+        localStorage.setItem("catatanSiswa", siswa[0].catatanSiswa);
+        localStorage.setItem("statusPembayaran", siswa[0].isPaidOff);
+      } catch (error) {
+        return console.log(error);
+      }
+    };
+
+    retrieveDetailStudent();
+  }
   async function handleRetrieveTapel() {
     try {
-      const response = await fetch("http://localhost:3000/tapel");
+      const response = await fetch(`${port}/tapel`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("failed to retrieve tapel!");
       }
 
-      const { tapel } = await response.json();
+      const { tapel, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       tapel.forEach((data) => {
+        const { tapel } = data;
         const option = document.createElement("option");
 
-        option.setAttribute("value", data);
-        option.innerHTML = data;
+        option.setAttribute("value", tapel);
+        option.innerHTML = tapel;
 
         tapelFilter.appendChild(option);
       });
@@ -48,17 +146,23 @@ document.addEventListener("DOMContentLoaded", () => {
       return console.error(error);
     }
   }
-
-  handleRetrieveTapel();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
   async function retrieveDataStudent() {
     try {
-      const response = await fetch("http://localhost:3000/tagihan-siswa");
+      const response = await fetch(`${port}/student-payments`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        const { tagihan } = await response.json();
+        const { tagihan, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
+
+        // return console.log(data);
 
         copyPayment = [...tagihan];
 
@@ -70,9 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
           createTrElement.innerHTML = generateTdElement(
+            data.id,
             data.namaSiswa,
             data.kelasSiswa,
-            data.tapelSiswa,
+            data.tapel,
             data.jumlahTagihanSiswa,
             data.createdAt,
             data.isPaidOff,
@@ -94,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data.kelasSiswa,
             data.catatanSiswa,
             data.isPaidOn,
-            data.tapelSiswa,
+            data.tapel,
             toRupiah(data.jumlahTagihanSiswa),
             data.typeofPayment,
             data.createdAt,
@@ -104,517 +209,269 @@ document.addEventListener("DOMContentLoaded", () => {
           trElementHidden.innerHTML = tdElementHidden;
           tableBodyHidden.appendChild(trElementHidden);
         });
-      }
 
-      const tdElements = document.querySelectorAll("td");
+        sortingNama.addEventListener("change", (event) => {
+          const { value } = event.target;
 
-      tdElements.forEach((td) => {
-        td.addEventListener("click", () => {
-          paymentViaAdmin.setAttribute(
-            "href",
-            `/frontend/pages/admin/pembayaranViaAdmin.html?name=${
-              td.parentElement.querySelector("span[id=nama-siswa]").textContent
-            }&description=${
-              td.parentElement.querySelector("#deskripsi-pembayaran")
-                .textContent
-            }`
-          );
+          const dataPayment = [...copyPayment];
 
-          const popup = document.getElementById("popup-update-siswa");
+          console.log(value);
 
-          const getNameStudent = td.parentElement.querySelector(
-            "span[id=nama-siswa]"
-          ).textContent;
-          const getStatusPembayaran = td.parentElement.querySelector(
-            "span[id=status-pembayaran]"
-          );
-          const getClassStudent =
-            td.parentElement.querySelectorAll("td")[1].textContent;
-          const getBillingStudent =
-            td.parentElement.querySelectorAll("td")[3].dataset.realnominal;
-          const getInfoBillingStudent = td.parentElement.querySelector(
-            "span[id=deskripsi-pembayaran]"
-          );
+          if (value == "A-Z") {
+            bodyOfTable.innerHTML = "";
 
-          window.statusPembayaran = getStatusPembayaran.textContent;
-          window.deskripsiPembayaran = getInfoBillingStudent.textContent;
+            const sortedByName = dataPayment.sort((a, b) =>
+              a.namaSiswa.toLowerCase().localeCompare(b.namaSiswa.toLowerCase())
+            );
 
-          // buttons
-          const deleteNCancelPayment = document.getElementById(
-            "delete-and-cancel-payment"
-          );
-          const saveNConfirmPayment = document.getElementById(
-            "save-and-confirm-payment"
-          );
-
-          if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-            popupNama.disabled = true;
-            popupKelas.disabled = true;
-            popupJumlahTagihan.disabled = true;
-
-            saveNConfirmPayment.innerHTML = "Konfirmasi Tagihan";
-            saveNConfirmPayment.disabled = false;
-          } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-            popupNama.disabled = false;
-            popupKelas.disabled = false;
-            popupJumlahTagihan.disabled = false;
-
-            saveNConfirmPayment.innerHTML = "Simpan";
-            saveNConfirmPayment.disabled = false;
-          }
-
-          if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-            popupNama.disabled = true;
-            popupKelas.disabled = true;
-            popupJumlahTagihan.disabled = true;
-
-            deleteNCancelPayment.innerHTML = "Tolak Tagihan";
-            saveNConfirmPayment.disabled = false;
-          } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-            popupNama.disabled = false;
-            popupKelas.disabled = false;
-            popupJumlahTagihan.disabled = false;
-
-            deleteNCancelPayment.innerHTML = "Hapus";
-            saveNConfirmPayment.disabled = false;
-          } else {
-            popupNama.disabled = true;
-            popupKelas.disabled = true;
-            popupJumlahTagihan.disabled = true;
-
-            saveNConfirmPayment.innerHTML = "Tuntas";
-            saveNConfirmPayment.disabled = true;
-          }
-
-          hidden.value = getNameStudent;
-          popupNama.value = getNameStudent;
-          popupKelas.value = getClassStudent;
-          popupJumlahTagihan.value = getBillingStudent;
-          displayToRupiah.innerHTML = toRupiah(getBillingStudent);
-
-          async function retrieveImageByData() {
-            try {
-              const response = await fetch(
-                `http://localhost:3000/bukti-pembayaran/${encodeURIComponent(
-                  getNameStudent
-                )}/${encodeURIComponent(
-                  getBillingStudent
-                )}/${encodeURIComponent(getInfoBillingStudent.textContent)}`
+            sortedByName.forEach((data) => {
+              const trElement = document.createElement("tr");
+              trElement.setAttribute(
+                "class",
+                "cursor-pointer hover:bg-gray-100"
               );
 
-              if (response.ok) {
-                const { image, err } = await response.json();
+              const tdElement = generateTdElement(
+                data.id,
+                data.namaSiswa,
+                data.kelasSiswa,
+                data.tapel,
+                data.jumlahTagihanSiswa,
+                data.createdAt,
+                data.isPaidOff,
+                data.catatanSiswa,
+                data.verifiedBy,
+                data.isPaidOn,
+                data.typeofPayment
+              );
 
-                console.log(image);
+              trElement.innerHTML = tdElement;
 
-                const wrapperImage = document.getElementById(
-                  "wrapper-proof-of-payment"
-                );
+              bodyOfTable.appendChild(trElement);
+            });
+          } else {
+            bodyOfTable.innerHTML = "";
 
-                // berarti jika tidak ada foto
-                if (err || !image) {
-                  wrapperImage.classList.add("hidden");
-                  wrapperImage.innerHTML = "";
-                }
-                const generateBillingImage = `<div class="w-full h-full rounded-md overflow-hidden relative">
-                <a href="/frontend/public/img/buktiPembayaran/${image.filename}" class="absolute bottom-2 right-2 text-slate-200 px-2 text-xs font-medium py-2 rounded-md bg-blue-700 hover:bg-blue-900" download="${image.filename}"><i class="fa-solid fa-download"></i> Unduh Gambar</a>
-                  <img
-                    src="/frontend/public/img/buktiPembayaran/${image.filename}"
-                    id="popup-bukti-pembayaran"
-                    class="block w-full h-full object-cover"
-                  />
-                </div>`;
-                wrapperImage.innerHTML = generateBillingImage;
-                wrapperImage.classList.remove("hidden");
-              }
-            } catch (error) {
-              return console.error(error);
-            }
+            const sortedByName = dataPayment.sort((a, b) =>
+              b.namaSiswa.toLowerCase().localeCompare(a.namaSiswa.toLowerCase())
+            );
+
+            sortedByName.forEach((data) => {
+              const trElement = document.createElement("tr");
+              trElement.setAttribute(
+                "class",
+                "cursor-pointer hover:bg-gray-100"
+              );
+
+              const tdElement = generateTdElement(
+                data.id,
+                data.namaSiswa,
+                data.kelasSiswa,
+                data.tapel,
+                data.jumlahTagihanSiswa,
+                data.createdAt,
+                data.isPaidOff,
+                data.catatanSiswa,
+                data.verifiedBy,
+                data.isPaidOn,
+                data.typeofPayment
+              );
+
+              trElement.innerHTML = tdElement;
+
+              bodyOfTable.appendChild(trElement);
+            });
+          }
+        });
+
+        sortingKelas.addEventListener("change", (event) => {
+          const { value } = event.target;
+
+          const dataPayment = [...copyPayment];
+
+          // return console.log(dataPayment);
+          if (value == "10-12") {
+            bodyOfTable.innerHTML = "";
+
+            const sortedClass = dataPayment.sort(
+              (a, b) => a.kelasSiswa.length - b.kelasSiswa.length
+            );
+
+            sortedClass.forEach((data) => {
+              const trElement = document.createElement("tr");
+              trElement.setAttribute(
+                "class",
+                "cursor-pointer hover:bg-gray-100"
+              );
+
+              const tdElement = generateTdElement(
+                data.id,
+                data.namaSiswa,
+                data.kelasSiswa,
+                data.tapel,
+                data.jumlahTagihanSiswa,
+                data.createdAt,
+                data.isPaidOff,
+                data.catatanSiswa,
+                data.verifiedBy,
+                data.isPaidOn,
+                data.typeofPayment
+              );
+
+              trElement.innerHTML = tdElement;
+
+              bodyOfTable.appendChild(trElement);
+            });
+          } else {
+            bodyOfTable.innerHTML = "";
+
+            const sortedClass = dataPayment.sort(
+              (a, b) => b.kelasSiswa.length - a.kelasSiswa.length
+            );
+
+            sortedClass.forEach((data) => {
+              const trElement = document.createElement("tr");
+              trElement.setAttribute(
+                "class",
+                "cursor-pointer hover:bg-gray-100"
+              );
+
+              const tdElement = generateTdElement(
+                data.id,
+                data.namaSiswa,
+                data.kelasSiswa,
+                data.tapel,
+                data.jumlahTagihanSiswa,
+                data.createdAt,
+                data.isPaidOff,
+                data.catatanSiswa,
+                data.verifiedBy,
+                data.isPaidOn,
+                data.typeofPayment
+              );
+
+              trElement.innerHTML = tdElement;
+
+              bodyOfTable.appendChild(trElement);
+            });
+          }
+        });
+
+        const searchStudentInput = document.getElementById("search-student");
+
+        searchStudentInput.addEventListener("keyup", (event) => {
+          // search features
+          const { value } = event.target;
+          const dataPayment = [...copyPayment];
+
+          const search = dataPayment.filter((data) =>
+            data.namaSiswa.toLowerCase().includes(value.toLowerCase())
+          );
+
+          if (search.length == 0) {
+            // reset table
+            bodyOfTable.innerHTML = "";
+
+            dataPayment.forEach((data) => {
+              const trElement = document.createElement("tr");
+              trElement.setAttribute(
+                "class",
+                "cursor-pointer hover:bg-gray-100"
+              );
+
+              const tdElement = generateTdElement(
+                data.id,
+                data.namaSiswa,
+                data.kelasSiswa,
+                data.tapel,
+                data.jumlahTagihanSiswa,
+                data.createdAt,
+                data.isPaidOff,
+                data.catatanSiswa,
+                data.verifiedBy,
+                data.isPaidOn,
+                data.typeofPayment
+              );
+
+              trElement.innerHTML = tdElement;
+
+              bodyOfTable.appendChild(trElement);
+            });
+            return;
           }
 
-          retrieveImageByData();
+          bodyOfTable.innerHTML = "";
 
-          popup.classList.replace("hidden", "flex");
+          search.forEach((data) => {
+            const trElement = document.createElement("tr");
+            trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
+
+            const tdElement = generateTdElement(
+              data.id,
+              data.namaSiswa,
+              data.kelasSiswa,
+              data.tapel,
+              data.jumlahTagihanSiswa,
+              data.createdAt,
+              data.isPaidOff,
+              data.catatanSiswa,
+              data.verifiedBy,
+              data.isPaidOn,
+              data.typeofPayment
+            );
+
+            trElement.innerHTML = tdElement;
+
+            bodyOfTable.appendChild(trElement);
+          });
         });
-      });
+
+        tapelFilter.addEventListener("change", (event) => {
+          const sortedBy = event.target.value;
+          const dataPayment = [...copyPayment];
+
+          const filterDataByTapel = dataPayment.filter(
+            (data) => data.tapel == sortedBy
+          );
+
+          if (filterDataByTapel) {
+            bodyOfTable.innerHTML = "";
+
+            filterDataByTapel.forEach((data) => {
+              const trElement = document.createElement("tr");
+              trElement.setAttribute(
+                "class",
+                "cursor-pointer hover:bg-gray-100"
+              );
+
+              const tdElement = generateTdElement(
+                data.id,
+                data.namaSiswa,
+                data.kelasSiswa,
+                data.tapel,
+                data.jumlahTagihanSiswa,
+                data.createdAt,
+                data.isPaidOff,
+                data.catatanSiswa,
+                data.verifiedBy,
+                data.isPaidOn,
+                data.typeofPayment
+              );
+
+              trElement.innerHTML = tdElement;
+
+              bodyOfTable.appendChild(trElement);
+            });
+          }
+        });
+      }
     } catch (error) {
       return console.error(error);
     }
   }
 
+  handleRetrieveTapel();
   retrieveDataStudent();
-});
-
-const tapelFilter = document.getElementById("tapel-sorting");
-const sortingKelas = document.getElementById("tingkatan_kelas");
-const sortingNama = document.getElementById("tingkatan_nama");
-const resetDataButton = document.getElementById("reset-data");
-
-sortingNama.addEventListener("change", (event) => {
-  const { value } = event.target;
-
-  const dataPayment = [...copyPayment];
-
-  console.log(value);
-
-  if (value == "A-Z") {
-    bodyOfTable.innerHTML = "";
-
-    const sortedByName = dataPayment.sort((a, b) =>
-      a.namaSiswa.toLowerCase().localeCompare(b.namaSiswa.toLowerCase())
-    );
-
-    sortedByName.forEach((data) => {
-      const trElement = document.createElement("tr");
-      trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
-
-      const tdElement = generateTdElement(
-        data.namaSiswa,
-        data.kelasSiswa,
-        data.tapelSiswa,
-        data.jumlahTagihanSiswa,
-        data.createdAt,
-        data.isPaidOff,
-        data.catatanSiswa,
-        data.verifiedBy,
-        data.isPaidOn,
-        data.typeofPayment
-      );
-
-      trElement.innerHTML = tdElement;
-
-      bodyOfTable.appendChild(trElement);
-    });
-  } else {
-    bodyOfTable.innerHTML = "";
-
-    const sortedByName = dataPayment.sort((a, b) =>
-      b.namaSiswa.toLowerCase().localeCompare(a.namaSiswa.toLowerCase())
-    );
-
-    sortedByName.forEach((data) => {
-      const trElement = document.createElement("tr");
-      trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
-
-      const tdElement = generateTdElement(
-        data.namaSiswa,
-        data.kelasSiswa,
-        data.tapelSiswa,
-        data.jumlahTagihanSiswa,
-        data.createdAt,
-        data.isPaidOff,
-        data.catatanSiswa,
-        data.verifiedBy,
-        data.isPaidOn,
-        data.typeofPayment
-      );
-
-      trElement.innerHTML = tdElement;
-
-      bodyOfTable.appendChild(trElement);
-    });
-  }
-
-  const tdElements = document.querySelectorAll("td");
-
-  tdElements.forEach((td) => {
-    td.addEventListener("click", () => {
-      const popup = document.getElementById("popup-update-siswa");
-
-      const getNameStudent = td.parentElement.querySelector(
-        "span[id=nama-siswa]"
-      ).textContent;
-      const getStatusPembayaran = td.parentElement.querySelector(
-        "span[id=status-pembayaran]"
-      );
-      const getClassStudent =
-        td.parentElement.querySelectorAll("td")[1].textContent;
-      const getBillingStudent =
-        td.parentElement.querySelectorAll("td")[3].dataset.realnominal;
-      const getInfoBillingStudent = td.parentElement.querySelector(
-        "span[id=deskripsi-pembayaran]"
-      );
-
-      window.statusPembayaran = getStatusPembayaran.textContent;
-      window.deskripsiPembayaran = getInfoBillingStudent.textContent;
-
-      // buttons
-      const deleteNCancelPayment = document.getElementById(
-        "delete-and-cancel-payment"
-      );
-      const saveNConfirmPayment = document.getElementById(
-        "save-and-confirm-payment"
-      );
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Konfirmasi Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        saveNConfirmPayment.innerHTML = "Simpan";
-        saveNConfirmPayment.disabled = false;
-      }
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        deleteNCancelPayment.innerHTML = "Tolak Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        deleteNCancelPayment.innerHTML = "Hapus";
-        saveNConfirmPayment.disabled = false;
-      } else {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Tuntas";
-        saveNConfirmPayment.disabled = true;
-      }
-
-      hidden.value = getNameStudent;
-      popupNama.value = getNameStudent;
-      popupKelas.value = getClassStudent;
-      popupJumlahTagihan.value = getBillingStudent;
-      displayToRupiah.innerHTML = toRupiah(getBillingStudent);
-
-      async function retrieveImageByData() {
-        try {
-          const response = await fetch(
-            `http://localhost:3000/bukti-pembayaran/${encodeURIComponent(
-              getNameStudent
-            )}/${encodeURIComponent(getBillingStudent)}/${encodeURIComponent(
-              getInfoBillingStudent.textContent
-            )}`
-          );
-
-          if (response.ok) {
-            const { image, err } = await response.json();
-
-            const wrapperImage = document.getElementById(
-              "wrapper-proof-of-payment"
-            );
-
-            // berarti jika tidak ada foto
-            if (err) {
-              wrapperImage.classList.add("hidden");
-            }
-            const generateBillingImage = `<div class="w-full h-full rounded-md overflow-hidden relative">
-                <a href="/frontend/public/img/buktiPembayaran/${image.filename}" class="absolute bottom-2 right-2 text-slate-200 px-2 text-xs font-medium py-2 rounded-md bg-blue-700 hover:bg-blue-900" download="${image.filename}"><i class="fa-solid fa-download"></i> Unduh Gambar</a>
-                  <img
-                    src="/frontend/public/img/buktiPembayaran/${image.filename}"
-                    id="popup-bukti-pembayaran"
-                    class="block w-full h-full object-cover"
-                  />
-                </div>`;
-            wrapperImage.innerHTML = generateBillingImage;
-            wrapperImage.classList.remove("hidden");
-          }
-        } catch (error) {
-          return console.error(error);
-        }
-      }
-
-      retrieveImageByData();
-
-      popup.classList.replace("hidden", "flex");
-    });
-  });
-});
-
-sortingKelas.addEventListener("change", (event) => {
-  const { value } = event.target;
-
-  const dataPayment = [...copyPayment];
-  if (value == "10-12") {
-    bodyOfTable.innerHTML = "";
-
-    const sortedClass = dataPayment.sort(
-      (a, b) => a.kelasSiswa.length - b.kelasSiswa.length
-    );
-
-    sortedClass.forEach((data) => {
-      const trElement = document.createElement("tr");
-      trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
-
-      const tdElement = generateTdElement(
-        data.namaSiswa,
-        data.kelasSiswa,
-        data.tapelSiswa,
-        data.jumlahTagihanSiswa,
-        data.createdAt,
-        data.isPaidOff,
-        data.catatanSiswa,
-        data.verifiedBy,
-        data.isPaidOn,
-        data.typeofPayment
-      );
-
-      trElement.innerHTML = tdElement;
-
-      bodyOfTable.appendChild(trElement);
-    });
-  } else {
-    bodyOfTable.innerHTML = "";
-
-    const sortedClass = dataPayment.sort(
-      (a, b) => b.kelasSiswa.length - a.kelasSiswa.length
-    );
-
-    sortedClass.forEach((data) => {
-      const trElement = document.createElement("tr");
-      trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
-
-      const tdElement = generateTdElement(
-        data.namaSiswa,
-        data.kelasSiswa,
-        data.tapelSiswa,
-        data.jumlahTagihanSiswa,
-        data.createdAt,
-        data.isPaidOff,
-        data.catatanSiswa,
-        data.verifiedBy,
-        data.isPaidOn,
-        data.typeofPayment
-      );
-
-      trElement.innerHTML = tdElement;
-
-      bodyOfTable.appendChild(trElement);
-    });
-  }
-
-  const tdElements = document.querySelectorAll("td");
-
-  tdElements.forEach((td) => {
-    td.addEventListener("click", () => {
-      const popup = document.getElementById("popup-update-siswa");
-
-      const getNameStudent = td.parentElement.querySelector(
-        "span[id=nama-siswa]"
-      ).textContent;
-      const getStatusPembayaran = td.parentElement.querySelector(
-        "span[id=status-pembayaran]"
-      );
-      const getClassStudent =
-        td.parentElement.querySelectorAll("td")[1].textContent;
-      const getBillingStudent =
-        td.parentElement.querySelectorAll("td")[3].dataset.realnominal;
-      const getInfoBillingStudent = td.parentElement.querySelector(
-        "span[id=deskripsi-pembayaran]"
-      );
-
-      window.statusPembayaran = getStatusPembayaran.textContent;
-      window.deskripsiPembayaran = getInfoBillingStudent.textContent;
-
-      // buttons
-      const deleteNCancelPayment = document.getElementById(
-        "delete-and-cancel-payment"
-      );
-      const saveNConfirmPayment = document.getElementById(
-        "save-and-confirm-payment"
-      );
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Konfirmasi Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        saveNConfirmPayment.innerHTML = "Simpan";
-        saveNConfirmPayment.disabled = false;
-      }
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        deleteNCancelPayment.innerHTML = "Tolak Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        deleteNCancelPayment.innerHTML = "Hapus";
-        saveNConfirmPayment.disabled = false;
-      } else {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Tuntas";
-        saveNConfirmPayment.disabled = true;
-      }
-
-      hidden.value = getNameStudent;
-      popupNama.value = getNameStudent;
-      popupKelas.value = getClassStudent;
-      popupJumlahTagihan.value = getBillingStudent;
-      displayToRupiah.innerHTML = toRupiah(getBillingStudent);
-
-      async function retrieveImageByData() {
-        try {
-          const response = await fetch(
-            `http://localhost:3000/bukti-pembayaran/${encodeURIComponent(
-              getNameStudent
-            )}/${encodeURIComponent(getBillingStudent)}/${encodeURIComponent(
-              getInfoBillingStudent.textContent
-            )}`
-          );
-
-          if (response.ok) {
-            const { image, err } = await response.json();
-
-            const wrapperImage = document.getElementById(
-              "wrapper-proof-of-payment"
-            );
-
-            // berarti jika tidak ada foto
-            if (err) {
-              wrapperImage.classList.add("hidden");
-            }
-            const generateBillingImage = `<div class="w-full h-full rounded-md overflow-hidden relative">
-                <a href="/frontend/public/img/buktiPembayaran/${image.filename}" class="absolute bottom-2 right-2 text-slate-200 px-2 text-xs font-medium py-2 rounded-md bg-blue-700 hover:bg-blue-900" download="${image.filename}"><i class="fa-solid fa-download"></i> Unduh Gambar</a>
-                  <img
-                    src="/frontend/public/img/buktiPembayaran/${image.filename}"
-                    id="popup-bukti-pembayaran"
-                    class="block w-full h-full object-cover"
-                  />
-                </div>`;
-            wrapperImage.innerHTML = generateBillingImage;
-            wrapperImage.classList.remove("hidden");
-          }
-        } catch (error) {
-          return console.error(error);
-        }
-      }
-
-      retrieveImageByData();
-
-      popup.classList.replace("hidden", "flex");
-    });
-  });
 });
 
 const tableToExcelButton = document.getElementById("download-to-excel");
@@ -628,342 +485,6 @@ resetDataButton.addEventListener("click", () => {
   window.location.reload();
 });
 
-const searchStudentInput = document.getElementById("search-student");
-searchStudentInput.addEventListener("keyup", (event) => {
-  // search features
-  const { value } = event.target;
-  const dataPayment = [...copyPayment];
-
-  const search = dataPayment.filter((data) =>
-    data.namaSiswa.toLowerCase().includes(value.toLowerCase())
-  );
-
-  if (search.length == 0) {
-    // reset table
-    bodyOfTable.innerHTML = "";
-
-    dataPayment.forEach((data) => {
-      const trElement = document.createElement("tr");
-      trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
-
-      const tdElement = generateTdElement(
-        data.namaSiswa,
-        data.kelasSiswa,
-        data.tapelSiswa,
-        data.jumlahTagihanSiswa,
-        data.createdAt,
-        data.isPaidOff,
-        data.catatanSiswa,
-        data.verifiedBy,
-        data.isPaidOn,
-        data.typeofPayment
-      );
-
-      trElement.innerHTML = tdElement;
-
-      bodyOfTable.appendChild(trElement);
-    });
-    return;
-  }
-
-  bodyOfTable.innerHTML = "";
-
-  search.forEach((data) => {
-    const trElement = document.createElement("tr");
-    trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
-
-    const tdElement = generateTdElement(
-      data.namaSiswa,
-      data.kelasSiswa,
-      data.tapelSiswa,
-      data.jumlahTagihanSiswa,
-      data.createdAt,
-      data.isPaidOff,
-      data.catatanSiswa,
-      data.verifiedBy,
-      data.isPaidOn,
-      data.typeofPayment
-    );
-
-    trElement.innerHTML = tdElement;
-
-    bodyOfTable.appendChild(trElement);
-  });
-
-  const tdElements = document.querySelectorAll("td");
-
-  tdElements.forEach((td) => {
-    td.addEventListener("click", () => {
-      const popup = document.getElementById("popup-update-siswa");
-
-      const getNameStudent = td.parentElement.querySelector(
-        "span[id=nama-siswa]"
-      ).textContent;
-      const getStatusPembayaran = td.parentElement.querySelector(
-        "span[id=status-pembayaran]"
-      );
-      const getClassStudent =
-        td.parentElement.querySelectorAll("td")[1].textContent;
-      const getBillingStudent =
-        td.parentElement.querySelectorAll("td")[3].dataset.realnominal;
-      const getInfoBillingStudent = td.parentElement.querySelector(
-        "span[id=deskripsi-pembayaran]"
-      );
-
-      window.statusPembayaran = getStatusPembayaran.textContent;
-      window.deskripsiPembayaran = getInfoBillingStudent.textContent;
-
-      // buttons
-      const deleteNCancelPayment = document.getElementById(
-        "delete-and-cancel-payment"
-      );
-      const saveNConfirmPayment = document.getElementById(
-        "save-and-confirm-payment"
-      );
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Konfirmasi Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        saveNConfirmPayment.innerHTML = "Simpan";
-        saveNConfirmPayment.disabled = false;
-      }
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        deleteNCancelPayment.innerHTML = "Tolak Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        deleteNCancelPayment.innerHTML = "Hapus";
-        saveNConfirmPayment.disabled = false;
-      } else {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Tuntas";
-        saveNConfirmPayment.disabled = true;
-      }
-
-      hidden.value = getNameStudent;
-      popupNama.value = getNameStudent;
-      popupKelas.value = getClassStudent;
-      popupJumlahTagihan.value = getBillingStudent;
-      displayToRupiah.innerHTML = toRupiah(getBillingStudent);
-
-      async function retrieveImageByData() {
-        try {
-          const response = await fetch(
-            `http://localhost:3000/bukti-pembayaran/${encodeURIComponent(
-              getNameStudent
-            )}/${encodeURIComponent(getBillingStudent)}/${encodeURIComponent(
-              getInfoBillingStudent.textContent
-            )}`
-          );
-
-          if (response.ok) {
-            const { image, err } = await response.json();
-
-            const wrapperImage = document.getElementById(
-              "wrapper-proof-of-payment"
-            );
-
-            // berarti jika tidak ada foto
-            if (err) {
-              wrapperImage.classList.add("hidden");
-            }
-            const generateBillingImage = `<div class="w-full h-full rounded-md overflow-hidden relative">
-                <a href="/frontend/public/img/buktiPembayaran/${image.filename}" class="absolute bottom-2 right-2 text-slate-200 px-2 text-xs font-medium py-2 rounded-md bg-blue-700 hover:bg-blue-900" download="${image.filename}"><i class="fa-solid fa-download"></i> Unduh Gambar</a>
-                  <img
-                    src="/frontend/public/img/buktiPembayaran/${image.filename}"
-                    id="popup-bukti-pembayaran"
-                    class="block w-full h-full object-cover"
-                  />
-                </div>`;
-            wrapperImage.innerHTML = generateBillingImage;
-            wrapperImage.classList.remove("hidden");
-          }
-        } catch (error) {
-          return console.error(error);
-        }
-      }
-
-      retrieveImageByData();
-
-      popup.classList.replace("hidden", "flex");
-    });
-  });
-});
-
-tapelFilter.addEventListener("change", (event) => {
-  const sortedBy = event.target.value;
-  const dataPayment = [...copyPayment];
-
-  const filterDataByTapel = dataPayment.filter(
-    (data) => data.tapelSiswa == sortedBy
-  );
-
-  if (filterDataByTapel) {
-    bodyOfTable.innerHTML = "";
-
-    filterDataByTapel.forEach((data) => {
-      const trElement = document.createElement("tr");
-      trElement.setAttribute("class", "cursor-pointer hover:bg-gray-100");
-
-      const tdElement = generateTdElement(
-        data.namaSiswa,
-        data.kelasSiswa,
-        data.tapelSiswa,
-        data.jumlahTagihanSiswa,
-        data.createdAt,
-        data.isPaidOff,
-        data.catatanSiswa,
-        data.verifiedBy,
-        data.isPaidOn,
-        data.typeofPayment
-      );
-
-      trElement.innerHTML = tdElement;
-
-      bodyOfTable.appendChild(trElement);
-    });
-  }
-
-  const tdElements = document.querySelectorAll("td");
-
-  tdElements.forEach((td) => {
-    td.addEventListener("click", () => {
-      const popup = document.getElementById("popup-update-siswa");
-
-      const getNameStudent = td.parentElement.querySelector(
-        "span[id=nama-siswa]"
-      ).textContent;
-      const getStatusPembayaran = td.parentElement.querySelector(
-        "span[id=status-pembayaran]"
-      );
-      const getClassStudent =
-        td.parentElement.querySelectorAll("td")[1].textContent;
-      const getBillingStudent =
-        td.parentElement.querySelectorAll("td")[3].dataset.realnominal;
-      const getInfoBillingStudent = td.parentElement.querySelector(
-        "span[id=deskripsi-pembayaran]"
-      );
-
-      window.statusPembayaran = getStatusPembayaran.textContent;
-      window.deskripsiPembayaran = getInfoBillingStudent.textContent;
-
-      // buttons
-      const deleteNCancelPayment = document.getElementById(
-        "delete-and-cancel-payment"
-      );
-      const saveNConfirmPayment = document.getElementById(
-        "save-and-confirm-payment"
-      );
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Konfirmasi Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        saveNConfirmPayment.innerHTML = "Simpan";
-        saveNConfirmPayment.disabled = false;
-      }
-
-      if (getStatusPembayaran.textContent == "Menunggu Konfirmasi") {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        deleteNCancelPayment.innerHTML = "Tolak Tagihan";
-        saveNConfirmPayment.disabled = false;
-      } else if (getStatusPembayaran.textContent == "Belum Tuntas") {
-        popupNama.disabled = false;
-        popupKelas.disabled = false;
-        popupJumlahTagihan.disabled = false;
-
-        deleteNCancelPayment.innerHTML = "Hapus";
-        saveNConfirmPayment.disabled = false;
-      } else {
-        popupNama.disabled = true;
-        popupKelas.disabled = true;
-        popupJumlahTagihan.disabled = true;
-
-        saveNConfirmPayment.innerHTML = "Tuntas";
-        saveNConfirmPayment.disabled = true;
-      }
-
-      hidden.value = getNameStudent;
-      popupNama.value = getNameStudent;
-      popupKelas.value = getClassStudent;
-      popupJumlahTagihan.value = getBillingStudent;
-      displayToRupiah.innerHTML = toRupiah(getBillingStudent);
-
-      async function retrieveImageByData() {
-        try {
-          const response = await fetch(
-            `http://localhost:3000/bukti-pembayaran/${encodeURIComponent(
-              getNameStudent
-            )}/${encodeURIComponent(getBillingStudent)}/${encodeURIComponent(
-              getInfoBillingStudent.textContent
-            )}`
-          );
-
-          if (response.ok) {
-            const { image, err } = await response.json();
-
-            const wrapperImage = document.getElementById(
-              "wrapper-proof-of-payment"
-            );
-
-            // berarti jika tidak ada foto
-            if (err) {
-              wrapperImage.classList.add("hidden");
-            }
-            const generateBillingImage = `<div class="w-full h-full rounded-md overflow-hidden relative">
-                <a href="/frontend/public/img/buktiPembayaran/${image.filename}" class="absolute bottom-2 right-2 text-slate-200 px-2 text-xs font-medium py-2 rounded-md bg-blue-700 hover:bg-blue-900" download="${image.filename}"><i class="fa-solid fa-download"></i> Unduh Gambar</a>
-                  <img
-                    src="/frontend/public/img/buktiPembayaran/${image.filename}"
-                    id="popup-bukti-pembayaran"
-                    class="block w-full h-full object-cover"
-                  />
-                </div>`;
-            wrapperImage.innerHTML = generateBillingImage;
-            wrapperImage.classList.remove("hidden");
-          }
-        } catch (error) {
-          return console.error(error);
-        }
-      }
-
-      retrieveImageByData();
-
-      popup.classList.replace("hidden", "flex");
-    });
-  });
-});
-
 const formUpdateStudent = document.getElementById("form-update-siswa");
 const formDeletedStudent = document.getElementById("form-deleted-siswa");
 
@@ -971,28 +492,33 @@ formDeletedStudent.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const currentUser = {
+    namaSiswa: hidden.value,
     kelasSiswa: popupKelas.value,
     jumlahTagihanSiswa: popupJumlahTagihan.value,
+    catatanSiswa: localStorage.getItem("catatanSiswa"),
+    statusPembayaran: localStorage.getItem("statusPembayaran"),
   };
 
   async function deleteDataStudent() {
     try {
-      const response = await fetch(
-        `http://localhost:3000/delete-tagihan-siswa/${hidden.value}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(currentUser),
-        }
-      );
+      const response = await fetch(`${port}/student-payments/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
-        const { deleted } = await response.json();
-        Swal.fire(`${deleted} berhasil dihapus!`).then((result) => {
+        const { msg, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
+
+        Swal.fire(msg).then((result) => {
           if (result.isConfirmed) {
-            window.location.reload();
+            window.location.href = "/pages/admin/pantau_siswa.html";
           }
         });
       }
@@ -1006,47 +532,40 @@ formDeletedStudent.addEventListener("submit", (event) => {
 formUpdateStudent.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  // return console.log(window.statusPembayaran);
-
-  // TODOOO CONFIRM VERIFICATION PAYMENT
-
   const currentUser = {
     namaSiswa: popupNama.value,
     kelasSiswa: popupKelas.value,
     jumlahTagihanSiswa: popupJumlahTagihan.value,
-    statusPembayaran: window.statusPembayaran,
-    catatanSiswa: window.deskripsiPembayaran,
+    statusPembayaran: localStorage.getItem("statusPembayaran"),
+    catatanSiswa: localStorage.getItem("catatanSiswa"),
   };
 
   async function handleConfirmPayment() {
     try {
       const response = await fetch(
-        `http://localhost:3000/confirm-payment/${hidden.value}`,
+        `${port}/student-payments/admin-confirm-payment/${id}`,
         {
           method: "PUT",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            namaSiswa: currentUser.namaSiswa,
-            kelasSiswa: currentUser.kelasSiswa,
-            jumlahTagihanSiswa: currentUser.jumlahTagihanSiswa,
-            statusPembayaran: currentUser.statusPembayaran,
-            catatanSiswa: currentUser.catatanSiswa,
-            diVerifikasiOleh: localStorage.getItem("status"),
-          }),
         }
       );
 
       if (!response.ok) return console.log("gagal konfirmasi pembayaran!");
 
-      const { msg, err } = await response.json();
+      const { msg, err, warn } = await response.json();
+
+      if (warn) {
+        window.location.href = "/";
+      }
 
       if (err) return Swal.fire(err);
 
       Swal.fire(msg).then((result) => {
         if (result.isConfirmed) {
-          window.location.reload();
+          window.location.href = "/pages/admin/pantau_siswa.html";
         }
       });
     } catch (error) {
@@ -1056,21 +575,25 @@ formUpdateStudent.addEventListener("submit", (event) => {
 
   async function updateDataStudent() {
     try {
-      const response = await fetch(
-        `http://localhost:3000/update-tagihan/${hidden.value}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(currentUser),
-        }
-      );
+      const response = await fetch(`${port}/student-payments/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(currentUser),
+      });
 
       if (response.ok) {
-        Swal.fire("Data berhasil diperbarui").then((result) => {
+        const { msg, warn } = await response.json();
+
+        if (warn) {
+          window.location.href = "/";
+        }
+
+        Swal.fire(msg).then((result) => {
           if (result.isConfirmed) {
-            window.location.reload();
+            window.location.href = "/pages/admin/pantau_siswa.html";
           }
         });
       }
@@ -1079,20 +602,13 @@ formUpdateStudent.addEventListener("submit", (event) => {
     }
   }
 
-  if (window.statusPembayaran == "Menunggu Konfirmasi") {
-    return handleConfirmPayment();
+  if (confirmPayment.innerHTML == "Konfirmasi Tagihan") {
+    handleConfirmPayment();
+
+    return;
   }
 
   updateDataStudent();
-});
-
-const buttonClosePopup = document.getElementById("close-popup");
-
-console.log(buttonClosePopup);
-
-buttonClosePopup.addEventListener("click", () => {
-  const popup = document.getElementById("popup-update-siswa");
-  popup.classList.replace("flex", "hidden");
 });
 
 function generateTdElementHidden(
@@ -1175,12 +691,13 @@ function generateTdElementHidden(
   <td>${informasiPembayaran}</td>
   <td>${tipePembayaran}</td>
   <td>${nominalTagihan}</td>
-  <td>${dibayarPada}</td>
+  <td>${dibayarPada == null ? "-" : dibayarPada}</td>
   <td>${deadline ? deadline : "-"}</td>
   <td>${tagihanDibuat}</td>`;
 }
 
 function generateTdElement(
+  id,
   name,
   kelas,
   tapel,
@@ -1192,7 +709,8 @@ function generateTdElement(
   isPaidOn,
   typeofPayment
 ) {
-  return `<td class="py-4 px-4 border-b w-auto">
+  const html = `<td class="relative py-4 px-4 border-b w-auto">
+  <a href="/frontend/pages/pantau_siswa.html?id=${id}" class="block h-full w-[1440px] absolute top-0 left-0 z-10 bg-transparent"></a>
     <div class="flex items-center gap-8 w-[375px] xl:w-[400px] 2xl:w-auto">
     <div class="size-8 rounded-full overflow-hidden">
       <img
@@ -1218,18 +736,21 @@ function generateTdElement(
         statusPembayaran == "Tuntas"
           ? "text-emerald-600"
           : statusPembayaran == "Menunggu Konfirmasi" ||
-            statusPembayaran == "Via Admin - Cicilan"
+            statusPembayaran == "Pembayaran Via Admin"
           ? "text-yellow-600"
           : "text-red-600"
       }">
       ${
         statusPembayaran == "Tuntas"
           ? '<i class="fa-solid fa-circle-check text-sm"></i>'
-          : statusPembayaran == "Menunggu Konfirmasi"
+          : statusPembayaran == "Menunggu Konfirmasi" ||
+            statusPembayaran == "Pembayaran Via Admin"
           ? '<i class="fa-solid fa-hourglass-end text-sm"></i>'
           : '<i class="fa-solid fa-circle-xmark text-sm"></i>'
       }
-      <p class="2xl:text-xs xl:text-[10px] text-[9px] font-medium"><span id="deskripsi-pembayaran">${deskripsiPembayaran}</span> <span id="status-pembayaran">${statusPembayaran}</span> || <span class="text-slate-600" id="waktu-pembayaran"><i class="fa-solid fa-clock"></i> Dibayar pada : ${isPaidOn}</span></p>
+      <p class="2xl:text-xs xl:text-[10px] text-[9px] font-medium"><span id="deskripsi-pembayaran">${deskripsiPembayaran}</span> <span id="status-pembayaran">${statusPembayaran}</span> || <span class="text-slate-600" id="waktu-pembayaran"><i class="fa-solid fa-clock"></i> Dibayar pada : ${
+    isPaidOn ? isPaidOn : "-"
+  }</span></p>
       </div>
     </div></div>
   </td>
@@ -1251,4 +772,6 @@ function generateTdElement(
   ><div class="w-44 mx-auto text-center">${createdAt}</div>
   </td>
   `;
+
+  return html;
 }
