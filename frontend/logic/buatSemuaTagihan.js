@@ -6,6 +6,7 @@ import convertRupiah from "/features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 const form = document.querySelector("form");
 const selectElementClass = document.getElementById("kelas");
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         const { kelas, warn } = await response.json();
 
-        if (warn) {
+        if (warn || statusAdmin !== "Super Admin") {
           window.location.href = "/";
         }
 

@@ -11,6 +11,7 @@ import convertRupiah from "/frontend/features/convertRupiah/convertRupiah.js";
 const toRupiah = convertRupiah;
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 const bodyOfTable = document.querySelector("tbody");
 const hidden = document.getElementById("popup-hidden");
@@ -72,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const { siswa, warn } = await response.json();
 
-        if (warn) {
+        if (warn || statusAdmin !== "Super Admin") {
           window.location.href = "/";
         }
 

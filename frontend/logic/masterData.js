@@ -5,6 +5,7 @@ import verifyUser from "../secret/verifyUser.js";
 import port from "../secret/port.js";
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 const listOfClass = document.getElementById("list-kelas");
 const listOfTapel = document.getElementById("list-tapel");
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const { kelas, warn } = await classResponse.json();
       const { tapel } = await tapelResponse.json();
 
-      if (warn) {
+      if (warn || statusAdmin !== "Super Admin") {
         window.location.href = "/";
       }
 

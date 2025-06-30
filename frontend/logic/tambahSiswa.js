@@ -5,9 +5,11 @@ import verifyUser from "../secret/verifyUser.js";
 import port from "../secret/port.js";
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 const downloadCardButton = document.getElementById("download-card");
 const cardStudent = document.getElementById("popup-card");
+const backToDashboard = document.getElementById("back-to-dashboard");
 
 downloadCardButton.addEventListener("click", () => {
   setTimeout(() => {
@@ -20,6 +22,13 @@ const tahunPelajaran = document.querySelector('select[id="tahun-pelajaran"]');
 const kelasSiswa = document.querySelector('select[id="kelas-siswa"]');
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (statusAdmin == "Admin") {
+    backToDashboard.setAttribute(
+      "href",
+      "/frontend/pages/dashboard_admin.html"
+    );
+  }
+
   async function handleRetrieveClassStudent() {
     try {
       const response = await fetch(`${port}/kelas`, {
@@ -104,11 +113,13 @@ form.addEventListener("submit", async function (event) {
   const password = document.querySelector('input[type="password"]').value;
   const nomorHP = document.querySelector('input[type="number"]').value;
   const NISN = document.getElementById("nisn-input").value;
+  const addressStudent = document.getElementById("address-student");
+  const dateOfBirthStudent = document.getElementById("tanggal-lahir");
 
-  const cardStudentName = document.getElementById("card-student-name");
-  const cardStudentNISN = document.getElementById("nisn");
-  const cardStudentClass = document.getElementById("card-student-class");
-  const cardStudentTapel = document.getElementById("card-student-tapel");
+  const nisnCard = document.getElementById("nisn-card");
+  const usernameCard = document.getElementById("username-card");
+  const dateTimeCard = document.getElementById("date-time-card");
+  const addressCard = document.getElementById("address-card");
 
   try {
     if (!username || !password || !nomorHP) {
@@ -128,6 +139,8 @@ form.addEventListener("submit", async function (event) {
         kelas: kelasSiswa.value,
         tapel: tahunPelajaran.value,
         nisn: NISN,
+        alamatSiswa: addressStudent.value,
+        tanggalLahir: dateOfBirthStudent.value,
       }),
     });
 
@@ -140,14 +153,16 @@ form.addEventListener("submit", async function (event) {
       }
 
       if (err) {
-        return Swal.fire("Siswa sudah terdaftar!");
+        return Swal.fire(err);
       }
 
       Swal.fire(msg);
 
       // fill name in card
-      cardStudentName.textContent = username;
-      cardStudentNISN.textContent = NISN;
+      nisnCard.textContent = NISN;
+      usernameCard.textContent = username;
+      dateTimeCard.textContent = dateOfBirthStudent.value;
+      addressCard.textContent = addressStudent.value;
 
       // cardStudentClass.textContent = kelasSiswa.value;
       // cardStudentTapel.textContent = tahunPelajaran.value;
@@ -195,8 +210,6 @@ form.addEventListener("submit", async function (event) {
       };
 
       generateQRCode(`https://smawalmj.com/pages/cek_tagihan.html?${username}`);
-    } else {
-      return Swal.fire("error!");
     }
   } catch (error) {
     return console.error(`Error Message : ${error.message}`);

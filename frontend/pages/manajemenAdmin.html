@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manajemen Admin</title>
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      ::-webkit-scrollbar-thumb {
+        width: 4px;
+        border-radius: 24px;
+        background-color: #d9d9d9;
+      }
+
+      .no-scrollbar::-webkit-scrollbar {
+        width: 9px;
+        padding-left: 12px;
+        border-radius: 24px;
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Page Header -->
+    <header id="page-header" class="bg-white shadow-sm border-b" role="banner">
+      <nav
+        class="max-w-4xl mx-auto px-4 py-4"
+        role="navigation"
+        aria-label="Main navigation"
+      >
+        <section class="flex justify-between items-center">
+          <h1 id="page-title" class="text-xl font-semibold text-gray-800">
+            Manajemen Admin
+          </h1>
+          <div class="flex items-center gap-x-6">
+            <button
+              id="btn-add-admin"
+              type="button"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+              aria-label="Tambah admin baru"
+            >
+              <i class="fas fa-plus mr-2" aria-hidden="true"></i>
+              <span>Tambah Admin</span>
+            </button>
+
+            <a
+              href="/frontend/pages/dashboard.html"
+              id="back-to-masterdata"
+              class="bg-slate-700 px-4 py-2 rounded-lg text-slate-200 text-sm font-medium cursor-pointer hover:bg-slate-500"
+            >
+              Kembali
+            </a>
+          </div>
+        </section>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 py-6" role="main">
+      <!-- Admin Management Section -->
+      <section
+        id="admin-list-section"
+        class="bg-white rounded-lg shadow-sm border"
+        aria-labelledby="admin-list-heading"
+      >
+        <!-- Section Header -->
+        <header class="p-4 border-b">
+          <h2 id="admin-list-heading" class="font-medium text-gray-800">
+            Daftar Administrator
+          </h2>
+        </header>
+
+        <!-- Admin List Container -->
+        <ul
+          id="admin-list"
+          role="list"
+          aria-live="polite"
+          class="max-h-[75dvh] overflow-y-auto no-scrollbar"
+        >
+          <!-- Admin Item -->
+        </ul>
+      </section>
+    </main>
+
+    <!-- Admin Form Modal -->
+    <dialog
+      id="admin-modal"
+      class="fixed inset-0 bg-transparent bg-opacity-50 z-50 hidden flex items-center justify-center p-0 min-w-md w-full max-w-lg border-0 lg:border-2 border-slate-200 rounded-lg"
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-modal="true"
+    >
+      <section
+        class="modal-content bg-white rounded-lg lg:w-full w-3/4"
+        role="document"
+      >
+        <!-- Modal Header -->
+        <header class="modal-header p-4 border-b">
+          <div class="flex justify-between items-center">
+            <h3 id="modal-title" class="font-semibold text-gray-800">
+              Tambah Admin
+            </h3>
+            <button
+              type="button"
+              id="btn-close-modal"
+              class="text-gray-400 hover:text-gray-600"
+              aria-label="Tutup modal"
+            >
+              <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Admin Form -->
+        <form
+          id="admin-form"
+          class="p-4 space-y-4"
+          role="form"
+          aria-labelledby="modal-title"
+        >
+          <input type="hidden" id="admin-id" />
+
+          <!-- Name Field -->
+          <fieldset class="form-group">
+            <label
+              for="admin-name-input"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Nama Admin
+            </label>
+            <input
+              type="text"
+              id="admin-name-input"
+              name="adminName"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Masukkan nama admin"
+              required
+              aria-describedby="name-help"
+            />
+            <small id="name-help" class="sr-only"
+              >Masukkan nama lengkap administrator</small
+            >
+          </fieldset>
+
+          <!-- Password Field -->
+          <fieldset class="form-group">
+            <label
+              for="admin-password-input"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Password
+            </label>
+            <div class="password-field relative">
+              <input
+                type="password"
+                id="admin-password-input"
+                name="adminPassword"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10"
+                placeholder="Masukkan password"
+                required
+                aria-describedby="password-help"
+              />
+              <button
+                type="button"
+                id="btn-toggle-password"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label="Tampilkan atau sembunyikan password"
+              >
+                <i id="password-icon" class="fas fa-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <small id="password-help" class="sr-only"
+              >Password harus minimal 8 karakter</small
+            >
+          </fieldset>
+
+          <!-- Phone Field -->
+          <fieldset class="form-group">
+            <label
+              for="admin-phone-input"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Nomor HP
+            </label>
+            <input
+              type="tel"
+              id="admin-phone-input"
+              name="adminPhone"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Masukkan nomor HP"
+              required
+              aria-describedby="phone-help"
+            />
+            <small id="phone-help" class="sr-only"
+              >Format: +62 atau 08xx-xxxx-xxxx</small
+            >
+          </fieldset>
+
+          <fieldset>
+            <label
+              for="role-option"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Pilih Role</label
+            >
+
+            <select
+              name="role-option"
+              id="role-option"
+              class="w-fit px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+            >
+              <option value="Admin">Admin</option>
+              <option value="Super Admin">Super Admin</option>
+            </select>
+          </fieldset>
+
+          <!-- Form Actions -->
+          <footer class="form-actions flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              id="btn-cancel"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="btn-submit"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              <span id="submit-text">Simpan</span>
+            </button>
+          </footer>
+        </form>
+      </section>
+    </dialog>
+
+    <!-- Delete Confirmation Modal -->
+    <dialog
+      id="delete-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
+      role="alertdialog"
+      aria-labelledby="delete-title"
+      aria-describedby="delete-description"
+      aria-modal="true"
+    >
+      <section
+        class="modal-content bg-white rounded-lg w-full max-w-sm"
+        role="document"
+      >
+        <div class="p-6 text-center">
+          <!-- Warning Icon -->
+          <figure
+            class="warning-icon w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i
+              class="fas fa-exclamation-triangle text-red-600 text-2xl"
+              aria-hidden="true"
+            ></i>
+          </figure>
+
+          <!-- Delete Confirmation Content -->
+          <h3
+            id="delete-title"
+            class="text-lg font-semibold text-gray-800 mb-2"
+          >
+            Hapus Admin?
+          </h3>
+          <p id="delete-description" class="text-gray-600 mb-6">
+            Apakah Anda yakin ingin menghapus admin
+            <strong id="delete-admin-name">Ahmad Rizki</strong>? Tindakan ini
+            tidak dapat dibatalkan.
+          </p>
+
+          <!-- Delete Actions -->
+          <footer class="delete-actions flex justify-center space-x-3">
+            <button
+              type="button"
+              id="btn-cancel-delete"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              onclick="closeDeleteModal()"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              id="btn-confirm-delete"
+              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+              onclick="deleteAdmin()"
+              data-admin-id="1"
+            >
+              Hapus
+            </button>
+          </footer>
+        </div>
+      </section>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module">
+      import port from "../secret/port.js";
+
+      const token = localStorage.getItem("token");
+      const roleAdmin = localStorage.getItem("admin");
+
+      const wrapperAdminList = document.getElementById("admin-list");
+      const roleOption = document.getElementById("role-option");
+      const btnTogglePassword = document.getElementById("btn-toggle-password");
+
+      const buttonAddAdmin = document.getElementById("btn-add-admin");
+
+      btnTogglePassword.addEventListener("click", togglePasswordVisibility);
+
+      buttonAddAdmin.addEventListener("click", openAddModal);
+
+      const buttonCloseModal = document.getElementById("btn-close-modal");
+
+      buttonCloseModal.addEventListener("click", closeModal);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (roleAdmin !== "Super Admin") {
+          window.location.href = "/frontend/pages/";
+          return;
+        }
+
+        const retrieveAllAdmin = async () => {
+          const config = {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+
+          try {
+            const response = await fetch(`${port}/admin`, config);
+
+            if (!response.ok) return console.log("Response not ok!");
+
+            const { data, warn } = await response.json();
+
+            if (warn) {
+              window.location.href = "/frontend/pages";
+            }
+
+            data.forEach((admin) => {
+              const { id, username, password, nomorHP, role } = admin;
+
+              const listAdmin = generateListAdmin(
+                id,
+                username,
+                password,
+                nomorHP,
+                role
+              );
+
+              wrapperAdminList.append(listAdmin);
+            });
+
+            const btnCancel = document.getElementById("btn-cancel");
+
+            btnCancel.addEventListener("click", closeModal);
+
+            const editModalButtons =
+              document.querySelectorAll("button[id=edit]");
+
+            editModalButtons.forEach((button) => {
+              button.addEventListener("click", () => {
+                openEditModal(button.dataset.adminId);
+              });
+            });
+
+            const deleteAdminButtons = document.querySelectorAll(
+              "button[id=delete-admin]"
+            );
+
+            deleteAdminButtons.forEach((button) => {
+              button.addEventListener("click", () => {
+                deleteAdmin(button.dataset.adminId);
+              });
+            });
+          } catch (error) {
+            return console.error(error.message);
+          }
+        };
+
+        retrieveAllAdmin();
+      });
+
+      // Modal Management Functions
+      function openAddModal() {
+        const modal = document.getElementById("admin-modal");
+        const title = document.getElementById("modal-title");
+        const submitText = document.getElementById("submit-text");
+        const nameInput = document.getElementById("admin-name-input");
+        const passwordInput = document.getElementById("admin-password-input");
+        const phoneInput = document.getElementById("admin-phone-input");
+
+        title.textContent = "Tambah Admin";
+        submitText.textContent = "Simpan";
+        nameInput.value = "";
+        passwordInput.value = "";
+        phoneInput.value = "";
+        roleOption.value = "Admin";
+
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+        nameInput.focus();
+      }
+
+      async function openEditModal(adminId) {
+        const modal = document.getElementById("admin-modal");
+        const title = document.getElementById("modal-title");
+        const submitText = document.getElementById("submit-text");
+        const nameInput = document.getElementById("admin-name-input");
+        const passwordInput = document.getElementById("admin-password-input");
+        const phoneInput = document.getElementById("admin-phone-input");
+        const hiddenAdminId = document.getElementById("admin-id");
+
+        const fillFormEdit = async (nameInput, passwordInput, nomorHP) => {
+          const config = {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+
+          try {
+            const response = await fetch(`${port}/admin/${adminId}`, config);
+
+            if (!response.ok) return console.log("Response nok ok!");
+
+            const { data, warn } = await response.json();
+
+            if (data) {
+              hiddenAdminId.value = data[0].id;
+              nameInput.value = data[0].username;
+              passwordInput.value = data[0].password;
+              nomorHP.value = data[0].nomorHP;
+              roleOption.value = data[0].role;
+            }
+          } catch (error) {
+            return console.error(error.message);
+          }
+        };
+
+        await fillFormEdit(nameInput, passwordInput, phoneInput);
+
+        title.textContent = "Edit Admin";
+        submitText.textContent = "Update";
+
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+        nameInput.focus();
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("admin-modal");
+        modal.classList.add("hidden");
+        document.body.style.overflow = "auto";
+      }
+
+      function openDeleteModal() {
+        const modal = document.getElementById("delete-modal");
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDeleteModal() {
+        const modal = document.getElementById("delete-modal");
+        modal.classList.add("hidden");
+        document.body.style.overflow = "auto";
+      }
+
+      async function deleteAdmin(adminId) {
+        const config = {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        try {
+          const response = await fetch(`${port}/admin/${adminId}`, config);
+
+          if (!response.ok) return console.log("Response not ok!");
+
+          const { msg, err, warn } = await response.json();
+
+          if (warn) {
+            window.location.href = "/frontend/pages";
+            return;
+          }
+
+          if (err) return Swal.fire(err);
+
+          return Swal.fire(msg).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        } catch (error) {
+          return console.error(error.message);
+        }
+
+        closeDeleteModal();
+      }
+
+      // Password Visibility Toggle
+      function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("admin-password-input");
+        const passwordIcon = document.getElementById("password-icon");
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          passwordIcon.classList.remove("fa-eye");
+          passwordIcon.classList.add("fa-eye-slash");
+        } else {
+          passwordInput.type = "password";
+          passwordIcon.classList.remove("fa-eye-slash");
+          passwordIcon.classList.add("fa-eye");
+        }
+      }
+
+      // Form Validation and Submission
+      document
+        .getElementById("admin-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const statusForm = document.getElementById("submit-text").textContent;
+
+          const hiddenAdminId = document.getElementById("admin-id");
+          const nameInput = document.getElementById("admin-name-input");
+          const passwordInput = document.getElementById("admin-password-input");
+          const phoneInput = document.getElementById("admin-phone-input");
+
+          const id = hiddenAdminId.value.trim();
+          const name = nameInput.value.trim();
+          const password = passwordInput.value.trim();
+          const phone = phoneInput.value.trim();
+
+          // Basic validation
+          if (!name || !password || !phone) {
+            alert("Mohon lengkapi semua field!");
+            return;
+          }
+
+          if (password.length < 8) {
+            alert("Password harus minimal 8 karakter!");
+            passwordInput.focus();
+            return;
+          }
+
+          const addNewAdmin = async (
+            username,
+            password,
+            nomorHP,
+            role = "Admin"
+          ) => {
+            const config = {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ username, password, nomorHP, role }),
+            };
+
+            try {
+              const response = await fetch(`${port}/admin`, config);
+
+              if (!response.ok) return console.log(`Response not ok!`);
+
+              const { msg, warn, err } = await response.json();
+
+              if (warn) {
+                window.location.href = "/frontend/pages";
+              }
+
+              if (err) Swal.fire(err);
+
+              Swal.fire(msg).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.reload();
+                }
+              });
+            } catch (error) {
+              return console.error(error.message);
+            }
+          };
+
+          const updateAdmin = async (username, password, nomorHP, role) => {
+            const config = {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ username, password, nomorHP, role }),
+            };
+
+            try {
+              const response = await fetch(`${port}/admin/${id}`, config);
+
+              if (!response.ok) return console.log("Response not ok!");
+
+              const { msg, warn, err } = await response.json();
+
+              if (warn) {
+                window.location.href = "/frontend/pages";
+              }
+
+              if (err) return Swal.fire(err);
+
+              Swal.fire(msg).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.reload();
+                }
+              });
+            } catch (error) {
+              return console.error(error.message);
+            }
+          };
+
+          if (statusForm == "Simpan") {
+            addNewAdmin(name, password, phone, roleOption.value);
+          } else if (statusForm == "Update") {
+            updateAdmin(name, password, phone, roleOption.value);
+          }
+
+          // Simulate save action
+          // const action = document.getElementById("submit-text").textContent;
+          // alert(`Admin berhasil ${action.toLowerCase()}!`);
+          // closeModal();
+        });
+
+      // Modal Event Listeners
+      // document.addEventListener("DOMContentLoaded", function () {
+      //   // Close modal when clicking outside
+      //   const adminModal = document.getElementById("admin-modal");
+      //   const deleteModal = document.getElementById("delete-modal");
+
+      //   adminModal.addEventListener("click", function (e) {
+      //     if (e.target === this) {
+      //       closeModal();
+      //     }
+      //   });
+
+      //   deleteModal.addEventListener("click", function (e) {
+      //     if (e.target === this) {
+      //       closeDeleteModal();
+      //     }
+      //   });
+
+      //   // Close modal with Escape key
+      //   document.addEventListener("keydown", function (e) {
+      //     if (e.key === "Escape") {
+      //       closeModal();
+      //       closeDeleteModal();
+      //     }
+      //   });
+      // });
+
+      function generateListAdmin(id, username, password, nomorHP, role) {
+        const createListElement = document.createElement("li");
+        createListElement.setAttribute(
+          "class",
+          "admin-item p-4 hover:bg-gray-50 transition-colors"
+        );
+        createListElement.setAttribute("role", "listitem");
+        createListElement.setAttribute("data-password-admin", password);
+
+        createListElement.setAttribute("data-admin-id", `${id}`);
+        createListElement.setAttribute("aria-labelledby", `admin-name-${id}`);
+        //  <li
+        //     class="admin-item p-4 hover:bg-gray-50 transition-colors"
+        //     role="listitem"
+        //     data-admin-id="1"
+        //     aria-labelledby="admin-name-1"
+        //   >
+
+        const html = `<article class="flex items-center justify-between">
+              <!-- Admin Info -->
+              <div class="admin-info flex items-center space-x-3">
+                <figure
+                  class="admin-avatar w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"
+                >
+                  <i class="fas fa-user text-green-600" aria-hidden="true"></i>
+                </figure>
+                <div class="admin-details">
+                  <h3 id="admin-name-1" class="font-medium text-gray-800">${username}</h3>
+                  <div class="flex items-center gap-x-1">
+                    <p class="admin-phone text-sm text-gray-500">${role} |</p>
+                    <p class="admin-phone text-sm text-gray-500">${nomorHP}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Admin Actions -->
+              <div
+                class="admin-actions flex items-center space-x-2"
+                role="group"
+                aria-label="Admin actions"
+              >
+                <button
+                  type="button"
+                  class="btn-edit text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                  aria-label="Edit admin ${username}"
+                  data-action="edit"
+                  data-admin-id="${id}"
+                  id="edit"
+                >
+                  <i class="fas fa-edit" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-delete text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                  aria-label="Hapus admin ${username}"
+                  data-action="delete"
+                  data-admin-id="${id}"
+                  id="delete-admin"
+                >
+                  <i class="fas fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>`;
+
+        createListElement.innerHTML = html;
+
+        return createListElement;
+      }
+    </script>
+  </body>
+</html>

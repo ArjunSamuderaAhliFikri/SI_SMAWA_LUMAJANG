@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Persetujuan Media</title>
+
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/frontend/assets/css/all.min.css" />
+  </head>
+  <body>
+    <div class="relative min-h-screen overflow-hidden bg-gray-100">
+      <section
+        id="popup-media"
+        class="hidden absolute z-20 top-1/2 left-1/2 -translate-1/2 px-3 py-2 rounded-lg shadow-sm bg-gray-500/50 size-full"
+      >
+        <div
+          class="relative top-1/2 left-1/2 -translate-y-3/4 -translate-x-1/2 w-[35%] h-[50dvh] overflow-hidden bg-[url(/frontend/public/img/Smawa.jpg)] bg-cover bg-center bg-no-repeat rounded-lg shadow-sm px-3 py-2 after:content-[''] after:block after:absolute after:w-full after:h-52 after:bottom-0 after:left-0 after:bg-gradient-to-t after:from-slate-800 after:via-slate-700/50 after:to-transparent after:to-80%"
+        >
+          <button
+            type="button"
+            class="absolute top-4 right-4 px-5 py-2.5 rounded-lg bg-slate-800 text-slate-100 font-medium text-sm capitalize cursor-pointer transition-all duration-150 hover:bg-slate-600"
+          >
+            <i class="fa-solid fa-door-open pr-3 text-lg"></i>
+            kembali
+          </button>
+
+          <div class="absolute bottom-12 left-10 text-slate-100 z-10 max-w-3/4">
+            <h1 class="text-xl font-semibold capitalizes">
+              SMA Wahidiyah Lumajang
+            </h1>
+            <p class="text-xs text-slate-300">
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim
+              dolorem numquam asperiores expedita animi, quidem eos
+              exercitationem laboriosam deserunt magni.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <header
+        class="flex justify-around items-center h-16 bg-gradient-to-tr from-5% from-emerald-700 to-emerald-600 to-90%"
+      >
+        <div class="flex items-center gap-x-3">
+          <div
+            id="logo"
+            class="size-11 rounded-full overflow-hidden shadow bg-slate-100"
+          >
+            <img
+              src="/frontend/public/img/smawa-logo-transparent.png"
+              alt="smawa-logo"
+              class="block size-full object-cover"
+            />
+          </div>
+          <p class="text-slate-100 font-medium text-sm">SMA Wahidiyah Media</p>
+        </div>
+
+        <div class="overflow-hidden rounded-lg shadow lg:w-xs w-[180px]">
+          <input
+            class="block w-full text-sm text-slate-700 px-3 py-2 bg-slate-200 placeholder-slate-500 outline-slate-400"
+            type="text"
+            name="search-info"
+            id="search-info"
+            placeholder="Cari media..."
+          />
+        </div>
+      </header>
+      <div class="container mx-auto bg-emerald-50/50 h-[80dvh]">
+        <main>
+          <section
+            class="flex justify-between lg:gap-x-0 items-center lg:px-20 px-6 py-8"
+          >
+            <h1 class="font-medium text-xl text-slate-700">Media Siswa</h1>
+
+            <a
+              href="/frontend/pages/masterData.html"
+              class="px-5 py-2.5 rounded-lg bg-slate-800 text-slate-100 font-medium text-sm capitalize cursor-pointer transition-all duration-150 hover:bg-slate-600"
+            >
+              <i class="fa-solid fa-door-open pr-3 text-lg"></i>Kembali</a
+            >
+          </section>
+
+          <section
+            class="relative h-[75dvh] overflow-auto min-w-md lg:w-11/12 mx-auto overflow-x-hidden"
+          >
+            <div
+              class="hidden mx-auto sticky top-0 z-20 h-5 bg-emerald-500 w-full rounded-tl-lg rounded-tr-lg"
+            ></div>
+            <table
+              class="relative lg:bg-emerald-500 w-full lg:w-11/12 mx-auto table-auto overflow-hidden"
+            >
+              <thead class="hidden lg:table-header-group">
+                <tr>
+                  <th class="opacity-0">-</th>
+                  <th class="opacity-0">-</th>
+                  <th class="opacity-0">-</th>
+                  <th class="opacity-0">-</th>
+                </tr>
+              </thead>
+              <tbody class=""></tbody>
+            </table>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="/frontend/logic/persetujuanMedia.js"></script>
+  </body>
+</html>

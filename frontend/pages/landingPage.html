@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth overflow-x-hidden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+
+    <link rel="stylesheet" href="/frontend/assets/css/all.min.css" />
+
+    <title>SMA Wahidiyah Kota Lumajang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0fdf4",
+                100: "#dcfce7",
+                200: "#bbf7d0",
+                300: "#86efac",
+                400: "#4ade80",
+                500: "#22c55e",
+                600: "#16a34a",
+                700: "#15803d",
+                800: "#166534",
+                900: "#14532d",
+              },
+            },
+            animation: {
+              float: "float 6s ease-in-out infinite",
+              fadeInUp: "fadeInUp 1s ease-out",
+              slideInRight: "slideInRight 1s ease-out",
+              "pulse-soft": "pulse-soft 2s ease-in-out infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes pulse-soft {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      }
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      }
+    </style>
+  </head>
+  <body class="relative bg-gray-50 w-full overflow-x-hidden">
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-white/20"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center"
+            >
+              <!-- <span class="text-white font-bold text-lg">SN</span> -->
+              <img
+                class="block size-full object-cover"
+                src="/frontend/public/img/smawa-logo-transparent.png"
+                alt="smawa-logo"
+              />
+            </div>
+            <span class="text-white font-bold text-xs lg:text-xl"
+              >SMA Wahidiyah Kota Lumajang</span
+            >
+          </div>
+          <div
+            id="list-navbar"
+            class="absolute lg:static top-20 right-3 md:flex lg:flex-row grid auto-cols-auto lg:space-x-8 lg:w-fit lg:h-fit w-36 h-60 bg-slate-100 lg:bg-transparent lg:p-0 px-4 py-3 rounded-lg transition-all duration-500 lg:translate-x-0 translate-x-[150%]"
+          >
+            <a
+              href="#home"
+              class="text-slate-600 font-medium lg:font-normal lg:text-white hover:text-primary-200 transition-colors"
+              >Beranda</a
+            >
+            <a
+              href="#about"
+              class="text-slate-600 font-medium lg:font-normal lg:text-white hover:text-primary-200 transition-colors"
+              >Reason</a
+            >
+            <a
+              href="#programs"
+              class="text-slate-600 font-medium lg:font-normal lg:text-white hover:text-primary-200 transition-colors"
+              >Program</a
+            >
+            <a
+              href="#facilities"
+              class="text-slate-600 font-medium lg:font-normal lg:text-white hover:text-primary-200 transition-colors"
+              >Tentang Kami</a
+            >
+            <a
+              href="#contact"
+              class="text-slate-600 font-medium lg:font-normal lg:text-white hover:text-primary-200 transition-colors"
+              >Berita</a
+            >
+          </div>
+          <button class="md:hidden text-white" id="hamburger-menu">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section
+      id="home"
+      class="relative min-h-screen flex items-center gradient-bg before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-1/2 before:z-10 before:h-dvh lg:before:h-dvh before:bg-gradient-to-r before:from-emerald-500 before:from-55% before:to-transparent"
+    >
+      <div
+        class="absolute bottom-0 right-0 w-[80%] lg:h-dvh h-dvh bg-[url(/frontend/public/img/IMG-20250520-WA0003.jpg)] bg-cover bg-center lg:bg-right bg-no-repeat"
+      ></div>
+
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="text-white animate-fadeInUp">
+            <h1
+              class="text-3xl lg:text-5xl font-bold mb-6 leading-tight capitalize text-center lg:text-left"
+            >
+              mencetak wali yang
+              <span class="text-emerald-400">intelek</span>
+              dan <span class="text-emerald-400">intelektual</span> yang wali
+              <!-- <span class="text-primary-200">Generasi Emas</span> Indonesia -->
+            </h1>
+            <p
+              class="lg:text-[16px] text-xs mb-8 text-gray-100 leading-relaxed text-center lg:text-left"
+            >
+              SMA Wahidiyah Kota Lumajang berkomitmen mengembangkan ilmu
+              pengetahuan, agama, teknologi, seni, dan budaya yang berjiwa
+              <strong>Wahidiyah</strong> bertaraf internasional serta berwawasan
+              jami'al 'alamin.
+            </p>
+            <div
+              class="flex flex-col justify-center items-center lg:justify-start lg:items-start sm:flex-row gap-4 w-3/4 lg:w-fit mx-auto lg:mx-0"
+            >
+              <a
+                href="/frontend/pages/"
+                class="bg-white text-primary-600 px-1.5 lg:px-3 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg w-full lg:w-fit text-center"
+              >
+                Login Sekarang !
+              </a>
+              <a
+                href="/frontend/pages/landingPage.html#contact"
+                class="border-2 border-white text-white lg:px-8 px-1 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-all w-full text-center lg:w-fit"
+              >
+                Telusuri berita terkini
+              </a>
+            </div>
+          </div>
+          <!-- animate rounded section -->
+          <!-- <div class="relative animate-slideInRight">
+            <div class="w-96 h-96 mx-auto relative">
+              <div
+                class="absolute inset-0 bg-primary-400 rounded-full animate-pulse-soft opacity-20"
+              ></div>
+              <div
+                class="absolute inset-4 bg-primary-300 rounded-full animate-float opacity-30"
+              ></div>
+              <div
+                class="absolute inset-8 bg-white rounded-full flex items-center justify-center shadow-2xl"
+              >
+                <div
+                  class="flex flex-col justify-center items-center text-center p-8"
+                >
+                  <div class="size-12 rounded-full overflow-hidden">
+                    <img
+                      class="block size-full object-cover"
+                      src="/frontend/public/img/smawa-logo-transparent.png"
+                      alt="smawa-logo"
+                    />
+                  </div>
+                  <h3 class="text-2xl font-bold text-primary-700 mb-2">
+                    Excellence
+                  </h3>
+                  <p class="text-gray-600">Mencapai prestasi terbaik</p>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <div
+        class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+      >
+        <svg
+          class="w-6 h-6 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          ></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            Mengapa Memilih SMA Wahidiyah Kota Lumajang?
+          </h2>
+          <p class="text-md text-gray-600 max-w-3xl mx-auto">
+            Melaksanakan pendidikan, penelitian, dan pengabdian kepada
+            masyarakat dengan berjiwa Wahidiyah, membangun kekuatan moral, dan
+            kesadaran kepada Allah SWT wa Rasulihi SAW wa Ghautsu Hadzaz Zaman
+            RA.
+          </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div
+            class="text-center card-hover bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-2xl"
+          >
+            <div
+              class="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-6"
+            >
+              <span class="text-2xl">👨‍🏫</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">
+              Tenaga Pengajar Berkualitas
+            </h3>
+            <p class="text-gray-600">
+              Bapak Ibu Guru yang siap untuk mendidik Siswa-Siswi SMA Wahidiyah
+              Kota Lumajang dengan dijiwai ajaran-ajaran Wahidiyah.
+            </p>
+          </div>
+          <div
+            class="text-center card-hover bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl"
+          >
+            <div
+              class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6"
+            >
+              <span class="text-2xl">🏆</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">
+              Prestasi Gemilang
+            </h3>
+            <p class="text-gray-600">
+              Terdapat banyak siswa yang berprestasi baik dalam akademik maupun
+              non akademik selama duduk di bangku SMA Wahidiyah Kota Lumajang.
+            </p>
+          </div>
+          <div
+            class="text-center card-hover bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl"
+          >
+            <div
+              class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6"
+            >
+              <span class="text-2xl">🌐</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">
+              Kurikulum Merdeka
+            </h3>
+            <p class="text-gray-600">
+              Menerapkan kurikulum Merdeka dan IB yang up to date dan sesuai
+              dengan kurikulum merdeka yang ada di Indonesia.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            Organisasi & Ekstrakulikuler Unggulan
+          </h2>
+          <p class="text-lg text-gray-600">
+            Berbagai program yang dirancang untuk mengoptimalkan potensi setiap
+            siswa
+          </p>
+        </div>
+        <div class="">
+          <div class="grid grid-rows-3 lg:grid-cols-2 grid-cols-1 gap-7">
+            <div
+              class="flex items-start space-x-4 card-hover p-6 bg-white rounded-xl shadow-sm"
+            >
+              <div
+                class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0"
+              >
+                <span class="text-white text-xl">🔬</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">OSIS</h3>
+                <p class="text-gray-600">
+                  Organisasi Siswa Intra Sekolah, sebagai wadah bagi para siswa
+                  untuk mengembangkan potensi diri, berpartisipasi dalam
+                  kegiatan sekolah.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-start space-x-4 card-hover p-6 bg-white rounded-xl shadow-sm"
+            >
+              <div
+                class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0"
+              >
+                <span class="text-white text-xl">🥁</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Drumband</h3>
+                <p class="text-gray-600">
+                  Wadah bagi siswa untuk mengembangkan minat dan bakat di bidang
+                  musik, khususnya dalam memainkan alat musik drumband
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-start space-x-4 card-hover p-6 bg-white rounded-xl shadow-sm"
+            >
+              <div
+                class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0"
+              >
+                <span class="text-white text-xl">⚽</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Futsal</h3>
+                <p class="text-gray-600">
+                  Mengembangkan potensi, bakat, dan minat siswa dalam bidang
+                  olahraga, khususnya futsal
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-start space-x-4 card-hover p-6 bg-white rounded-xl shadow-sm"
+            >
+              <div
+                class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0"
+              >
+                <span class="text-white text-xl">🪵</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Pramuka</h3>
+                <p class="text-gray-600">
+                  Membentuk karakter siswa agar menjadi pribadi yang beriman,
+                  bertakwa, bertanggung jawab, mandiri, serta memiliki kecakapan
+                  hidup dan rasa cinta tanah air dan lingkungan
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="relative">
+            <div
+              class="bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl p-8 text-white"
+            >
+              <h3 class="text-3xl font-bold mb-6">Statistik Keberhasilan</h3>
+              <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                  <span class="text-lg">Tingkat Kelulusan</span>
+                  <span class="text-2xl font-bold">100%</span>
+                </div>
+                <div class="w-full bg-primary-300 rounded-full h-3">
+                  <div class="bg-white h-3 rounded-full w-full"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-lg">Diterima PTN Favorit</span>
+                  <span class="text-2xl font-bold">98%</span>
+                </div>
+                <div class="w-full bg-primary-300 rounded-full h-3">
+                  <div
+                    class="bg-white h-3 rounded-full"
+                    style="width: 98%"
+                  ></div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-lg">Beasiswa Luar Negeri</span>
+                  <span class="text-2xl font-bold">85%</span>
+                </div>
+                <div class="w-full bg-primary-300 rounded-full h-3">
+                  <div
+                    class="bg-white h-3 rounded-full"
+                    style="width: 85%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Facilities Section -->
+    <section id="facilities" class="relative lg:h-[50dvh] h-[75dvh] bg-white">
+      <div
+        class="flex lg:justify-end lg:items-center absolute bottom-0 lg:top-1/2 lg:right-0 lg:-translate-y-1/2 lg:bg-gradient-to-l bg-gradient-to-t from-emerald-500 from-60% to-transparent lg:h-full lg:w-3/4 w-full"
+      >
+        <div class="w-10/12 lg:w-3/5 lg:mr-24 lg:mb-0 mb-14 mx-auto lg:mx-0">
+          <h1
+            class="font-semibold text-slate-100 text-2xl lg:text-left text-center"
+          >
+            Tentang SMA Wahidiyah Kota Lumajang
+          </h1>
+
+          <p
+            class="font-normal text-slate-200 text-sm mt-6 lg:text-left text-center"
+          >
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Animi
+            sapiente veritatis cumque sint suscipit voluptas. Consequuntur ab id
+            aliquam deleniti distinctio qui exercitationem illum voluptate harum
+            molestiae eveniet ipsam aspernatur unde illo, corporis labore fugiat
+            ducimus repellat! Ab natus quidem omnis, sint explicabo, nam
+            incidunt consequatur nisi a doloribus dolores maiores officia maxime
+            ratione molestias et iure recusandae necessitatibus? Quis iste
+            dignissimos praesentium voluptas ipsum illo officiis facere sequi
+            minus quasi in esse maxime est inventore libero, assumenda sit
+          </p>
+
+          <a
+            href="https://www.youtube.com/@smawasendurolmjg717"
+            target="_blank"
+            class="block w-full lg:w-fit text-emerald-600 font-medium capitalize text-sm px-4 py-2.5 rounded-lg bg-slate-100 shadow cursor-pointer mt-4 transition-all duration-150 hover:bg-emerald-500 hover:text-slate-100 hover:shadow-md hover:shadow-slate-100 text-center"
+          >
+            jelajahi sekarang!
+          </a>
+        </div>
+      </div>
+
+      <div
+        class="h-full w-full lg:w-3/5 bg-[url(/frontend/public/img/IMG-20250520-WA0003.jpg)] bg-cover bg-left bg-no-repeat"
+      ></div>
+
+      <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+            Fasilitas Terdepan
+          </h2>
+          <p class="text-xl text-gray-600">
+            Lingkungan belajar yang nyaman dan mendukung dengan teknologi
+            terkini
+          </p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div
+            class="text-center card-hover p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl"
+          >
+            <div class="text-4xl mb-4">🏫</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Gedung Modern</h3>
+            <p class="text-gray-600">
+              3 gedung berlantai 4 dengan arsitektur modern
+            </p>
+          </div>
+          <div
+            class="text-center card-hover p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl"
+          >
+            <div class="text-4xl mb-4">💻</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Lab Komputer</h3>
+            <p class="text-gray-600">4 lab komputer dengan 200+ PC terbaru</p>
+          </div>
+          <div
+            class="text-center card-hover p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl"
+          >
+            <div class="text-4xl mb-4">📚</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Perpustakaan</h3>
+            <p class="text-gray-600">50,000+ koleksi buku dan e-book</p>
+          </div>
+          <div
+            class="text-center card-hover p-6 bg-gradient-to-br from-red-50 to-red-100 rounded-xl"
+          >
+            <div class="text-4xl mb-4">🎭</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Auditorium</h3>
+            <p class="text-gray-600">
+              Kapasitas 500 orang dengan teknologi audio visual terbaru
+            </p>
+          </div>
+        </div>
+      </div> -->
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 gradient-bg relative overflow-hidden">
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div
+        class="relative z-10 max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8"
+      >
+        <h2 class="text-3xl font-bold text-white mb-6">
+          Bergabunglah dengan SMA Wahidiyah Kota Lumajang
+        </h2>
+        <p class="text-md text-gray-100 mb-8">
+          Haus akan ilmu dan prestasi, tumbuh bersama untuk menuju indonesia
+          cerdas, bermanfaat bagi nusa bangsa, agama, khususnya dalam Perjuangan
+          Wahidiyah
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            class="bg-white text-primary-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
+          >
+            Login Sekarang!
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-900 text-white">
+      <div class="lg:max-w-6xl w-10/12 mx-auto">
+        <h1
+          class="capitalize text-center mt-10 font-semibold text-slate-200 text-2xl"
+        >
+          berita terkini
+        </h1>
+
+        <section id="list-news" class="mt-20">
+          <ul
+            id="wrapper-news"
+            class="grid lg:grid-cols-3 gap-10 auto-rows-auto"
+          >
+            <li
+              class="bg-slate-100 p-3 rounded-lg shadow-md transition-all duration-150 hover:bg-slate-300 hover:scale-[98%]"
+            >
+              <a href="">
+                <div class="max-h-60 w-full overflow-hidden rounded-lg">
+                  <img
+                    class="block size-full object-cover"
+                    src="/frontend/public/img/walpaper-laptop.jpg"
+                    alt="image-news"
+                  />
+                </div>
+
+                <div class="text-slate-800 mt-4 px-2">
+                  <h1 class="font-medium text-lg">AI SMA Wahidiyah Senduro</h1>
+                  <p class="text-slate-600 mt-1.5 text-xs">
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Officia itaque illo nisi repellendus vero pariatur amet esse
+                    in fugit, facilis nihil. Fuga sequi est ratione explicabo
+                    distinctio ullam voluptates eaque?
+                  </p>
+                </div>
+
+                <div class="relative w-full h-14 mt-4">
+                  <button
+                    type="button"
+                    class="absolute right-4 w-1/2 text-slate-200 capitalize font-medium text-sm bg-slate-800 px-2 py-2.5 rounded-lg shadow transition-all duration-150 hover:bg-slate-600"
+                  >
+                    baca sekarang
+                  </button>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-red-500">
+        <div class="grid lg:grid-cols-2 gap-12">
+          <div>
+            <h2 class="text-4xl font-bold mb-6">Hubungi Kami</h2>
+            <p class="text-xl text-gray-300 mb-8">
+              Siap membantu Anda menemukan jalur pendidikan terbaik untuk masa
+              depan yang gemilang
+            </p>
+            <div class="space-y-6">
+              <div class="flex items-center space-x-4">
+                <div
+                  class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center"
+                >
+                  <span class="text-xl">📍</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold">Alamat</h3>
+                  <p class="text-gray-300">
+                    Jl. Pendidikan Raya No. 123, Jakarta Selatan 12345
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div
+                  class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center"
+                >
+                  <span class="text-xl">📞</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold">Telepon</h3>
+                  <p class="text-gray-300">(021) 123-4567 / 0812-3456-7890</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div
+                  class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center"
+                >
+                  <span class="text-xl">✉️</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold">Email</h3>
+                  <p class="text-gray-300">info@smanusantara.sch.id</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Kirim Pesan</h3>
+            <form class="space-y-6">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Nama Lengkap"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <input
+                  type="tel"
+                  placeholder="Nomor Telepon"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <textarea
+                  placeholder="Pesan"
+                  rows="4"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                class="w-full bg-primary-500 text-white py-4 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+              >
+                Kirim Pesan
+              </button>
+            </form>
+          </div>
+        </div>
+      </div> -->
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div>
+            <div class="flex items-center space-x-3 mb-4">
+              <div
+                class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center"
+              >
+                <img
+                  src="/frontend/public/img/smawa-logo-transparent.png"
+                  alt="logo-smawa"
+                />
+              </div>
+              <span class="text-xl font-bold">SMA Wahidiyah Kota Lumajang</span>
+            </div>
+            <p class="text-gray-400 capitalize">
+              mencetak wali yang intelek dan intelektual yang wali
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Program</h3>
+            <ul class="space-y-2 text-gray-400">
+              <li>
+                <a href="#" class="hover:text-primary-400 transition-colors"
+                  >Seni & Budaya</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-primary-400 transition-colors"
+                  >Olahraga</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-primary-400 transition-colors"
+                  >Bahasa Asing</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Informasi</h3>
+            <ul class="space-y-2 text-gray-400">
+              <li>
+                <a href="#" class="hover:text-primary-400 transition-colors"
+                  >Penerimaan Siswa</a
+                >
+              </li>
+
+              <li>
+                <a href="#" class="hover:text-primary-400 transition-colors"
+                  >Akademik</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Media Sosial</h3>
+            <div class="flex space-x-4">
+              <a
+                href="https://www.youtube.com/@smawasendurolmjg717"
+                target="_blank"
+                class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors"
+              >
+                <i class="fa-brands fa-youtube"></i>
+              </a>
+              <a
+                href="https://www.instagram.com/smawasenduro/"
+                target="_blank"
+                class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors"
+              >
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400"
+        >
+          <p>&copy; 2025 SMA Wahidiyah Kota Lumajang.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/frontend/logic/landingPage.js"></script>
+  </body>
+</html>

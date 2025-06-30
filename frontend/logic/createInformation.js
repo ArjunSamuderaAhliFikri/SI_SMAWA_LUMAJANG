@@ -4,6 +4,7 @@ import verifyUser from "../secret/verifyUser.js";
 import port from "../secret/port.js";
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 const params = new URLSearchParams(window.location.search);
 const paramsTitle = params.get("title");
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const { data, warn } = await response.json();
 
-        if (warn) {
+        if (warn || statusAdmin !== "Super Admin") {
           window.location.href = "/";
         }
 

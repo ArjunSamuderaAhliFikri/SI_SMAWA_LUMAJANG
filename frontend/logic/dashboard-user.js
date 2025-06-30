@@ -10,10 +10,48 @@ const toRupiah = convertRupiah;
 
 const token = localStorage.getItem("token");
 const nameStudent = localStorage.getItem("siswa");
+
 const id = localStorage.getItem("id");
 const tbody = document.querySelector("tbody");
 
+const createInformation = document.getElementById("create-information");
+
+const navbarMobileVersion = document.getElementById("navbar-mobile-version");
+const hamburgerMenu = document.getElementById("hamburger-menu");
+const mobileButtonLogout = document.getElementById("mobile-button-logout");
+
+hamburgerMenu.addEventListener("click", () => {
+  if (navbarMobileVersion.classList.contains("translate-x-[150%]")) {
+    hamburgerMenu.innerHTML = '<i class="fa-solid fa-xmark text-xl"></i>';
+  } else {
+    hamburgerMenu.innerHTML = '<i class="fa-solid fa-bars text-xl"></i>';
+  }
+  navbarMobileVersion.classList.toggle("translate-x-[150%]");
+});
+
+mobileButtonLogout.addEventListener("click", () => {
+  Swal.fire({
+    title: "Yakin Meninggalkan Halaman?",
+    text: "Tekan Keluar Untuk Meninggalkan Halaman",
+    icon: "Warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Keluar",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      localStorage.clear();
+      window.location.href = "/frontend/pages/";
+    }
+  });
+});
+
 document.addEventListener("DOMContentLoaded", () => {
+  createInformation.setAttribute(
+    "href",
+    `/frontend/pages/buatPostinganSiswa.html?id=${id}`
+  );
+
   const cekTagihanSPP = document.getElementById("cek_tagihan_spp");
   cekTagihanSPP.setAttribute(
     "href",
@@ -119,8 +157,6 @@ const logoutButton = document.getElementById("logout");
 const buttonAboutUser = document.getElementById("about-user");
 
 logoutButton.addEventListener("click", () => {
-  localStorage.clear();
-
   Swal.fire({
     title: "Yakin Meninggalkan Halaman?",
     text: "Tekan Keluar Untuk Meninggalkan Halaman",
@@ -131,6 +167,7 @@ logoutButton.addEventListener("click", () => {
     confirmButtonText: "Keluar",
   }).then((result) => {
     if (result.isConfirmed) {
+      localStorage.clear();
       window.location.href = "/frontend/pages/";
     }
   });

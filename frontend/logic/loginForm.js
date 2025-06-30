@@ -48,9 +48,13 @@ form.addEventListener("submit", async function (event) {
     } else {
       localStorage.setItem("role", role);
       localStorage.setItem("token", token);
-      localStorage.setItem("admin", admin);
+      localStorage.setItem("admin", admin[0].role);
 
-      window.location.href = "/frontend/pages/dashboard.html";
+      if (admin[0].role == "Super Admin") {
+        window.location.href = "/frontend/pages/dashboard.html";
+      } else {
+        window.location.href = "/frontend/pages/dashboard_admin.html";
+      }
     }
   } catch (error) {
     Swal.fire(error.message);

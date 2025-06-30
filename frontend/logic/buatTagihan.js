@@ -6,6 +6,7 @@ import port from "../secret/port.js";
 // verifyUser("/frontend/pages/auth/login.html");
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 let inputTagihanSiswa = 50000;
 
@@ -59,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         const { accounts, warn } = await response.json();
 
-        if (warn) {
+        if (warn || statusAdmin !== "Super Admin") {
           window.location.href = "/";
         }
 

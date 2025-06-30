@@ -3,7 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/frontend/styles/minify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
     <title>Login Page</title>
   </head>
   <body>
@@ -35,40 +41,6 @@
 
           <!-- login -->
           <div class="mt-6">
-            <!-- status login -->
-            <!-- <div class="flex items-center justify-start gap-3">
-              <div class="overflow-hidden rounded-full size-14">
-                <img
-                  class="block object-cover size-full"
-                  src="/frontend/public/img/Profile-IG.jpg"
-                  alt="admin"
-                />
-              </div>
-              <div class="flex flex-col justify-center items-start gap-2">
-                <span class="text-sm font-semibold text-slate-700"
-                  >Login Sebagai ?</span
-                >
-
-                <div class="flex gap-3">
-                  <button
-                    disabled="true"
-                    id="opsi-login"
-                    class="disabled:bg-slate-400 bg-slate-600 text-slate-100 text-sm rounded-md px-3 w-16 py-1 border-none cursor-pointer transition-all duration-150 ease-in-out hover:bg-slate-900 hover:font-semibold"
-                    type="button"
-                  >
-                    Admin
-                  </button>
-                  <button
-                    id="opsi-login"
-                    class="bg-slate-600 text-slate-100 text-sm rounded-md px-3 w-16 py-1 border-none cursor-pointer transition-all duration-150 ease-in-out hover:bg-slate-900 hover:font-semibold"
-                    type="button"
-                  >
-                    User
-                  </button>
-                </div>
-              </div>
-            </div> -->
-
             <form method="POST" id="login-form" class="mt-6">
               <div class="flex flex-col gap-2">
                 <label
@@ -99,13 +71,6 @@
                 />
               </div>
 
-              <!-- <div class="flex gap-3 mt-4">
-                <input type="checkbox" name="checkbox id="checkbox" />
-                <label class="text-xs text-slate-600" for="checkbox"
-                  >Saya Telah Mem</label
-                >
-              </div> -->
-
               <div class="mx-auto mt-7 w-fit">
                 <button
                   type="submit"
@@ -118,7 +83,9 @@
           </div>
 
           <!-- absolute bottom-0 left-0 w-full h-56 rotate-180 -->
-          <div class="absolute bottom-3 left-20 w-full h-fit rotate-180">
+          <div
+            class="absolute lg:bottom-3 bottom-2 left-18 w-full h-fit rotate-180"
+          >
             <svg
               class="scale-150"
               data-name="Layer 1"
@@ -132,17 +99,15 @@
               ></path>
             </svg>
           </div>
-
-          <!-- <div
-            class="absolute -bottom-32 -left-32 w-[150%] h-[300px] bg-[#16C47F] rotate-[30deg] scale-125 after:content-[''] after:w-36 after:h-28 after:bg-slate-100 after:absolute after:-top-10 after:left-36 after:rounded-bl-full after:rounded-br-lg"
-          ></div> -->
         </section>
 
         <!-- Hero Login Image -->
         <section
           class="hidden lg:block h-full w-1/2 grow-[1.5] relative after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-[90%] after:h-44 after:bg-gradient-to-tl after:from-slate-900 after:via-slate-800/50 after:to-transparent"
         >
-          <div class="size-full absolute top-0 -left-[65.5%] rotate-90">
+          <div
+            class="size-full absolute top-0 2xl:-left-[67.5%] lg:-left-[61%] rotate-90"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
               <path
                 fill="oklch(0.968 0.007 247.896)"

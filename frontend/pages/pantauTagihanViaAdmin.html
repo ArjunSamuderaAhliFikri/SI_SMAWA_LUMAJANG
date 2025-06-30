@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pantau Tagihan</title>
+
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/frontend/assets/css/all.min.css" />
+    <script src="/frontend/logic/tableToExcel/table2Excel.js"></script>
+    <style>
+      ::-webkit-scrollbar-thumb {
+        width: 4px;
+        border-radius: 24px;
+        background-color: #d9d9d9;
+      }
+
+      .no-scrollbar::-webkit-scrollbar {
+        width: 9px;
+        padding-left: 12px;
+        border-radius: 24px;
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="min-h-screen overflow-hidden">
+      <div class="container mx-auto">
+        <header
+          class="relative w-full bg-emerald-500 h-[330px] lg:h-[300px] pt-4 px-12 rounded-bl-xl rounded-br-xl"
+        >
+          <section class="flex justify-center lg:justify-around items-center">
+            <div class="flex items-center lg:gap-x-2">
+              <div class="size-14 rounded-full overflow-hidden">
+                <img
+                  src="/frontend/public/img/smawa-logo-transparent.png"
+                  alt="smawa-logo"
+                  class="block size-full object-cover"
+                />
+              </div>
+              <h1
+                class="text-xs lg:text-md font-semibold text-slate-100 capitalize"
+              >
+                SMA Wahidiyah Kota Lumajang
+              </h1>
+            </div>
+
+            <nav class="hidden lg:block">
+              <ul class="flex items-center gap-x-4">
+                <li
+                  class="px-5 py-2 rounded-full bg-slate-100 shadow text-emerald-500 w-fit font-medium"
+                >
+                  <a href="#">Home</a>
+                </li>
+                <li
+                  class="px-5 py-2 rounded-full bg-slate-100 shadow text-emerald-500 w-fit font-medium"
+                >
+                  <a href="/frontend/pages/dashboard_admin.html">Kembali</a>
+                </li>
+              </ul>
+            </nav>
+          </section>
+
+          <section
+            class="flex flex-col lg:flex-row justify-between items-center pt-10 gap-y-10 lg:gap-y-0 mx-auto w-full"
+          >
+            <div class="lg:text-left text-center">
+              <h1 class="font-semibold text-slate-100 capitalize text-3xl">
+                selamat datang
+              </h1>
+              <p
+                class="text-xs text-slate-100 font-normal capitalize mt-2 lg:mt-1"
+              >
+                anda bisa melakukan memantau pembayaran siswa disini!
+              </p>
+            </div>
+
+            <ul
+              class="flex items-center gap-x-8 w-11/12 lg:w-fit absolute lg:static -bottom-10 left-1/2 -translate-x-1/2 lg:translate-x-0"
+            >
+              <li
+                class="relative flex flex-col justify-center items-center grow-3 lg:items-start gap-y-3 px-6 py-5 rounded-lg shadow text-slate-100 bg-emerald-600 text-center lg:text-left lg:h-fit h-36"
+              >
+                <i
+                  class="fa-solid fa-circle-exclamation text-lg lg:text-3xl"
+                ></i>
+                <div class="">
+                  <h1
+                    class="capitalize text-slate-100 font-semibold text-xs lg:text-md"
+                  >
+                    belum tuntas
+                  </h1>
+                  <span
+                    id="not-finished-count"
+                    class="mt-1 capitalize text-slate-100 text-xs font-medium"
+                    >0 siswa</span
+                  >
+                </div>
+              </li>
+              <li
+                class="relative flex flex-col justify-center items-center lg:items-start gap-y-3 px-6 py-5 rounded-lg shadow text-slate-100 bg-emerald-600 text-center lg:text-left lg:h-fit h-36"
+              >
+                <i class="fa-solid fa-hourglass-half text-lg lg:text-3xl"></i>
+                <div class="">
+                  <h1
+                    class="capitalize text-slate-100 font-semibold text-xs lg:text-md"
+                  >
+                    menunggu konfirmasi pembayaran
+                  </h1>
+                  <span
+                    id="pending-count"
+                    class="mt-1 capitalize text-slate-100 text-xs font-medium"
+                    >0 siswa</span
+                  >
+                </div>
+              </li>
+              <li
+                class="relative flex flex-col justify-center items-center lg:items-start gap-y-3 px-6 py-5 rounded-lg shadow text-slate-100 bg-emerald-600 text-center lg:text-left lg:h-fit h-36"
+              >
+                <i class="fa-solid fa-circle-check text-lg lg:text-3xl"></i>
+                <div class="">
+                  <h1
+                    class="capitalize text-slate-100 font-semibold text-xs lg:text-md"
+                  >
+                    tuntas
+                  </h1>
+                  <span
+                    id="complete-count"
+                    class="mt-1 capitalize text-slate-100 text-xs font-medium"
+                    >0 siswa</span
+                  >
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <section
+            class="absolute lg:-bottom-6 -bottom-44 left-1/2 -translate-x-1/2 w-10/12 flex lg:flex-row flex-col justify-between items-center lg:gap-y-0 gap-y-3"
+          >
+            <ul
+              class="flex items-center gap-x-4 px-3 py-2 rounded-lg shadow bg-slate-50"
+            >
+              <li class="font-medium text-slate-600">
+                <label for="name">
+                  <i class="fa-solid fa-person"></i>
+                </label>
+
+                <select name="name" id="sort-by-name">
+                  <option value="A-Z">A-Z</option>
+                  <option value="Z-A">Z-A</option>
+                </select>
+              </li>
+
+              <li class="font-medium text-slate-600">
+                <label for="kelas">
+                  <i class="fa-solid fa-school"></i>
+                </label>
+                <select name="kelas" id="sort-by-class">
+                  <option value="10-12">10-12</option>
+                  <option value="12-10">12-10</option>
+                </select>
+              </li>
+              <li class="font-medium text-slate-600">
+                <label for="tapel">
+                  <i class="fa-solid fa-calendar-week"></i>
+                </label>
+                <select name="tapel" id="sort-by-tapel"></select>
+              </li>
+            </ul>
+
+            <div class="lg:w-1/3 w-full">
+              <input
+                class="bg-slate-50 px-4 py-1.5 rounded-lg shadow text-slate-700 placeholder:text-sm outline-2 outline-slate-200 w-full block"
+                type="text"
+                placeholder="Cari Tagihan..."
+                id="search-billing"
+              />
+            </div>
+          </section>
+        </header>
+
+        <main class="relative lg:mt-24 mb-6 mt-60">
+          <button
+            id="download-to-excel"
+            type="button"
+            class="absolute -top-12 right-7 lg:right-0 px-3 py-2 rounded-lg shadow bg-emerald-500 text-slate-100 font-medium text-sm z-20 cursor-pointer transition-all duration-150 hover:bg-emerald-700"
+          >
+            <i class="fa-solid fa-table pr-2"></i>Download To Excel
+          </button>
+          <section
+            class="relative bg-slate-50 rounded-lg overflow-hidden max-h-[55dvh] overflow-y-auto no-scrollbar lg:w-11/12 2xl:w-full lg:mx-auto"
+          >
+            <table class="relative table-auto 2xl:table-fixed w-full">
+              <thead class="hidden lg:table-header-group sticky top-0 left-0">
+                <tr>
+                  <th
+                    class="px-4 py-3 bg-emerald-500 font-medium text-slate-100 capitalize text-md text-left pl-10"
+                  >
+                    nama
+                  </th>
+                  <th
+                    class="px-4 py-3 bg-emerald-500 font-medium text-slate-100 capitalize text-md"
+                  >
+                    kelas
+                  </th>
+                  <th
+                    class="px-4 py-3 bg-emerald-500 font-medium text-slate-100 capitalize text-md"
+                  >
+                    tapel
+                  </th>
+                  <th
+                    class="px-4 py-3 bg-emerald-500 font-medium text-slate-100 capitalize text-md"
+                  >
+                    nominal tagihan
+                  </th>
+                  <th
+                    class="px-4 py-3 bg-emerald-500 font-medium text-slate-100 capitalize text-md"
+                  >
+                    jenis tagihan
+                  </th>
+                  <th
+                    class="px-4 py-3 bg-emerald-500 font-medium text-slate-100 capitalize text-md"
+                  >
+                    dibuat pada
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody class="bg-slate-50"></tbody>
+            </table>
+
+            <div id="wrapper-table-hidden" class="size-0 overflow-hidden">
+              <table id="table-hidden" class="size-full">
+                <thead>
+                  <tr>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>Tahun Pelajaran</th>
+                    <th>Informasi Pembayaran</th>
+                    <th>Tipe Pembayaran</th>
+                    <th>Nominal Tagihan</th>
+                    <th>Dibayar Pada</th>
+                    <th>Status Pembayaran</th>
+                    <th>Tagihan Dibuat</th>
+                  </tr>
+                </thead>
+
+                <tbody id="tbody-hidden"></tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="/frontend/logic/pantauTagihanViaAdmin.js"
+    ></script>
+  </body>
+</html>

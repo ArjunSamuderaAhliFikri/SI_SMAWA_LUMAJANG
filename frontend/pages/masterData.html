@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Buat Tagihan Siswa</title>
 
-    <link rel="stylesheet" href="/frontend/styles/minify.css" />
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="/frontend/assets/css/all.css" />
     <link rel="stylesheet" href="/frontend/logic/flatpickr/flatpickr.min.css" />
     <script src="/frontend/logic/flatpickr/flatpickr.min.js"></script>
@@ -96,8 +102,16 @@
           </div>
         </div>
         <div
-          class="absolute left-1/2 -bottom-[500px] -translate-x-1/2 translate-y-[125%] lg:translate-y-3/4 z-30 bg-transparent lg:w-5xl w-11/12 px-3 py-6 rounded-lg shadow-lg"
+          class="absolute left-1/2 lg:-bottom-[500px] top-full translate-y-[900px] -translate-x-1/2 lg:translate-y-3/4 z-30 bg-transparent lg:w-5xl w-11/12 px-3 py-6 rounded-lg shadow-lg"
         >
+          <a
+            href="/frontend/pages/persetujuan_media.html"
+            class="w-fit absolute lg:right-2 lg:-top-2 -top-12 right-1/2 lg:translate-x-0 translate-x-1/2 bg-slate-800 text-slate-100 font-medium px-3 py-3 rounded-lg shadow my-3 text-sm"
+          >
+            <i class="fa-solid fa-newspaper text-xl"></i>
+
+            <span class="pl-2">Permintaan Siswa</span>
+          </a>
           <section id="header-information-center" class="text-center">
             <h1 class="capitalize text-xl font-medium text-slate-700">
               pusat informasi SMA Wahidiyah Kota Lumajang

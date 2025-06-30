@@ -1,11 +1,20 @@
 const db = require("../config/mysql.js");
 
 const updateDataStudent = async (req, res) => {
-  const { hidden, username, kelas, tapel, nomorHP, nisn } = req.body;
+  const {
+    hidden,
+    username,
+    kelas,
+    tapel,
+    nomorHP,
+    nisn,
+    alamatSiswa,
+    tanggalLahir,
+  } = req.body;
   try {
     const updateStudent = await db.execute(
-      "UPDATE students SET username = ?, kelas = ?, tapel = ?, nomorHP = ?, nisn = ? WHERE username = ?",
-      [username, kelas, tapel, nomorHP, nisn, hidden]
+      "UPDATE students SET username = ?, kelas = ?, tapel = ?, nomorHP = ?, nisn = ?, alamatSiswa = ?, tanggalLahir = ? WHERE username = ?",
+      [username, kelas, tapel, nomorHP, nisn, alamatSiswa, tanggalLahir, hidden]
     );
 
     if (!updateStudent) {

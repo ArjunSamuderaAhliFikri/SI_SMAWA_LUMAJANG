@@ -1,130 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tambah Siswa Sistem Informasi SMA Wahidiyah Lumajang</title>
-    <link rel="stylesheet" href="/frontend/styles/output.css" />
+
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
-  <body class="overflow-hidden">
-    <div class="min-h-screen bg-slate-200">
+  <body class="overflow-x-hidden">
+    <div class="min-h-screen bg-slate-200 overflow-y-auto">
       <div class="bg-slate-700 relative h-[275px]">
+        <!-- -translate-y-[150%] -->
         <div
           id="popup-card"
-          class="absolute top-4 left-1/2 -translate-x-1/2 -translate-y-[150%] z-30 min-w-52 min-h-32 bg-[url(/frontend/public/background-card.png)] bg-cover bg-no-repeat bg-center rounded-md w-[38%] h-[42dvh] overflow-hidden transition-all duration-500"
+          class="absolute -translate-y-[150%] top-4 left-1/2 -translate-x-1/2 z-30 2xl:min-w-52 min-h-32 bg-[url(/frontend/public/card-senduro.jpg)] bg-cover bg-no-repeat bg-center rounded-md md:w-[60%] 2xl:w-[38%] 2xl:h-[42dvh] md:h-[70dvh] max-w-3/4 max-h-[70dvh] overflow-hidden transition-all duration-500"
         >
-          <!-- after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-48 after:bg-[#16C47F] -->
-          <div class="relative size-full overflow-hidden">
-            <div
-              class="flex flex-col justify-center items-center 2xl:w-36 w-28 absolute 2xl:right-[75.5px] xl:right-[49.5px] 2xl:top-40 top-28 overflow-hidden"
-            >
-              <div class="w-full text-center">
-                <h1
-                  id="card-student-name"
-                  class="text center capitalize font-medium 2xl:text-[11px] text-[8px] text-slate-700"
-                >
-                  arjun Samudera ahli fikri
-                </h1>
-                <p
-                  class="text-center 2xl:text-[9px] text-[6px] text-slate-600 font-normal"
-                >
-                  NISN :
-                  <span id="nisn">1071717 / 012910929</span>
-                </p>
-              </div>
-            </div>
-
-            <h3
-              class="absolute bottom-3 left-4 2xl:text-md text-sm text-slate-100 font-medium uppercase"
-            >
-              mencetak wali yang intelek dan intelektual yang wali
-            </h3>
-            <!-- <div
-            class="flex justify-start items-center gap-x-1 absolute top-3 left-5 z-20"
-          >
-            <div class="size-16 rounded-full overflow-hidden">
-              <img
-                src="/frontend/public/img/smawa-logo-transparent.png"
-                alt="smawa-logo"
-                class="block size-full object-cover"
-              />
-            </div>
-
-            <div class="text-slate-100">
-              <h1 class="text-sm font-medium">SMA Wahidiyah</h1>
-              <p class="text-[11px] font-normal">Kota Lumajang</p>
-            </div>
-          </div> -->
-            <!-- <div
-            id="layard"
-            class="absolute top-20 right-8 w-44 h-56 bg-slate-100 z-20 rounded-lg after:content-[''] after:block after:w-16 after:h-3 after:rounded-md after:bg-[#16C47F] after:mx-auto after:mt-3 before:content-[''] before:absolute before:-top-24 before:z-20 before:left-1/2 before:-translate-x-1/2 before:w-6 before:rounded-md before:h-28 before:bg-slate-300"
-          >
-            <div class="relative">
+          <!-- TODOOOOO -->
+          <div class="relative size-full bg-slate-500/25">
+            <div class="relative size-full overflow-hidden">
               <div
-                id="profile-student"
-                class="w-[80%] flex flex-col justify-center items-center absolute left-1/2 -translate-x-1/2 translate-y-1/2"
+                class="flex flex-col justify-center items-center lg:w-44 2xl:w-56 md:w-60 absolute lg:right-[165.5px] md:right-[150.5px] 2xl:top-48 2xl:-translate-y-1 md:top-52 md:translate-y-1 overflow-hidden"
               >
-                <div
-                  id="image-student"
-                  class="size-16 rounded-full overflow-hidden"
-                >
-                  <img
-                    class="block size-full object-cover"
-                    src="/frontend/public/img/default-profile.jpeg"
-                    alt="student"
-                  />
-                </div>
-                <div class="mt-2 w-full">
+                <div class="w-full text-center">
                   <h1
-                    id="name-student"
-                    class="text-center text-xs font-medium text-slate-600"
-                  >
-                    Arjun Samudera Ahli Fikri
-                    <p
-                      class="text-center mt-1 text-slate-500 font-medium text-[9px]"
-                    >
-                      Kelas : <span id="kelas-siswa">XII-1</span> ||
-                      <span id="tahun-pelajaran">2024 / 2025</span>
-                    </p>
-                  </h1>
+                    id="nisn-card"
+                    class="text-left capitalize 2xl:font-medium lg:font-semibold 2xl:text-[12.5px] lg:text-[12px] text-[8px] text-slate-700"
+                  ></h1>
+                  <h2
+                    id="username-card"
+                    class="text-left capitalize 2xl:font-medium lg:font-semibold 2xl:text-[12.5px] lg:text-[12px] text-[8px] text-slate-700 lg:mt-4 2xl:mt-2.5"
+                  ></h2>
+                  <h3
+                    id="date-time-card"
+                    class="text-left capitalize 2xl:font-medium lg:font-semibold 2xl:text-[12.5px] lg:text-[12px] text-[8px] text-slate-700 lg:mt-4 2xl:mt-2.5"
+                  ></h3>
+                  <h4
+                    id="address-card"
+                    class="text-left capitalize 2xl:font-medium lg:font-semibold 2xl:text-[12.5px] lg:text-[12px] text-[8px] text-slate-700 lg:mt-4 2xl:mt-2.5"
+                  ></h4>
                 </div>
               </div>
+
+              <div
+                id="qrcode"
+                class="absolute top-[67.5%] left-[17%] -translate-1/2 size-44 rounded-md shadow overflow-hidden z-20"
+              ></div>
             </div>
-          </div> -->
-
-            <div
-              id="qrcode"
-              class="absolute top-1/2 left-1/2 -translate-1/2 size-36 rounded-md shadow overflow-hidden z-20"
-            ></div>
-
-            <!-- <div
-            id="container_svg"
-            class="z-10 absolute top-[35%] left-0 w-full overflow-hidden leading-0 rotate-180"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 319">
-              <path
-                fill="#16C47F"
-                fill-opacity="1"
-                d="M0,96L60,122.7C120,149,240,203,360,197.3C480,192,600,128,720,90.7C840,53,960,43,1080,64C1200,85,1320,139,1380,165.3L1440,192L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,1020Z"
-              ></path>
-            </svg>
-          </div>
-          <div
-            id="container_svg"
-            class="absolute top-[40%] left-0 w-full overflow-hidden leading-0 rotate-180"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 319">
-              <path
-                fill="#fff"
-                fill-opacity="1"
-                d="M0,96L60,122.7C120,149,240,203,360,197.3C480,192,600,128,720,90.7C840,53,960,43,1080,64C1200,85,1320,139,1380,165.3L1440,192L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
-              ></path>
-            </svg>
-          </div> -->
           </div>
 
-          <!-- <div id="qrcode" hidden></div> -->
-          <!-- <a id="qrcode_download">Download</a> -->
+          <!-- after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-48 after:bg-[#16C47F] -->
         </div>
 
         <a
@@ -135,13 +65,14 @@
         >
 
         <a
+          id="back-to-dashboard"
           class="absolute top-8 xl:left-14 left-6 bg-slate-100 px-4 py-2 rounded-lg font-semibold text-sm text-slate-700 cursor-pointer transition-all duration-150 hover:bg-slate-200"
           href="/frontend/pages/dashboard.html"
           >Kembali</a
         >
 
         <div
-          class="container xl:max-w-6xl w-[96%] absolute left-1/2 xl:-bottom-20 -bottom-24 -translate-x-1/2 translate-y-1/2 bg-slate-200 rounded-lg shadow-lg xl:px-10 px-8 py-6 scale-90"
+          class="container xl:max-w-6xl w-[100%] absolute left-1/2 xl:-bottom-20 -bottom-40 -translate-x-1/2 translate-y-1/2 bg-slate-200 rounded-lg shadow-lg xl:px-10 px-8 py-6 scale-[85%]"
         >
           <div>
             <h1
@@ -237,7 +168,41 @@
                   />
                 </div>
 
-                <div class="flex gap-4 items-center">
+                <div>
+                  <label
+                    class="text-sm text-slate-600 font-semibold"
+                    for="address-student"
+                    >Alamat Siswa</label
+                  >
+                  <input
+                    type="text"
+                    name="address-student"
+                    id="address-student"
+                    placeholder="Alamat Siswa.."
+                    maxlength="64"
+                    minlength="6"
+                    class="w-full bg-slate-300 px-4 py-3 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-700 text-sm"
+                  />
+                </div>
+
+                <div
+                  class="flex flex-wrap lg:flex-nowrap lg:gap-4 gap-1 items-center lg:mt-0 mt-1.5"
+                >
+                  <div class="flex flex-col w-fit">
+                    <label
+                      class="text-sm text-slate-600 font-semibold"
+                      for="tanggal-lahir"
+                      >Tanggal Lahir</label
+                    >
+                    <input
+                      name="tanggal-lahir"
+                      id="tanggal-lahir"
+                      placeholder="Tanggal Lahir..."
+                      maxlength="64"
+                      minlength="6"
+                      class="w-fit bg-slate-600 py-3 px-4 outline-none border-none rounded-lg my-2 placeholder:text-xs text-slate-100 text-sm"
+                    />
+                  </div>
                   <div class="flex flex-col w-fit">
                     <label
                       class="text-sm text-slate-600 font-semibold"

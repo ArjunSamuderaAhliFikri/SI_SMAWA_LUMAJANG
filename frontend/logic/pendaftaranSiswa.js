@@ -5,6 +5,7 @@ import verifyUser from "../secret/verifyUser.js";
 import convertRupiah from "/features/convertRupiah/convertRupiah.js";
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 const form = document.querySelector("form");
 const nameStudent = document.getElementById("name-student");
@@ -63,7 +64,7 @@ form.addEventListener("submit", (event) => {
 
       const { msg, err, warn } = await response.json();
 
-      if (warn) {
+      if (warn || statusAdmin !== "Super Admin") {
         window.location.href = "/";
       }
 

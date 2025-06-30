@@ -4,6 +4,8 @@ import verifyUser from "../secret/verifyUser.js";
 
 // Initialize Feather icons
 
+import port from "../secret/port.js";
+
 const token = localStorage.getItem("token");
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -21,18 +23,17 @@ const classInput = document.getElementById("kelas");
 const tapelInput = document.getElementById("tahun_pelajaran");
 const nomorHPInput = document.getElementById("nomor_hp");
 const nisnInput = document.getElementById("nisn");
+const alamatSiswa = document.getElementById("alamat-siswa");
+const tanggalLahir = document.getElementById("tanggal-lahir");
 
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveDetailStudent = async () => {
-    const response = await fetch(
-      `https://api2.smawalmj.com/siswa/detailSiswa/${username}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${port}/siswa/detailSiswa/${username}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       throw new Error("Response not ok!");
@@ -44,12 +45,17 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "/";
     }
 
+    console.log(siswa[0].tanggalLahir);
+    console.log(tanggalLahir);
+
     hidden.value = siswa[0].username;
     nameInput.value = siswa[0].username;
     classInput.value = siswa[0].kelas;
     tapelInput.value = siswa[0].tapel;
     nomorHPInput.value = siswa[0].nomorHP;
     nisnInput.value = siswa[0].nisn;
+    alamatSiswa.value = siswa[0].alamatSiswa;
+    tanggalLahir.value = siswa[0].tanggalLahir;
   };
 
   retrieveDetailStudent();
@@ -65,11 +71,13 @@ form.addEventListener("submit", (event) => {
     tapel: tapelInput.value,
     nomorHP: nomorHPInput.value,
     nisn: nisnInput.value,
+    alamatSiswa: alamatSiswa.value,
+    tanggalLahir: tanggalLahir.value,
   };
 
   const handleEditSubmit = async () => {
     try {
-      const response = await fetch("https://api2.smawalmj.com/siswa", {
+      const response = await fetch(`${port}/siswa`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -94,7 +102,7 @@ form.addEventListener("submit", (event) => {
 
       return Swal.fire(msg).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = `/pages/data_siswa.html?username=${username}`;
+          window.location.href = `/frontend/pages/data_siswa.html?username=${username}`;
         }
       });
     } catch (error) {
@@ -110,15 +118,12 @@ const deleteStudent = document.getElementById("delete-data-student");
 deleteStudent.addEventListener("click", () => {
   const deleteDataStudent = async () => {
     try {
-      const response = await fetch(
-        `https://api2.smawalmj.com/siswa/${username}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${port}/siswa/${username}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         return console.log("Response not ok!");
@@ -133,7 +138,7 @@ deleteStudent.addEventListener("click", () => {
       if (msg) {
         return Swal.fire(msg).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/pages/data_siswa.html";
+            window.location.href = "/frontend/pages/data_siswa.html";
           }
         });
       }

@@ -5,6 +5,7 @@ import verifyUser from "../secret/verifyUser.js";
 import port from "../secret/port.js";
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
 
 let inputAccountNumber = document.getElementById("input-nomor-rekening");
 const inputOwnerAccountNumber = document.getElementById(
@@ -39,7 +40,7 @@ formUpdateAccountNumber.addEventListener("submit", (event) => {
       if (response.ok) {
         const { msg, warn } = await response.json();
 
-        if (warn) {
+        if (warn || statusAdmin !== "Super Admin") {
           window.location.href = "/";
         }
         Swal.fire(msg).then((result) => {

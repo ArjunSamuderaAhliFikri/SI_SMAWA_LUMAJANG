@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buat Postingan Baru</title>
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="stylesheet" href="/frontend/assets/css/all.min.css" />
+  </head>
+  <body>
+    <div
+      class="relative min-h-screen overflow-x-hidden bg-slate-100 after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-44 after:bg-emerald-500"
+    >
+      <a
+        href="/frontend/pages/dashboard_user.html"
+        class="px-5 block w-fit py-2.5 rounded-lg bg-slate-100 text-slate-800 font-medium text-sm absolute lg:top-8 lg:right-0 lg:left-10 top-3 right-4 z-20 hover:bg-slate-300 transition-all duration-150 border-2 border-emerald-500"
+        >Kembali</a
+      >
+
+      <div
+        id="waves"
+        class="hidden lg:block absolute lg:-top-40 2xl:-top-[345px] left-0 size-full rotate-180"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path
+            class="fill-emerald-500"
+            fill-opacity="1"
+            d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,250.7C1248,256,1344,288,1392,304L1440,320L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+          ></path>
+        </svg>
+      </div>
+
+      <main
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto bg-slate-100 z-10 min-w-sm w-1/2 max-w-2xl px-4 py-3 rounded-lg shadow-md border border-slate-400"
+      >
+        <section id="header">
+          <div class="flex items-center gap-x-2">
+            <div class="size-14 rounded-full overflow-hidden">
+              <img
+                src="/frontend/public/img/smawa-logo-transparent.png"
+                alt="smawa-logo"
+                class="block size-full object-cover"
+              />
+            </div>
+
+            <div>
+              <h1 class="text-slate-800 font-medium text-md capitalize">
+                Upload Media Informasi
+              </h1>
+              <p class="text-slate-600 font-normal text-xs capitalize">
+                ayo, salurkan informasi, ide, dan gagasan kamu disini!
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="mt-5">
+          <form enctype="multipart/form-data">
+            <div
+              id="upload-file"
+              class="grid place-items-center w-full h-44 bg-slate-400/50 border border-gray-500 rounded-lg relative"
+            >
+              <div class="size-full overflow-hidden absolute top-0 left-0">
+                <img id="image-media" class="block size-full object-cover" />
+              </div>
+              <label
+                for="avatar"
+                class="flex items-center justify-center size-full text-slate-700 cursor-pointer z-20"
+              >
+                <i class="fa-solid fa-file-image text-3xl"></i>
+                <span class="capitalize font-medium pl-3 text-sm"
+                  >upload gambar disini</span
+                >
+              </label>
+              <input type="file" name="avatar" id="avatar" class="hidden" />
+            </div>
+
+            <div
+              id="name_and_class_student"
+              class="flex justify-between items-center gap-4 mt-6"
+            >
+              <div class="flex flex-col justify-center gap-y-2 w-1/2">
+                <label for="name" class="text-sm text-slate-700 font-medium">
+                  <i class="fa-solid fa-user pr-2"></i>
+                  Nama Siswa</label
+                >
+                <input
+                  class="bg-white px-3 py-1.5 rounded-md shadow border border-slate-300 w-full block placeholder:text-sm disabled:opacity-60"
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Masukkan Nama..."
+                />
+              </div>
+              <div class="flex flex-col justify-center gap-y-2 w-1/2">
+                <label
+                  for="class_student"
+                  class="text-sm text-slate-700 font-medium"
+                >
+                  <i class="fa-solid fa-school pr-2"></i>
+                  Kelas Siswa</label
+                >
+                <input
+                  class="bg-white px-3 py-1.5 rounded-md shadow border border-slate-300 w-full block placeholder:text-sm disabled:opacity-60"
+                  type="text"
+                  name="class_student"
+                  id="class_student"
+                  placeholder="Masukkan Kelas..."
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-center gap-y-2 w-full mt-4">
+              <label for="title" class="text-sm text-slate-700 font-medium">
+                <i class="fa-solid fa-pen pr-2"></i>
+                Masukkan Judul</label
+              >
+              <input
+                class="bg-white px-3 py-1.5 rounded-md shadow border border-slate-300 w-full block placeholder:text-sm"
+                type="text"
+                name="title"
+                id="title"
+                placeholder="Judul Postingan..."
+              />
+            </div>
+
+            <div class="flex flex-col justify-center gap-y-2 w-full mt-4">
+              <label
+                for="description"
+                class="text-sm text-slate-700 font-medium"
+              >
+                <i class="fa-regular fa-paper-plane pr-2"></i>
+                Deskripsi Postingan</label
+              >
+              <textarea
+                class="bg-white px-3 py-1.5 rounded-md shadow border border-slate-300 w-full block placeholder:text-sm h-20"
+                name="description"
+                id="description"
+                placeholder="Masukkan Deskripsi..."
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              class="mt-2 bg-emerald-600 text-slate-100 font-medium text-sm block w-full rounded-md shadow py-2 cursor-pointer transition-all duration-150 hover:bg-emerald-700"
+            >
+              Upload Postingan
+            </button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="/frontend/logic/buatPostinganSiswa.js"></script>
+  </body>
+</html>

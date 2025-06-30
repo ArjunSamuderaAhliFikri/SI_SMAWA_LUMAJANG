@@ -4,16 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pusat Informasi</title>
-    <link rel="stylesheet" href="/frontend/styles/minify.css" />
+
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body>
     <div class="relative min-h-screen bg-slate-100">
       <a
         href="/frontend/pages/masterData.html"
-        class="absolute top-10 left-12 px-5 py-3 rounded-md font-medium text-sm text-slate-100 bg-slate-600 transition-all duration-150 hover:bg-slate-500"
+        class="absolute top-5 left-5 lg:top-10 lg:left-12 px-3 lg:px-5 py-1.5 lg:py-3 rounded-md font-medium text-sm text-slate-100 bg-slate-600 transition-all duration-150 hover:bg-slate-500 z-10"
         >Kembali</a
       >
-      <div class="container mx-auto max-w-3xl pt-10 overflow-hidden rounded-sm">
+      <div
+        class="container mx-auto lg:max-w-3xl w-11/12 pt-16 lg:pt-10 overflow-hidden rounded-sm"
+      >
         <section id="detail-information-image" class="relative">
           <div
             id="date-time"
@@ -32,19 +41,12 @@
           <h1
             id="title"
             class="font-semibold text-slate-700 capitalize text-xl pl-3"
-          >
-            Pusat Perkembangan Dunia Digital
-          </h1>
-          <p id="description" class="text-slate-600 text-md mt-4">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque
-            consectetur eligendi rem sapiente reiciendis animi id voluptates
-            temporibus explicabo! Quidem saepe illo non cum delectus eaque nobis
-            pariatur atque sunt?
-          </p>
+          ></h1>
+          <p id="description" class="text-slate-600 text-md mt-4"></p>
         </section>
 
         <section
-          class="flex flex-row-reverse justify-start items-center gap-x-6 relative h-20"
+          class="flex flex-row-reverse lg:justify-start justify-center items-center gap-x-6 relative h-20"
         >
           <form
             id="delete-media"

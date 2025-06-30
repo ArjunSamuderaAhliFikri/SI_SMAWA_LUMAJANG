@@ -1,70 +1,147 @@
-/frontend<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Users Page</title>
-    <link rel="stylesheet" href="/frontend/styles/minify.css" />
+    <title>Data Siswa</title>
+    <link
+      rel="icon"
+      type="image/"
+      href="/frontend/public/img/smawa-logo-transparent.png"
+      sizes="180x180"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                500: "#22c55e",
+                600: "#16a34a",
+                700: "#15803d",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
-  <body
-    class="relative bg-blue-50 flex items-center justify-center min-h-screen overflow-hidden"
-  >
-    <a
-      href="/frontend/pages/dashboard.html"
-      class="absolute top-10 left-10 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 shadow font-medium text-slate-100 cursor-pointer transition-all duration-1000 hover:from-60%"
-      >Kembali</a
-    >
-
-    <div
-      class="relative bg-white w-full max-w-6xl rounded-lg shadow-md p-8 max-h-[70dvh] overflow-auto"
-    >
-      <div class="sticky -top-8 left-0 bg-white">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 pt-2">Users</h1>
-
-        <div
-          class="flex flex-col lg:items-center md:flex-row gap-4 mb-8 px-3 py-2 w-full h-fit overflow-hidden"
-        >
-          <!-- Search Bar -->
-          <div class="relative flex-grow">
+  <body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+      <div class="max-w-6xl mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+          <!-- Logo -->
+          <div class="flex items-center space-x-2">
             <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              class="size-10 bg-primary-500 rounded-lg flex items-center justify-center"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              <img
+                src="/frontend/public/img/smawa-logo-transparent.png"
+                alt="smawa-logo"
+                class="block size-full object-cover"
+              />
             </div>
+            <h1 class="text-md font-semibold text-gray-800">
+              SMA Wahidiyah Kota Lumajang
+            </h1>
+          </div>
+
+          <!-- Navigation -->
+          <nav class="hidden md:flex space-x-6">
+            <a href="#" class="text-primary-600 font-medium text-sm">Home</a>
+            <a
+              id="back-to-dashboard"
+              href="/frontend/pages/dashboard_admin.html"
+              class="text-gray-600 hover:text-primary-600 text-sm"
+              >Kembali</a
+            >
+          </nav>
+
+          <!-- Search -->
+          <div class="relative">
             <input
               id="search-student"
               type="text"
-              placeholder="Search Student"
-              class="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-slate-300"
+              placeholder="Cari siswa..."
+              class="w-48 pl-8 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500"
             />
-          </div>
-
-          <!-- Tabs -->
-          <div class="w-1/2 overflow-auto">
-            <ul id="list-kelas" class="w-full flex gap-x-1"></ul>
+            <i
+              class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"
+            ></i>
           </div>
         </div>
       </div>
+    </header>
 
-      <!-- User Grid -->
-      <div
-        id="wrapper-students"
-        class="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-auto"
-      ></div>
-    </div>
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-6">
+      <!-- Page Title -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-1">Daftar Siswa</h2>
+        <p id="count-students" class="text-sm text-gray-600">Total: 0 Siswa</p>
+      </div>
+
+      <!-- Filter -->
+      <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+        <div class="flex items-center space-x-4">
+          <select
+            id="list-kelas"
+            class="px-3 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+          ></select>
+          <select
+            id="list-tapel"
+            class="px-3 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+          ></select>
+        </div>
+      </div>
+
+      <!-- Student List -->
+      <div id="wrapper-students" class="bg-white rounded-lg shadow-sm">
+        <!-- List Item -->
+      </div>
+
+      <!-- Pagination -->
+      <!-- <div class="mt-4 flex items-center justify-between">
+        <p class="text-xs text-gray-600">Menampilkan 1-3 dari 1,234 siswa</p>
+        <div class="flex items-center space-x-1">
+          <button
+            class="px-2 py-1 bg-white border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="px-2 py-1 bg-primary-500 text-white rounded text-xs">
+            1
+          </button>
+          <button
+            class="px-2 py-1 bg-white border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50"
+          >
+            2
+          </button>
+          <button
+            class="px-2 py-1 bg-white border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50"
+          >
+            3
+          </button>
+          <span class="text-xs text-gray-500">...</span>
+          <button
+            class="px-2 py-1 bg-white border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50"
+          >
+            25
+          </button>
+          <button
+            class="px-2 py-1 bg-white border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div> -->
+    </main>
 
     <script type="module" src="/frontend/logic/dataSiswa.js"></script>
   </body>

@@ -19,6 +19,11 @@ const addNewBilling = async (req, res) => {
   } = req.body;
 
   try {
+    const [getIdStudent] = await db.execute(
+      "SELECT * FROM students WHERE username = ?",
+      [namaSiswa]
+    );
+
     if (specialKeyword == "Fitur Buat Tagihan Untuk Semua Siswa") {
       const [specificStudents] = await db.execute(
         "SELECT * FROM students WHERE kelas = ?",
@@ -32,10 +37,10 @@ const addNewBilling = async (req, res) => {
       }
 
       specificStudents.forEach(async (student) => {
-        const { username, tapel } = student;
+        const { id, username, tapel } = student;
         await db.execute(
-          `INSERT INTO paymentstudents(namaSiswa, kelasSiswa, tapel, jumlahTagihanSiswa, deadline, catatanSiswa, rekeningTujuan, typeofPayment, createdAt, isPaidOff)
-        VALUES("${username}", "${kelasSiswa}","${tapel}", "${jumlahTagihanSiswa}" ,"${deadline}", "${catatanSiswa}", "${rekeningTujuan}", "${typeofPayment}", "${date}", "Belum Tuntas");`
+          `INSERT INTO paymentstudents(namaSiswa, kelasSiswa, tapel, jumlahTagihanSiswa, deadline, catatanSiswa, rekeningTujuan, typeofPayment, createdAt, isPaidOff, userId)
+        VALUES("${username}", "${kelasSiswa}","${tapel}", "${jumlahTagihanSiswa}" ,"${deadline}", "${catatanSiswa}", "${rekeningTujuan}", "${typeofPayment}", "${date}", "Belum Tuntas", ${id});`
         );
       });
 
@@ -49,8 +54,8 @@ const addNewBilling = async (req, res) => {
       typeofPayment == "Pendaftaran Ulang Siswa Kelas XI"
     ) {
       const addBilling = await db.execute(
-        `INSERT INTO paymentstudents(namaSiswa, kelasSiswa, tapel, jumlahTagihanSiswa, rekeningTujuan, typeofPayment, catatanSiswa ,isPaidOff, createdAt)
-      VALUES("${namaSiswa}", "${kelasSiswa}", "${tapelSiswa}","${jumlahTagihanSiswa}", "${rekeningTujuan}", "${typeofPayment}",  "${typeofPayment}", "Belum Tuntas" ,"${date}");`
+        `INSERT INTO paymentstudents(namaSiswa, kelasSiswa, tapel, jumlahTagihanSiswa, rekeningTujuan, typeofPayment, catatanSiswa ,isPaidOff, createdAt, userId)
+      VALUES("${namaSiswa}", "${kelasSiswa}", "${tapelSiswa}","${jumlahTagihanSiswa}", "${rekeningTujuan}", "${typeofPayment}",  "${typeofPayment}", "Belum Tuntas" ,"${date}", ${getIdStudent[0].id});`
       );
 
       if (addBilling) {
@@ -77,8 +82,8 @@ const addNewBilling = async (req, res) => {
     }
 
     const addBilling = await db.execute(
-      `INSERT INTO paymentstudents(namaSiswa, kelasSiswa, tapel, jumlahTagihanSiswa, deadline, catatanSiswa, rekeningTujuan, typeofPayment, createdAt, isPaidOff)
-      VALUES("${namaSiswa}", "${kelasSiswa}","${tapelStudent[0].tapel}", "${jumlahTagihanSiswa}" ,"${deadline}", "${catatanSiswa}", "${rekeningTujuan}", "${typeofPayment}", "${date}", "Belum Tuntas");`
+      `INSERT INTO paymentstudents(namaSiswa, kelasSiswa, tapel, jumlahTagihanSiswa, deadline, catatanSiswa, rekeningTujuan, typeofPayment, createdAt, isPaidOff, userId)
+      VALUES("${namaSiswa}", "${kelasSiswa}","${tapelStudent[0].tapel}", "${jumlahTagihanSiswa}" ,"${deadline}", "${catatanSiswa}", "${rekeningTujuan}", "${typeofPayment}", "${date}", "Belum Tuntas", ${getIdStudent[0].id});`
     );
 
     if (addBilling) {

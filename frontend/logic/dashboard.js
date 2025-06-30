@@ -8,6 +8,19 @@ const toRupiah = convertRupiah;
 const wrapperMedia = document.getElementById("wrapper-media");
 
 const token = localStorage.getItem("token");
+const statusAdmin = localStorage.getItem("admin");
+
+const hamburgerMenu = document.getElementById("hamburger-menu");
+const mobileNavbar = document.getElementById("mobile-navbar");
+
+hamburgerMenu.addEventListener("click", () => {
+  if (mobileNavbar.classList.contains("translate-x-[150%]")) {
+    hamburgerMenu.innerHTML = '<i class="fa-solid fa-xmark text-xl"></i>';
+  } else {
+    hamburgerMenu.innerHTML = '<i class="fa-solid fa-bars text-xl"></i>';
+  }
+  mobileNavbar.classList.toggle("translate-x-[150%]");
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const retrieveMedia = async () => {
@@ -25,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const { data, err, warn } = await response.json();
 
-      if (warn) {
+      if (warn || statusAdmin !== "Super Admin") {
         window.location.href = "/";
       }
 
@@ -95,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
   retrieveDataPayment();
 });
 
+const mobileButtonLogout = document.getElementById("mobile-button-logout");
 const buttonAboutUser = document.getElementById("about-user");
 const logoutSection = document.getElementById("logout-section");
 const logoutButton = document.getElementById("logout");
@@ -112,6 +126,23 @@ logoutButton.addEventListener("click", () => {
     confirmButtonText: "Keluar",
   }).then((result) => {
     if (result.isConfirmed) {
+      window.location.href = "/frontend/pages/";
+    }
+  });
+});
+
+mobileButtonLogout.addEventListener("click", () => {
+  Swal.fire({
+    title: "Yakin Meninggalkan Halaman?",
+    text: "Tekan Keluar Untuk Meninggalkan Halaman",
+    icon: "Warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Keluar",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      localStorage.clear();
       window.location.href = "/frontend/pages/";
     }
   });
